@@ -42,8 +42,7 @@
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="Autofill" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
         android:id="@+id/lastName"
@@ -54,8 +53,7 @@
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@+id/firstName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="Autofill" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/phoneNumber"
@@ -66,8 +64,7 @@
         android:inputType="number|phone"
         app:layout_constraintTop_toBottomOf="@+id/lastName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="Autofill" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/customerFeedback"
@@ -79,8 +76,7 @@
         android:inputType="textMultiLine"
         app:layout_constraintTop_toBottomOf="@+id/phoneNumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="Autofill" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/sendBtn"
