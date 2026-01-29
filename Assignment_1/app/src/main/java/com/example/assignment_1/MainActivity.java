@@ -6,19 +6,19 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
-    long eventCreationTime;
-    String tag="EVH_Demo: ";
+    private long lastTimestamp;
+    private String tag="EVH_Demo: ";
 
-    private void logTime(String event){
+    private void logTime(String eventName){
         long currentTime = System.currentTimeMillis();
-        long eventTime = currentTime - eventCreationTime;
-        Log.d(tag, event + "time difference: " + eventTime + "ms");
-        eventCreationTime = currentTime;
+        long eventTime = currentTime - lastTimestamp;
+        Log.d(tag, eventName + " event time: " + eventTime + "ms");
+        lastTimestamp = currentTime;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        eventCreationTime = System.currentTimeMillis();
+        lastTimestamp = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         logTime("onCreate()");
