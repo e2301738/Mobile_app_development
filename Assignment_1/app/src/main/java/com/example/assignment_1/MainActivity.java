@@ -7,7 +7,7 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
 
     private long lastTimestamp;
-    private String tag="EVH_Demo: ";
+    private static final String tag="EVH_Demo: ";
 
     private void logTime(String eventName){
         long currentTime = System.currentTimeMillis();
