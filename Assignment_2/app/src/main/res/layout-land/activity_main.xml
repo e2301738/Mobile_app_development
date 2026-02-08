@@ -1,0 +1,68 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/vamk_logo_land" />
+
+        <EditText
+            android:id="@+id/firstName"
+            android:hint="@string/first_name"
+            android:inputType="text"
+            android:saveEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/lastName"
+            android:hint="@string/last_name"
+            android:inputType="text"
+            android:saveEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/birthday"
+            android:hint="@string/birthday"
+            android:inputType="date"
+            android:saveEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/phoneNumber"
+            android:hint="@string/phone_number"
+            android:inputType="phone"
+            android:saveEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/address"
+            android:hint="@string/address"
+            android:inputType="textPostalAddress"
+            android:saveEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/email"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:saveEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>

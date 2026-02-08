@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/logo_protrait"/>
+
+    <EditText
+        android:id="@+id/firstName"
+        android:hint="@string/first_name"
+        android:inputType="textPersonName"
+        android:saveEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/lastName"
+        android:hint="@string/last_name"
+        android:inputType="textPersonName"
+        android:saveEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/birthday"
+        android:hint="@string/birthday"
+        android:inputType="date"
+        android:saveEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/phoneNumber"
+        android:hint="@string/phone_number"
+        android:inputType="phone"
+        android:saveEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
