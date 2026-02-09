@@ -1,68 +1,105 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:ignore="MissingDefaultResource">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:src="@drawable/vamk_logo_land" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/first_name"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/firstName"
-            android:hint="@string/first_name"
+            android:hint="@string/first_name_hint"
             android:inputType="text"
-            android:saveEnabled="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/last_name"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/lastName"
-            android:hint="@string/last_name"
+            android:hint="@string/last_name_hint"
             android:inputType="text"
-            android:saveEnabled="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/birthday"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/birthday"
-            android:hint="@string/birthday"
+            android:hint="@string/birthday_hint"
             android:inputType="date"
-            android:saveEnabled="true"
+            android:freezesText="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/phone_number"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/phoneNumber"
-            android:hint="@string/phone_number"
+            android:hint="@string/phone_number_hint"
             android:inputType="phone"
-            android:saveEnabled="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/address"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/address"
-            android:hint="@string/address"
+            android:hint="@string/address_hint"
             android:inputType="textPostalAddress"
-            android:saveEnabled="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/email"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/email"
-            android:hint="@string/email"
+            android:hint="@string/email_hint"
             android:inputType="textEmailAddress"
-            android:saveEnabled="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 </ScrollView>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,37 +9,63 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="30dp"
         android:src="@drawable/logo_protrait"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/first_name"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/firstName"
-        android:hint="@string/first_name"
-        android:inputType="textPersonName"
-        android:saveEnabled="true"
+        android:hint="@string/first_name_hint"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/last_name"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/lastName"
-        android:hint="@string/last_name"
-        android:inputType="textPersonName"
-        android:saveEnabled="true"
+        android:hint="@string/last_name_hint"
+        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/birthday"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/birthday"
-        android:hint="@string/birthday"
+        android:hint="@string/birthday_hint"
         android:inputType="date"
-        android:saveEnabled="true"
+        android:freezesText="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/phone_number"
+        android:textStyle="bold" />
+
     <EditText
         android:id="@+id/phoneNumber"
-        android:hint="@string/phone_number"
+        android:hint="@string/phone_number_hint"
         android:inputType="phone"
-        android:saveEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
