@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="20dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:src="@drawable/logo_protrait"/>
+        android:src="@drawable/logo_protrait" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,10 +21,10 @@
 
     <EditText
         android:id="@+id/firstName"
-        android:hint="@string/first_name_hint"
-        android:inputType="text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/first_name_hint"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,10 +35,10 @@
 
     <EditText
         android:id="@+id/lastName"
-        android:hint="@string/last_name_hint"
-        android:inputType="text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/last_name_hint"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,11 +49,10 @@
 
     <EditText
         android:id="@+id/birthday"
-        android:hint="@string/birthday_hint"
-        android:inputType="date"
-        android:freezesText="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/birthday_hint"
+        android:inputType="date" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,10 +63,10 @@
 
     <EditText
         android:id="@+id/phoneNumber"
-        android:hint="@string/phone_number_hint"
-        android:inputType="phone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="@string/phone_number_hint"
+        android:inputType="phone" />
 
     <EditText
         android:id="@+id/address"

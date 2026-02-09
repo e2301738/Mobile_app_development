@@ -55,7 +55,6 @@
             android:id="@+id/birthday"
             android:hint="@string/birthday_hint"
             android:inputType="date"
-            android:freezesText="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
