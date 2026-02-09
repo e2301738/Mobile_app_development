@@ -17,7 +17,8 @@ public class MainActivity extends AppCompatActivity {
     Random random = new Random();
     private TextView tvCurrentNumber;
     private int currentRandomValue = 0;
-    private int lastValueBeforeRotate = 0;
+    private static final String KEY_RANDOM_NUMBER = "current_random_number";
+    private static final String KEY_DATE_TIME = "saved_date_time";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         TextView tvOldNumber = findViewById(R.id.tvRandomNumberBeforeRotation);
 
         if (savedInstanceState != null) {
-            lastValueBeforeRotate = savedInstanceState.getInt("randomNumber");
-            String savedTime = savedInstanceState.getString("dateTime");
+            int lastValueBeforeRotate = savedInstanceState.getInt(KEY_RANDOM_NUMBER);
+            String savedTime = savedInstanceState.getString(KEY_DATE_TIME);
 
             String randomNumberMessage = getString(R.string.randomNumberOrientationChange) + " " + lastValueBeforeRotate;
             String toastMessage = getString(R.string.currentDateAndTime) + " " + savedTime;
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     Runnable numberUpdateTask = new Runnable() {
         @Override
         public void run() {
-            lastValueBeforeRotate = currentRandomValue;
             currentRandomValue = random.nextInt(10000);
             tvCurrentNumber.setText(getString(R.string.currentRandomNumber) + currentRandomValue);
 
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Date date = new Date();
-        outState.putInt("randomNumber", currentRandomValue);
-        outState.putString("dateTime", String.valueOf(date));
+        outState.putInt(KEY_RANDOM_NUMBER, currentRandomValue);
+        outState.putString(KEY_DATE_TIME, String.valueOf(date));
     };
 
     @Override
