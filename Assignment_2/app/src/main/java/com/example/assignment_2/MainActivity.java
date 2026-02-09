@@ -1,6 +1,5 @@
 package com.example.assignment_2;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -16,9 +15,9 @@ public class MainActivity extends AppCompatActivity {
 
     Handler handler = new Handler();
     Random random = new Random();
-    private TextView TextViewRandomNumber;
-    int randomInt = 0;
-    int intBeforeRotation = 0;
+    private TextView tvCurrentNumber;
+    private int currentRandomValue = 0;
+    private int lastValueBeforeRotate = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,45 +25,45 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        TextViewRandomNumber = findViewById(R.id.tvRandomNumber);
-        TextView textViewRandomNumberBeforeRotation = findViewById(R.id.tvRandomNumberBeforeRotation);
+        tvCurrentNumber = findViewById(R.id.tvRandomNumber);
+        TextView tvOldNumber = findViewById(R.id.tvRandomNumberBeforeRotation);
 
         if (savedInstanceState != null) {
-            intBeforeRotation = savedInstanceState.getInt("randomNumber");
+            lastValueBeforeRotate = savedInstanceState.getInt("randomNumber");
             String savedTime = savedInstanceState.getString("dateTime");
 
-            String randomNumberMessage = getString(R.string.randomNumberOrientationChange) + intBeforeRotation;
-            String toastMessage = getString(R.string.currentDateAndTime) + savedTime;
+            String randomNumberMessage = getString(R.string.randomNumberOrientationChange) + " " + lastValueBeforeRotate;
+            String toastMessage = getString(R.string.currentDateAndTime) + " " + savedTime;
 
-            textViewRandomNumberBeforeRotation.setText(randomNumberMessage);
+            tvOldNumber.setText(randomNumberMessage);
             Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
         }
 
-        handler.post(randomNumberGenerator);
+        handler.post(numberUpdateTask);
     }
 
-    Runnable randomNumberGenerator = new Runnable() {
+    Runnable numberUpdateTask = new Runnable() {
         @Override
         public void run() {
-            intBeforeRotation = randomInt;
-            randomInt = random.nextInt(10000);
-            TextViewRandomNumber.setText(getString(R.string.currentRandomNumber) + randomInt);
+            lastValueBeforeRotate = currentRandomValue;
+            currentRandomValue = random.nextInt(10000);
+            tvCurrentNumber.setText(getString(R.string.currentRandomNumber) + currentRandomValue);
 
             handler.postDelayed(this, 1000);
-        }
+        };
     };
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Date date = new Date();
-        outState.putInt("randomNumber", randomInt);
+        outState.putInt("randomNumber", currentRandomValue);
         outState.putString("dateTime", String.valueOf(date));
-    }
+    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(randomNumberGenerator);
-    }
+        handler.removeCallbacks(numberUpdateTask);
+    };
 }
