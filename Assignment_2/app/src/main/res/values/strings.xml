@@ -15,4 +15,6 @@
     <string name="email">Email</string>
     <string name="email_hint">john.doe@example.com</string>
     <string name="picture_description">vamk 30 company logo</string>
+    <string name="submit">Submit</string>
+    <string name="reset">Reset</string>
 </resources>
