@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
         String currentDateTime = simpleDateFormat.format(new Date());
+
         outState.putInt("randomNumber", currentRandomValue);
         outState.putString("dateTime", currentDateTime);
     };
