@@ -8,7 +8,9 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,9 +58,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
+        String currentDateTime = simpleDateFormat.format(new Date());
         outState.putInt("randomNumber", currentRandomValue);
-        outState.putString("dateTime", String.valueOf(date));
+        outState.putString("dateTime", currentDateTime);
     };
 
     @Override
