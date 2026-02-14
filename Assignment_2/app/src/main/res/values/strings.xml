@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Assignment_2</string>
+    <string name="greetings">Customer feedback form</string>
+    <string name="first_name">First name</string>
+    <string name="first_name_hint">John</string>
+    <string name="last_name">Last name</string>
+    <string name="last_name_hint">Doe</string>
+    <string name="phone_number">Phone number</string>
+    <string name="phone_number_hint">+358 50 123 4567</string>
+    <string name="feedback">Feedback</string>
+    <string name="birthday">Birthday</string>
+    <string name="birthday_hint">DD.MM.YYYY</string>
+    <string name="address">Address</string>
+    <string name="address_hint">e.g. Wolffintie 30</string>
+    <string name="email">Email</string>
+    <string name="email_hint">john.doe@example.com</string>
+    <string name="picture_description">vamk 30 company logo</string>
+    <string name="submit">Submit</string>
+    <string name="reset">Reset</string>
+</resources>
