@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Assignment_3-1</string>
+    <string name="userName">User name</string>
+    <string name="comment">Comment</string>
+    <string name="submitButton">Submit</string>
+    <string name="userSearch">Search by name</string>
+    <string name="textSearch">Search by text</string>
+    <string name="searchButton">Search</string>
 </resources>
