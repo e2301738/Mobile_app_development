@@ -15,23 +15,23 @@ public class BlogEntryHandler {
         return blogEntries;
     }
 
-    public List<BlogEntry> searchByText(String searchText) {
-        List<BlogEntry> results = new ArrayList<>();
+    public List<BlogEntry> filterByText(String filterText) {
+        List<BlogEntry> foundMatches = new ArrayList<>();
         for (BlogEntry entry : blogEntries) {
-            if (entry.searchByText(searchText)) {
-                results.add(entry);
+            if (entry.searchByText(filterText)) {
+                foundMatches.add(entry);
             }
         }
-        return results;
+        return foundMatches;
     }
 
-    public List<BlogEntry> searchByDate(String searchDate) {
-        List<BlogEntry> results = new ArrayList<>();
+    public List<BlogEntry> filterByDate(String filterDate) {
+        List<BlogEntry> foundMatches = new ArrayList<>();
         for (BlogEntry entry : blogEntries) {
-            if (entry.searchByDate(searchDate)) {
-                results.add(entry);
+            if (entry.searchByDate(filterDate)) {
+                foundMatches.add(entry);
             }
         }
-        return results;
+        return foundMatches;
     }
 }

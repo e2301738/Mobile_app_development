@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Assignment_3-1</string>
-    <string name="blogPost">Blog post</string>
-    <string name="userName">User name</string>
-    <string name="comment">Comment</string>
+    <string name="blogPost">Blog</string>
+    <string name="filter">Filter</string>
+    <string name="userName">User name:</string>
+    <string name="userNameHint">John Doe</string>
+    <string name="comment">Comment:</string>
+    <string name="commentHint">Give your comment here ...</string>
     <string name="submitButton">Submit</string>
-    <string name="textSearch">Search by text</string>
-    <string name="dateSearch">Search by date</string>
+    <string name="textSearch">Filter by text</string>
+    <string name="dateSearch">Filter by date</string>
     <string name="textSearchHint">Search text...</string>
     <string name="searchButton">Search</string>
     <string name="dateTime">Timestamp</string>

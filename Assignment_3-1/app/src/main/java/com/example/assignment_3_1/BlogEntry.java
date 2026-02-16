@@ -6,16 +6,17 @@ import java.util.Date;
 import java.util.Locale;
 
 public class BlogEntry {
+    private static int counter = 1;
     private String name;
     private String comment;
     private String timeStamp;
     private String date;
-    private int entryNumber = 0;
+    private int entryNumber;
 
     public BlogEntry(String comment, String name) {
         this.comment = comment;
         this.name = name;
-        this.entryNumber = +1;
+        this.entryNumber = counter++;
 
         SimpleDateFormat timeStampDate = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
         SimpleDateFormat date = new SimpleDateFormat("MM.dd.yyyy", Locale.getDefault());
@@ -35,8 +36,8 @@ public class BlogEntry {
 
     @Override
     public String toString(){
-        return "Entry number: " + entryNumber + "\nUser: " + name + "\nTime: " + timeStamp +
-                "\nComment: " + comment;
+        return "Entry: " + entryNumber + "\nUser: " + name + "\nTime: " + timeStamp +
+                "\nComment: \n" + comment;
     }
 
 
