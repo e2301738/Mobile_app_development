@@ -5,6 +5,16 @@
     android:orientation="vertical"
     android:padding="20dp">
 
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/blogPost"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="10dp" />
+
     <EditText
         android:id="@+id/userName"
         android:layout_width="match_parent"
@@ -27,19 +37,44 @@
         android:layout_gravity="right"
         android:text="@string/submitButton" />
 
-    <EditText
-        android:id="@+id/userSearchField"
+    <RadioGroup
+        android:id="@+id/searchRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/userSearch"
-        android:inputType="text" />
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+            android:id="@+id/textSearchRadio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/textSearch" />
+
+        <RadioButton
+            android:id="@+id/dateSearchRadio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dateSearch" />
+
+    </RadioGroup>
 
     <EditText
         android:id="@+id/textSearchField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/textSearch"
-        android:inputType="textMultiLine" />
+        android:hint="@string/textSearchHint"
+        android:visibility="gone" />
+
+    <DatePicker
+        android:id="@+id/calendarSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:spinnersShown="true"
+        android:datePickerMode="spinner"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btnSearch"
@@ -51,7 +86,8 @@
     <TextView
         android:id="@+id/textDisplay"
         android:layout_width="match_parent"
-        android:layout_height="341dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:textSize="14sp" />
 
 </LinearLayout>
