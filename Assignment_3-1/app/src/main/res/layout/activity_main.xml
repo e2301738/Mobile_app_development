@@ -48,7 +48,7 @@
         android:text="@string/submitButton" />
 
     <TextView
-        android:id="@+id/filter"
+        android:id="@+id/filterHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/filter"

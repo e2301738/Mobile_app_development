@@ -7,36 +7,37 @@ import java.util.Locale;
 
 public class BlogEntry {
     private static int counter = 1;
-    private String name;
+    private String userName;
     private String comment;
     private String timeStamp;
-    private String date;
+    private String creationDate;
     private int entryNumber;
 
-    public BlogEntry(String comment, String name) {
+    public BlogEntry(String comment, String userName) {
         this.comment = comment;
-        this.name = name;
+        this.userName = userName;
         this.entryNumber = counter++;
 
         SimpleDateFormat timeStampDate = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
-        SimpleDateFormat date = new SimpleDateFormat("MM.dd.yyyy", Locale.getDefault());
+        SimpleDateFormat creationDateFormat = new SimpleDateFormat("MM.dd.yyyy", Locale.getDefault());
 
         this.timeStamp = timeStampDate.format(new Date());
-        this.date = date.format(new Date());
+        this.creationDate = creationDateFormat.format(new Date());
     }
 
     public boolean searchByText(String searchText) {
-        String lowerCase = searchText.toLowerCase();
-        return name.toLowerCase().contains(lowerCase) || comment.toLowerCase().contains(lowerCase);
+        String textToSearch = searchText.toLowerCase();
+        return userName.toLowerCase().contains(textToSearch) ||
+                comment.toLowerCase().contains(textToSearch);
     }
 
     public boolean searchByDate(String searchDate) {
-        return date.equals(searchDate);
+        return creationDate.equals(searchDate);
     }
 
     @Override
     public String toString(){
-        return "Entry: " + entryNumber + "\nUser: " + name + "\nTime: " + timeStamp +
+        return "Entry: " + entryNumber + "\nUser: " + userName + "\nTime: " + timeStamp +
                 "\nComment: \n" + comment;
     }
 

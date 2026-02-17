@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView displayBlogPostTextView;
     private RadioGroup searchRadioGroup;
     private RadioButton textSearchRadioButton;
-    private EditText userNameEditText, commentEditText,textSearchFieldEditText;
+    private EditText userNameEditText, commentEditText, textSearchEditText;
     private DatePicker datePicker;
     private Button searchButton, submitButton;
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         searchRadioGroup = findViewById(R.id.searchRadioGroup);
         textSearchRadioButton = findViewById(R.id.textSearchRadio);
         textSearchRadioButton.setChecked(true);
-        textSearchFieldEditText = findViewById(R.id.textSearchField);
+        textSearchEditText = findViewById(R.id.textSearchField);
         datePicker = findViewById(R.id.calendarSearch);
         submitButton = findViewById(R.id.submitButton);
         searchButton = findViewById(R.id.searchButton);
@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
         searchRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.textSearchRadio) {
-                textSearchFieldEditText.setVisibility(View.VISIBLE);
+                textSearchEditText.setVisibility(View.VISIBLE);
                 datePicker.setVisibility(View.GONE);
             } else if (checkedId == R.id.dateSearchRadio) {
-                textSearchFieldEditText.setVisibility(View.GONE);
+                textSearchEditText.setVisibility(View.GONE);
                 datePicker.setVisibility(View.VISIBLE);
             }
         });
@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<BlogEntry> searchResult;
                 if (textSearchRadioButton.isChecked()) {
-                    searchResult = entryHandler.filterByText(textSearchFieldEditText.getText().toString());
-                    textSearchFieldEditText.setText("");
+                    searchResult = entryHandler.filterByText(textSearchEditText.getText().toString());
+                    textSearchEditText.setText("");
                 } else {
                     int day = datePicker.getDayOfMonth();
                     int month = datePicker.getMonth() + 1;
