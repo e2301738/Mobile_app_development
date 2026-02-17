@@ -11,64 +11,89 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private TextView calculatorTextView;
-    private double selectedNumber;
-    private String currentOperator = "";
+    private double firstSelectedValue = 0.0;
+    private String currentOperator, additionText, subtractionText, multiplicationText, divisionText, percentText;
+    private boolean isNewOperation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         calculatorTextView = findViewById(R.id.calcDisplay);
+        additionText = getString(R.string.addition);
+        subtractionText = getString(R.string.subtraction);
+        multiplicationText = getString(R.string.multiplication);
+        divisionText = getString(R.string.division);
+        percentText = getString(R.string.percent);
     }
 
     public void onNumberClick(View v) {
         Button numberButton = (Button) v;
-        selectedNumber = Double.parseDouble(numberButton.getText().toString());
+
+        if (isNewOperation){
+            calculatorTextView.setText("");
+            isNewOperation = false;
+        }
+
         calculatorTextView.append(numberButton.getText().toString());
     }
 
     public void onOperatorClick(View v) {
-        currentOperator = ((Button) v).getText().toString();
-        calculatorTextView.setText("");
-    }
+        String currentCalculatorValue = calculatorTextView.getText().toString();
 
-    public void onEqualClick(View v) {
-        if(!calculatorTextView.getText().toString().isEmpty()){
-            double secondValue = Double.parseDouble(calculatorTextView.getText().toString());
-            double result = 0;
-
-            switch (currentOperator) {
-                case "+":
-                    result = selectedNumber + secondValue;
-                    break;
-                case "−":
-                    result = selectedNumber - secondValue;
-                    break;
-                case "×":
-                    result = selectedNumber * secondValue;
-                    break;
-                case "÷":
-                    if (secondValue != 0) {
-                        result = selectedNumber / secondValue;
-                    }
-                    break;
-                case "%":
-                    result = (selectedNumber / 100) * secondValue;
-                    break;
-            }
-
-            calculatorTextView.setText(String.valueOf(result));
-            selectedNumber = result;
+        if (!currentCalculatorValue.isEmpty()) {
+            firstSelectedValue = Double.parseDouble(currentCalculatorValue);
+            currentOperator = ((Button) v).getText().toString();
+            isNewOperation = true;
         }
     }
 
-    public void onClearClick(View v) {
-        calculatorTextView.setText("");
-        selectedNumber = 0.0;
+    public void onEqualClick(View v) {
+        String currentCalculatorValue = calculatorTextView.getText().toString();
+
+        if(!currentCalculatorValue.isEmpty()){
+            double secondSelectedValue = Double.parseDouble(currentCalculatorValue);
+            double result = 0.0;
+
+            if (currentOperator.equals(additionText)) {
+                result = firstSelectedValue + secondSelectedValue;
+            }
+            else if (currentOperator.equals(subtractionText)) {
+                result = firstSelectedValue - secondSelectedValue;
+            }
+            else if (currentOperator.equals(multiplicationText)) {
+                result = firstSelectedValue * secondSelectedValue;
+            }
+            else if (currentOperator.equals(divisionText)) {
+                if (secondSelectedValue != 0) {
+                    result = firstSelectedValue / secondSelectedValue;
+                } else {
+                    calculatorTextView.setText(R.string.divide_with_0);
+                    isNewOperation = true;
+                    return;
+                }
+            }
+            else if (currentOperator.equals(percentText)) {
+                result = (firstSelectedValue / 100) * secondSelectedValue;
+            }
+
+            calculatorTextView.setText(String.valueOf(result));
+            firstSelectedValue = result;
+            currentOperator = "";
+            isNewOperation = true;
+        }
     }
 
-    public void onDeleteClick(View v) {
-        String currentText = calculatorTextView.getText().toString();
-        calculatorTextView.setText(currentText.substring(0, currentText.length() - 1));
+    public void onBackSpaceClick(View v) {
+        String currentNumberOnDisplay = calculatorTextView.getText().toString();
+        if(!currentNumberOnDisplay.isEmpty()){
+            calculatorTextView.setText(currentNumberOnDisplay.substring(0, currentNumberOnDisplay.length() - 1));
+        }
+    }
+
+    public void onClearClick(View v){
+        currentOperator = "";
+        firstSelectedValue = 0.0;
+        calculatorTextView.setText("");
     }
 }

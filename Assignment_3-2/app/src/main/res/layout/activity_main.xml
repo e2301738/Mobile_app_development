@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:gravity="end"
-        android:hint="0"
+        android:hint="@string/display_hint"
         android:textSize="36sp" />
 
     <TableLayout
@@ -22,76 +22,76 @@
 
         <TableRow>
             <Button
-                android:text="C"
+                android:text="@string/clear_button"
                 android:onClick="onClearClick"/>
             <Button
-                android:text="%"
+                android:text="@string/percent"
                 android:onClick="onOperatorClick"/>
             <Button
-                android:text="DEL"
-                android:onClick="onDeleteClick"/>
+                android:text="@string/backspace_button"
+                android:onClick="onBackSpaceClick"/>
             <Button
-                android:text="÷"
-                android:onClick="onOperatorClick"/>
-        </TableRow>
-
-        <TableRow>
-            <Button
-                android:text="7"
-                android:onClick="onNumberClick"/>
-            <Button
-                android:text="8"
-                android:onClick="onNumberClick"/>
-            <Button
-                android:text="9"
-                android:onClick="onNumberClick"/>
-            <Button
-                android:text="×"
+                android:text="@string/division"
                 android:onClick="onOperatorClick"/>
         </TableRow>
 
         <TableRow>
             <Button
-                android:text="4"
+                android:text="@string/number_7"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="5"
+                android:text="@string/number_8"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="6"
+                android:text="@string/number_9"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="−"
+                android:text="@string/multiplication"
                 android:onClick="onOperatorClick"/>
         </TableRow>
 
         <TableRow>
             <Button
-                android:text="1"
+                android:text="@string/number_4"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="2"
+                android:text="@string/number_5"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="3"
+                android:text="@string/number_6"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="+"
+                android:text="@string/subtraction"
                 android:onClick="onOperatorClick"/>
         </TableRow>
 
         <TableRow>
             <Button
-                android:text="00"
+                android:text="@string/number_1"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="0"
+                android:text="@string/number_2"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="."
+                android:text="@string/number_3"
                 android:onClick="onNumberClick"/>
             <Button
-                android:text="="
+                android:text="@string/addition"
+                android:onClick="onOperatorClick"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="@string/number_00"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="@string/number_0"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="@string/dot"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="@string/equals"
                 android:onClick="onEqualClick"/>
         </TableRow>
 
