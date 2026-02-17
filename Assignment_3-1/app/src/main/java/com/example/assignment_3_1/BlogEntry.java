@@ -37,9 +37,13 @@ public class BlogEntry {
 
     @Override
     public String toString(){
-        return "Entry: " + entryNumber + "\nUser: " + userName + "\nTime: " + timeStamp +
-                "\nComment: \n" + comment;
-    }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Entry: ").append(entryNumber).append("\n");
+        stringBuilder.append("User: ").append(userName).append("\n");
+        stringBuilder.append("Time: ").append(timeStamp).append("\n");
+        stringBuilder.append("Comment: \n").append(comment);
 
+        return stringBuilder.toString();
+    }
 
 }

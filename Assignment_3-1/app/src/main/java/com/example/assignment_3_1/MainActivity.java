@@ -115,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
                     int month = datePicker.getMonth() + 1;
                     int year = datePicker.getYear();
 
-                    String date = String.format(Locale.getDefault(), "%02d.%02d.%d", month, day, year);
-                    searchResult = entryHandler.filterByDate(date);
+                    String inputDate = String.format(Locale.getDefault(), "%02d.%02d.%d", month, day, year);
+                    searchResult = entryHandler.filterByDate(inputDate);
                 }
                 displayBlogEntries(searchResult);
             }
