@@ -12,4 +12,5 @@
     <string name="textSearchHint">Search text...</string>
     <string name="searchButton">Search</string>
     <string name="dateTime">Timestamp</string>
+    <string name="refreshButton">Refresh</string>
 </resources>
