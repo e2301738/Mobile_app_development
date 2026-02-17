@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
             else if (currentOperator.equals(percentText)) {
                 result = (firstSelectedValue / 100) * secondSelectedValue;
             }
-
-            calculatorTextView.setText(String.valueOf(result));
+            calculatorTextView.setText(String.format("%.2f", result));
             firstSelectedValue = result;
             currentOperator = "";
             isNewOperation = true;
