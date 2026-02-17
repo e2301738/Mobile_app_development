@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.searchButton);
         refreshButton = findViewById(R.id.refreshButton);
 
+        displayBlogEntries(entryHandler.getAllBlogEntries());
+
         TextWatcher colorResetter = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
