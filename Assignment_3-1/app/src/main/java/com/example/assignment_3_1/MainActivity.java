@@ -106,9 +106,8 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<BlogEntry> searchResult;
                 if (textSearchRadioButton.isChecked()) {
-                    searchResult = entryHandler.filterByText(textSearchEditText.getText().toString());
+                    displayBlogEntries(entryHandler.filterByText(textSearchEditText.getText().toString()));
                     textSearchEditText.setText("");
                 } else {
                     int day = datePicker.getDayOfMonth();
@@ -116,9 +115,8 @@ public class MainActivity extends AppCompatActivity {
                     int year = datePicker.getYear();
 
                     String inputDate = String.format(Locale.getDefault(), "%02d.%02d.%d", month, day, year);
-                    searchResult = entryHandler.filterByDate(inputDate);
+                    displayBlogEntries(entryHandler.filterByDate(inputDate));
                 }
-                displayBlogEntries(searchResult);
             }
         });
 
@@ -130,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 displayBlogEntries(entryHandler.getAllBlogEntries());
             }
         });
-
 
     }
 
