@@ -1,19 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/calcDisplay"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="20dp"
+        android:gravity="end"
+        android:hint="0"
+        android:textSize="36sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0,1,2,3">
+
+        <TableRow>
+            <Button
+                android:text="C"
+                android:onClick="onClearClick"/>
+            <Button
+                android:text="%"
+                android:onClick="onOperatorClick"/>
+            <Button
+                android:text="DEL"
+                android:onClick="onDeleteClick"/>
+            <Button
+                android:text="÷"
+                android:onClick="onOperatorClick"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="7"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="8"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="9"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="×"
+                android:onClick="onOperatorClick"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="4"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="5"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="6"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="−"
+                android:onClick="onOperatorClick"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="1"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="2"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="3"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="+"
+                android:onClick="onOperatorClick"/>
+        </TableRow>
+
+        <TableRow>
+            <Button
+                android:text="00"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="0"
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="."
+                android:onClick="onNumberClick"/>
+            <Button
+                android:text="="
+                android:onClick="onEqualClick"/>
+        </TableRow>
+
+    </TableLayout>
+</LinearLayout>
