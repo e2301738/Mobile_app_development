@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 result = firstSelectedValue * secondSelectedValue;
             }
             else if (currentOperator.equals(divisionText)) {
-                if (secondSelectedValue != 0) {
+                if (firstSelectedValue != 0 && secondSelectedValue != 0) {
                     result = firstSelectedValue / secondSelectedValue;
                 } else {
                     calculatorTextView.setText(R.string.divide_with_0);
