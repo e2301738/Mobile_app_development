@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton textSearchRadioButton;
     private EditText userNameEditText, commentEditText, textSearchEditText;
     private DatePicker datePicker;
-    private Button searchButton, submitButton;
+    private Button searchButton, submitButton, refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         datePicker = findViewById(R.id.calendarSearch);
         submitButton = findViewById(R.id.submitButton);
         searchButton = findViewById(R.id.searchButton);
+        refreshButton = findViewById(R.id.refreshButton);
+
+        displayBlogEntries(entryHandler.getAllBlogEntries());
 
         TextWatcher colorResetter = new TextWatcher() {
             @Override
@@ -80,20 +83,19 @@ public class MainActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = userNameEditText.getText().toString().trim();
+                String userName = userNameEditText.getText().toString().trim();
                 String comment = commentEditText.getText().toString().trim();
 
-                if (name.isEmpty()) {
-                    userNameEditText.setBackgroundColor(Color.RED);
-                    if(comment.isEmpty()){
+                if (userName.isEmpty() || comment.isEmpty()) {
+                    if (userName.isEmpty()){
+                        userNameEditText.setBackgroundColor(Color.RED);
+                    }
+                    if (comment.isEmpty()){
                         commentEditText.setBackgroundColor(Color.RED);
                     }
                 }
-                else if (comment.isEmpty()) {
-                    commentEditText.setBackgroundColor(Color.RED);
-                }
                 else{
-                    entryHandler.addBlogEntry(new BlogEntry(comment, name));
+                    entryHandler.addBlogEntry(new BlogEntry(comment, userName));
                     displayBlogEntries(entryHandler.getAllBlogEntries());
 
                     userNameEditText.setText("");
@@ -102,13 +104,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<BlogEntry> searchResult;
                 if (textSearchRadioButton.isChecked()) {
-                    searchResult = entryHandler.filterByText(textSearchEditText.getText().toString());
+                    displayBlogEntries(entryHandler.filterByText(textSearchEditText.getText().toString()));
                     textSearchEditText.setText("");
                 } else {
                     int day = datePicker.getDayOfMonth();
@@ -116,11 +116,20 @@ public class MainActivity extends AppCompatActivity {
                     int year = datePicker.getYear();
 
                     String inputDate = String.format(Locale.getDefault(), "%02d.%02d.%d", month, day, year);
-                    searchResult = entryHandler.filterByDate(inputDate);
+                    displayBlogEntries(entryHandler.filterByDate(inputDate));
                 }
-                displayBlogEntries(searchResult);
             }
         });
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textSearchEditText.setText("");
+                textSearchRadioButton.setChecked(true);
+                displayBlogEntries(entryHandler.getAllBlogEntries());
+            }
+        });
+
     }
 
     private void displayBlogEntries(List<BlogEntry> blogEntries) {
