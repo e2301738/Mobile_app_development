@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90da9dc5-1167-403b-9079-42e80479c5f0" name="Changes" comment="" />
+    <list default="true" id="90da9dc5-1167-403b-9079-42e80479c5f0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assignment_4-1/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,21 +31,21 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "e2301738"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;e2301738&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/e2301738/Mobile_app_development.git",
-    "accountId": "9d3a7031-14ab-4d4c-892c-bb0468e6de75"
+    "accountId": "18dca035-38f0-45f7-a71f-1b0aa8b8d489"
   }
 }]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="39hVmFhSjo7IVQR7gJhBny7gBwa" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -49,7 +59,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Assignment__3-1",
+    "git-widget-placeholder": "Assignment__4-1",
     "kotlin-language-version-configured": "true"
   }
 }]]></component>
