@@ -534,18 +534,6 @@
         </PersistentDeviceSelectionData>
         <PersistentDeviceSelectionData>
           <option name="api" value="35" />
-          <option name="brand" value="motorola" />
-          <option name="codename" value="cuscoi" />
-          <option name="id" value="cuscoi" />
-          <option name="labId" value="google" />
-          <option name="manufacturer" value="Motorola" />
-          <option name="name" value="edge 50 fusion" />
-          <option name="screenDensity" value="400" />
-          <option name="screenX" value="1080" />
-          <option name="screenY" value="2400" />
-        </PersistentDeviceSelectionData>
-        <PersistentDeviceSelectionData>
-          <option name="api" value="35" />
           <option name="brand" value="samsung" />
           <option name="codename" value="dm1q" />
           <option name="id" value="dm1q" />
@@ -1462,5 +1450,12 @@
         </PersistentDeviceSelectionData>
       </list>
     </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
   </component>
 </project>
