@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Assignment_4-1</string>
-    <string name="random_number_label">Type your favourite number between (0 - 100)</string>
-    <string name="random_number_mach">Match!</string>
-    <string name="random_number_no_mach">No match!</string>
+    <string name="random_number_label">Type your favourite number between (0 - 99)</string>
+    <string name="random_number_mach">MATCH!</string>
+    <string name="random_number_no_mach">Your favorite number did not match!</string>
+    <string name="random_number">The random number was %d</string>
 </resources>

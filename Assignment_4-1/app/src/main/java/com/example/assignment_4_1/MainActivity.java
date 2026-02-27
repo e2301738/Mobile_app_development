@@ -4,6 +4,8 @@ import static android.text.InputType.TYPE_CLASS_NUMBER;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -12,22 +14,19 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private LayoutParams viewLayoutParams = null;
-    private EditText randomNumberEditText;
+    private EditText userFavoriteNumberEditText;
     private Random randomNumberGenerator = new Random();
-    private int enteredRandomNumber, randomNumber;
+    private StringBuilder stringBuilder;
+    private int userFavoriteNumber, randomNumber;
     private String toastMessage;
-    private int MAX_RANDOM_NUMBER = 101;
+    private final int RANDOM_UPPER_BOUND = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,28 +40,33 @@ public class MainActivity extends AppCompatActivity {
         // Here we create the layout
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setGravity(Gravity.CENTER);
         // Here we define a text view
         TextView randomNumberLabelTextView = new TextView(this);
         randomNumberLabelTextView.setText(R.string.random_number_label);
+        randomNumberLabelTextView.setTextSize(19);
+        randomNumberLabelTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         randomNumberLabelTextView.setLayoutParams(viewLayoutParams);
         linearLayout.addView(randomNumberLabelTextView);
         // Here we define the edit text
-        randomNumberEditText = new EditText(this);
-        randomNumberEditText.setInputType(TYPE_CLASS_NUMBER);
-        randomNumberEditText.setLayoutParams(viewLayoutParams);
-        linearLayout.addView(randomNumberEditText);
+        userFavoriteNumberEditText = new EditText(this);
+        userFavoriteNumberEditText.setInputType(TYPE_CLASS_NUMBER);
+        userFavoriteNumberEditText.setLayoutParams(viewLayoutParams);
+        userFavoriteNumberEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(2) });
+        linearLayout.addView(userFavoriteNumberEditText);
 
         //Here we define key listener
-        randomNumberEditText.setOnKeyListener(new View.OnKeyListener() {
+        userFavoriteNumberEditText.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
 
-                    if(keyCode==KeyEvent.KEYCODE_ENTER) {
-                        if(!randomNumberEditText.getText().toString().isEmpty()){
+                    if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                        if(!userFavoriteNumberEditText.getText().toString().isEmpty()){
+                            userFavoriteNumberEditText.setBackgroundColor(Color.TRANSPARENT);
                             checkRandomNumber();
                             return true;
                         }
-                        randomNumberEditText.setBackgroundColor(Color.RED);
+                        userFavoriteNumberEditText.setBackgroundColor(Color.RED);
                     }
 
                     return false;
@@ -70,21 +74,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT);
+                LayoutParams.MATCH_PARENT);
         this.addContentView(linearLayout, linearLayoutParams);
     }
 
     private void checkRandomNumber(){
-        enteredRandomNumber = Integer.parseInt(randomNumberEditText.getText().toString());
-        randomNumber = randomNumberGenerator.nextInt(MAX_RANDOM_NUMBER);
+        stringBuilder = new StringBuilder();
+        userFavoriteNumber = Integer.parseInt(userFavoriteNumberEditText.getText().toString());
+        randomNumber = randomNumberGenerator.nextInt(RANDOM_UPPER_BOUND);
 
-        if(enteredRandomNumber == randomNumber) {
-            toastMessage = getString(R.string.random_number_mach);
+        if(userFavoriteNumber == randomNumber) {
+            stringBuilder.append(getString(R.string.random_number_mach)).append("\n");
         } else{
-            toastMessage = getString(R.string.random_number_no_mach);
+            stringBuilder.append(getString(R.string.random_number_no_mach)).append("\n");
         }
+        stringBuilder.append(getString(R.string.random_number, randomNumber));
 
-        Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, stringBuilder, Toast.LENGTH_LONG).show();
 
     };
 }
