@@ -4,7 +4,9 @@ import static android.text.InputType.TYPE_CLASS_NUMBER;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,39 +33,37 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Here we define parameters for views
+
         viewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         viewLayoutParams.leftMargin = 40;
         viewLayoutParams.rightMargin = 40;
         viewLayoutParams.topMargin = 10;
         viewLayoutParams.bottomMargin = 10;
-        // Here we create the layout
+
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
-        // Here we define a text view
+
         TextView randomNumberLabelTextView = new TextView(this);
         randomNumberLabelTextView.setText(R.string.random_number_label);
         randomNumberLabelTextView.setTextSize(19);
         randomNumberLabelTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         randomNumberLabelTextView.setLayoutParams(viewLayoutParams);
         linearLayout.addView(randomNumberLabelTextView);
-        // Here we define the edit text
+
         userFavoriteNumberEditText = new EditText(this);
         userFavoriteNumberEditText.setInputType(TYPE_CLASS_NUMBER);
         userFavoriteNumberEditText.setLayoutParams(viewLayoutParams);
         userFavoriteNumberEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(2) });
         linearLayout.addView(userFavoriteNumberEditText);
 
-        //Here we define key listener
         userFavoriteNumberEditText.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                     if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                         if(!userFavoriteNumberEditText.getText().toString().isEmpty()){
-                            userFavoriteNumberEditText.setBackgroundColor(Color.TRANSPARENT);
-                            checkRandomNumber();
+                            compareNumbers();
                             return true;
                         }
                         userFavoriteNumberEditText.setBackgroundColor(Color.RED);
@@ -73,12 +73,26 @@ public class MainActivity extends AppCompatActivity {
                 }
         });
 
+        TextWatcher colorResetter = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (userFavoriteNumberEditText.hasFocus()) {
+                    userFavoriteNumberEditText.setBackgroundColor(Color.TRANSPARENT);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+        userFavoriteNumberEditText.addTextChangedListener(colorResetter);
+
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         this.addContentView(linearLayout, linearLayoutParams);
     }
 
-    private void checkRandomNumber(){
+    private void compareNumbers(){
         stringBuilder = new StringBuilder();
         userFavoriteNumber = Integer.parseInt(userFavoriteNumberEditText.getText().toString());
         randomNumber = randomNumberGenerator.nextInt(RANDOM_UPPER_BOUND);
