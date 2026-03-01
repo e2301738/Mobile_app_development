@@ -1,5 +1,6 @@
 package fi.christian.assignment_4_2;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
@@ -17,8 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     Product product;
+    private int orientation;
     private LayoutParams viewLayoutParams, labelParams = null;
-    private ScrollView scrollView;
+    private ScrollView scrollView, landscapeScrollView;
     private EditText idEditText, nameEditText, unitPriceEditText, amountEditText;
     private TextView summaryTextView, summaryHeader, titleTextView, idLabel, nameLabel, amountLabel, priceLabel;
     private Button submitButton;
@@ -105,13 +107,22 @@ public class MainActivity extends AppCompatActivity {
         scrollView.addView(summaryTextView);
         linearLayout.addView(scrollView);
 
+        orientation = getResources().getConfiguration().orientation;
+        // Landscape is 2
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            landscapeScrollView = new ScrollView(this);
+            landscapeScrollView.addView(linearLayout);
+            setContentView(landscapeScrollView);
+        } else {
+            setContentView(linearLayout);
+        }
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 productSubmit();
             }
         });
-        setContentView(linearLayout);
 
         updateSummary();
     }
