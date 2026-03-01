@@ -2,6 +2,7 @@ package fi.christian.assignment_4_2;
 
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,13 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LayoutParams viewLayoutParams = null;
+    Product product;
+    private LayoutParams viewLayoutParams, labelParams = null;
     private ScrollView scrollView;
     private EditText idEditText, nameEditText, unitPriceEditText, amountEditText;
-    private TextView summaryTextView, summaryHeader;
+    private TextView summaryTextView, summaryHeader, titleTextView, idLabel, nameLabel, amountLabel, priceLabel;
     private Button submitButton;
-    private Product product;
-    private ProductHandler productHandler = new ProductHandler();
 
 
     @Override
@@ -31,14 +31,21 @@ public class MainActivity extends AppCompatActivity {
         viewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         viewLayoutParams.setMargins(40, 10, 40, 10);
 
-        LayoutParams labelParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        labelParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         labelParams.setMargins(40, 20, 40, 0);
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(20, 20, 20, 20);
 
-        TextView idLabel = new TextView(this);
+        titleTextView = new TextView(this);
+        titleTextView.setText(R.string.main_title);
+        titleTextView.setTextSize(32);
+        titleTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        titleTextView.setPadding(0, 20, 0, 20);
+        linearLayout.addView(titleTextView);
+
+        idLabel = new TextView(this);
         idLabel.setText(getString(R.string.label_id));
         idLabel.setLayoutParams(labelParams);
         linearLayout.addView(idLabel);
@@ -48,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         idEditText.setLayoutParams(viewLayoutParams);
         linearLayout.addView(idEditText);
 
-        TextView nameLabel = new TextView(this);
+        nameLabel = new TextView(this);
         nameLabel.setText(getString(R.string.label_name));
         nameLabel.setLayoutParams(labelParams);
         linearLayout.addView(nameLabel);
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         nameEditText.setLayoutParams(viewLayoutParams);
         linearLayout.addView(nameEditText);
 
-        TextView priceLabel = new TextView(this);
+        priceLabel = new TextView(this);
         priceLabel.setText(getString(R.string.label_price));
         priceLabel.setLayoutParams(labelParams);
         linearLayout.addView(priceLabel);
@@ -69,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         unitPriceEditText.setLayoutParams(viewLayoutParams);
         linearLayout.addView(unitPriceEditText);
 
-        TextView amountLabel = new TextView(this);
+        amountLabel = new TextView(this);
         amountLabel.setText(getString(R.string.label_amount));
         amountLabel.setLayoutParams(labelParams);
         linearLayout.addView(amountLabel);
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setContentView(linearLayout);
-        
+
         updateSummary();
     }
 
@@ -121,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         String id = idEditText.getText().toString();
 
-        if (productHandler.isDuplicate(id)) {
+        if (ProductHandler.isDuplicate(id)) {
             String message = getString(R.string.id_in_use_toast, id);
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             idEditText.requestFocus();
@@ -133,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         int amount = Integer.parseInt(amountEditText.getText().toString());
 
         product = new Product(id, name, price, amount);
-        productHandler.addProduct(product);
+        ProductHandler.addProduct(product);
 
         updateSummary();
 
@@ -145,6 +152,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummary() {
-        summaryTextView.setText(productHandler.getSummary());
+        summaryTextView.setText(ProductHandler.getSummary());
     }
 }

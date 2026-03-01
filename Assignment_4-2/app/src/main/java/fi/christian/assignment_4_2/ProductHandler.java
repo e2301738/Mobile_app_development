@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public class ProductHandler {
     private static ArrayList<Product> productList = new ArrayList<>();
 
-    public void addProduct(Product product) {
+    public static void addProduct(Product product) {
         productList.add(product);
     }
 
-    public boolean isDuplicate(String id) {
+    public static boolean isDuplicate(String id) {
         for (Product product : productList) {
             if (product.getId().equals(id)) {
                 return true;
@@ -18,7 +18,7 @@ public class ProductHandler {
         return false;
     }
 
-    public String getSummary() {
+    public static String getSummary() {
         StringBuilder summaryBuilder = new StringBuilder();
         for (Product product : productList) {
             summaryBuilder.append(product.toString()).append("\n");
