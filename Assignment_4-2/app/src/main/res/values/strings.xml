@@ -12,4 +12,5 @@
     <string name="button_submit">Submit Product</string>
     <string name="product_summary">Product Summary:</string>
     <string name="fields_empty_toast">Please fill all fields!</string>
+    <string name="id_in_use_toast">ID %s already in use!</string>
 </resources>

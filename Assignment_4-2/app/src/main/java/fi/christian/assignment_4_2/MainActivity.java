@@ -11,13 +11,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,8 +20,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText idEditText, nameEditText, unitPriceEditText, amountEditText;
     private TextView summaryTextView, summaryHeader;
     private Button submitButton;
-    private static ArrayList<Product> productList = new ArrayList<>();
-    private StringBuilder summaryBuilder;
+    private Product product;
+    private ProductHandler productHandler = new ProductHandler();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,12 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         summaryHeader = new TextView(this);
         summaryHeader.setText(R.string.product_summary);
-        summaryHeader.setTextSize(18);
+        summaryHeader.setTextSize(25);
         summaryHeader.setPadding(40, 0, 0, 0);
         linearLayout.addView(summaryHeader);
 
         scrollView = new ScrollView(this);
         summaryTextView = new TextView(this);
+        summaryTextView.setTextSize(18);
         summaryTextView.setPadding(40, 20, 40, 20);
         scrollView.addView(summaryTextView);
         linearLayout.addView(scrollView);
@@ -108,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setContentView(linearLayout);
+        
+        updateSummary();
     }
 
     private void productSubmit() {
@@ -121,12 +120,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String id = idEditText.getText().toString();
+
+        if (productHandler.isDuplicate(id)) {
+            String message = getString(R.string.id_in_use_toast, id);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            idEditText.requestFocus();
+            return;
+        }
+
         String name = nameEditText.getText().toString();
         double price = Double.parseDouble(unitPriceEditText.getText().toString());
         int amount = Integer.parseInt(amountEditText.getText().toString());
 
-        Product product = new Product(id, name, price, amount);
-        productList.add(product);
+        product = new Product(id, name, price, amount);
+        productHandler.addProduct(product);
 
         updateSummary();
 
@@ -138,12 +145,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSummary() {
-        summaryBuilder = new StringBuilder();
-
-        for (Product product : productList) {
-            summaryBuilder.append(product.toString()).append("\n");
-        }
-
-        summaryTextView.setText(summaryBuilder.toString());
+        summaryTextView.setText(productHandler.getSummary());
     }
 }
