@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        viewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        viewLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         viewLayoutParams.leftMargin = 40;
         viewLayoutParams.rightMargin = 40;
         viewLayoutParams.topMargin = 10;
@@ -66,26 +66,11 @@ public class MainActivity extends AppCompatActivity {
                             compareNumbers();
                             return true;
                         }
-                        userFavoriteNumberEditText.setBackgroundColor(Color.RED);
+                        Toast.makeText(MainActivity.this, R.string.field_needs_value, Toast.LENGTH_LONG).show();
                     }
-
                     return false;
                 }
         });
-
-        TextWatcher colorResetter = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (userFavoriteNumberEditText.hasFocus()) {
-                    userFavoriteNumberEditText.setBackgroundColor(Color.TRANSPARENT);
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        };
-        userFavoriteNumberEditText.addTextChangedListener(colorResetter);
 
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
