@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Assignment_4-2</string>
+    <string name="label_id">Product ID:</string>
+    <string name="label_name">Product Name:</string>
+    <string name="label_price">Unit Price (€):</string>
+    <string name="label_amount">Amount:</string>
+
+    <string name="id_hint">e.g. 10</string>
+    <string name="name_hint">e.g. Milk</string>
+    <string name="price_hint">0.00</string>
+    <string name="amount_hint">0</string>
+    <string name="button_submit">Submit Product</string>
+    <string name="product_summary">Product Summary:</string>
+    <string name="fields_empty_toast">Please fill all fields!</string>
 </resources>
