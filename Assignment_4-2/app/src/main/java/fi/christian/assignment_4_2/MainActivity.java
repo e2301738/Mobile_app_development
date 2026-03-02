@@ -107,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
         scrollView.addView(summaryTextView);
         linearLayout.addView(scrollView);
 
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productSubmit();
+            }
+        });
+
         orientation = getResources().getConfiguration().orientation;
         // Landscape is 2
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -116,13 +123,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setContentView(linearLayout);
         }
-
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productSubmit();
-            }
-        });
 
         updateSummary();
     }
