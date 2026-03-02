@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    Product product;
+    private Product product;
     private int orientation;
     private LayoutParams viewLayoutParams, labelParams = null;
     private ScrollView scrollView, landscapeScrollView;
