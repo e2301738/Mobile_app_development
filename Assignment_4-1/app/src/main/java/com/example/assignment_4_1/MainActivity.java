@@ -70,9 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         });
 
-        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT);
-        this.addContentView(linearLayout, linearLayoutParams);
+        setContentView(linearLayout);
     }
 
     private void compareNumbers(){
