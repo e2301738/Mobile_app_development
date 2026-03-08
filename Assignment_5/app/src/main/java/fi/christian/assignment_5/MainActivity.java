@@ -99,14 +99,15 @@ public class MainActivity extends AppCompatActivity {
                     firstNameEditText.requestFocus();
                     isEmpty = true;
                 }
+
                 if (isEmpty) {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.fill_all_fields_toast), Toast.LENGTH_SHORT).show();
+                    showToast(getString(R.string.fill_all_fields_toast));
                     return;
                 }
                 if (CatalogHandler.isDuplicatePhone(phone)) {
                     phoneEditText.setBackgroundColor(Color.RED);
                     phoneEditText.requestFocus();
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.duplicate_phone_toast), Toast.LENGTH_SHORT).show();
+                    showToast(getString(R.string.duplicate_phone_toast));
                     return;
                 }
 
@@ -119,9 +120,13 @@ public class MainActivity extends AppCompatActivity {
                 lastNameEditText.setText("");
                 phoneEditText.setText("");
 
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.data_submitted_toast), Toast.LENGTH_SHORT).show();
+                showToast(getString(R.string.data_submitted_toast));
             }
         });
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void updateAdapters() {
