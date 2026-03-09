@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, phoneEditText;
     private AutoCompleteTextView firstNameAutoCompleteTextView, lastNameAutoCompleteTextView, phoneAutoCompleteTextView;
-    private Button submitButton;
+    private Button submitButton, refreshButton;
     private ArrayAdapter<String> firstNameAdapter, lastNameAdapter, phoneAdapter;
     private Drawable firstNameBackground, lastNameBackground, phoneBackground;
 
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         lastNameEditText = findViewById(R.id.last_name_edit_text);
         phoneEditText = findViewById(R.id.phone_edit_text);
         submitButton = findViewById(R.id.submit_button);
+        refreshButton = findViewById(R.id.refresh_button);
 
         firstNameBackground = firstNameEditText.getBackground();
         lastNameBackground = lastNameEditText.getBackground();
@@ -121,6 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 phoneEditText.setText("");
 
                 showToast(getString(R.string.data_submitted_toast));
+            }
+        });
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstNameAutoCompleteTextView.setText("");
+                lastNameAutoCompleteTextView.setText("");
+                phoneAutoCompleteTextView.setText("");
             }
         });
     }

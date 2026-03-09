@@ -20,4 +20,5 @@
     <string name="search_last_name_label">Last Name Search:</string>
     <string name="search_phone_label">Phone Search:</string>
     <string name="duplicate_phone_toast">Phone number already exists!</string>
+    <string name="refresh_button_text">Refresh</string>
 </resources>

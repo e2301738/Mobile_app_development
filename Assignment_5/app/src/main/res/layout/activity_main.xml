@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/first_name_hint"
-        android:inputType="textPersonName" />
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/last_name_hint"
-        android:inputType="textPersonName" />
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/auto_complete_hint_txt"
-        android:inputType="textPersonName" />
+        android:inputType="textMultiLine" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -95,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/auto_complete_hint_txt"
-        android:inputType="textPersonName" />
+        android:inputType="textMultiLine" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -108,6 +108,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/auto_complete_phone_hint_txt"
-        android:inputType="phone" />
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/refresh_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/refresh_button_text" />
 
 </LinearLayout>
