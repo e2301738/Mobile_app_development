@@ -87,17 +87,17 @@ public class CatalogHandler {
         switch (searchChoice) {
             case SEARCH_CHOICE_FIRST_NAME:
                 stringBuilder.append(firstNameLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
-                  .append(lastNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
-                  .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
-                  .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
-                  .append(hobbiesLabel).append(SPACE).append(hobbies);
+                        .append(lastNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
+                        .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
+                        .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
+                        .append(hobbiesLabel).append(SPACE).append(hobbies);
                 break;
             case SEARCH_CHOICE_LAST_NAME:
                 stringBuilder.append(lastNameLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
-                  .append(firstNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
-                  .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
-                  .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
-                  .append(hobbiesLabel).append(SPACE).append(hobbies);
+                        .append(firstNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
+                        .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
+                        .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
+                        .append(hobbiesLabel).append(SPACE).append(hobbies);
                 break;
             case SEARCH_CHOICE_PHONE:
                 stringBuilder.append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
@@ -108,10 +108,10 @@ public class CatalogHandler {
                 break;
             case SEARCH_CHOICE_EDUCATION:
                 stringBuilder.append(educationLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
-                  .append(firstNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
-                  .append(lastNameLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
-                  .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[3]).append(NEW_LINE)
-                  .append(hobbiesLabel).append(SPACE).append(hobbies);
+                        .append(firstNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
+                        .append(lastNameLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
+                        .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[3]).append(NEW_LINE)
+                        .append(hobbiesLabel).append(SPACE).append(hobbies);
                 break;
         }
         return stringBuilder.toString();
