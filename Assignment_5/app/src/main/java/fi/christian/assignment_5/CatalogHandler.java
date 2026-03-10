@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class CatalogHandler {
     public static final String SEPARATOR = ";";
     public static final String SPACE = " ";
-    public static final String NEW_LINE= "\n";
+    public static final String NEW_LINE = "\n";
     public static final String SEARCH_CHOICE_FIRST_NAME = "FIRST_NAME";
     public static final String SEARCH_CHOICE_LAST_NAME = "LAST_NAME";
     public static final String SEARCH_CHOICE_PHONE = "PHONE";
@@ -27,15 +27,21 @@ public class CatalogHandler {
     public static void addEntry(Person person) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(person.firstName).append(SEPARATOR).append(person.lastName).append(SEPARATOR).append(person.phone);
+        stringBuilder.append(person.getFirstName()).append(SEPARATOR)
+                .append(person.getLastName()).append(SEPARATOR)
+                .append(person.getPhone()).append(SEPARATOR);
         firstNameList.add(stringBuilder.toString());
 
         stringBuilder.setLength(0);
-        stringBuilder.append(person.lastName).append(SEPARATOR).append(person.firstName).append(SEPARATOR).append(person.phone);
+        stringBuilder.append(person.getLastName()).append(SEPARATOR)
+                .append(person.getFirstName()).append(SEPARATOR)
+                .append(person.getPhone()).append(SEPARATOR);
         lastNameList.add(stringBuilder.toString());
 
         stringBuilder.setLength(0);
-        stringBuilder.append(person.phone).append(SEPARATOR).append(person.firstName).append(SEPARATOR).append(person.lastName);
+        stringBuilder.append(person.getPhone()).append(SEPARATOR)
+                .append(person.getFirstName()).append(SEPARATOR)
+                .append(person.getLastName()).append(SEPARATOR);
         phoneList.add(stringBuilder.toString());
     }
 

@@ -16,10 +16,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-
     private EditText firstNameEditText, lastNameEditText, phoneEditText;
     private AutoCompleteTextView firstNameAutoCompleteTextView, lastNameAutoCompleteTextView, phoneAutoCompleteTextView;
-    private Button submitButton, refreshButton;
+    private Button submitButton, resetButton;
     private ArrayAdapter<String> firstNameAdapter, lastNameAdapter, phoneAdapter;
     private Drawable firstNameBackground, lastNameBackground, phoneBackground;
 
@@ -28,11 +27,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializeViews();
+        setupSearchListeners();
+        setupValidationWatchers();
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleCatalogSubmission();
+            }
+        });
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearSearchResults();
+            }
+        });
+    }
+
+    private void initializeViews() {
         firstNameEditText = findViewById(R.id.first_name_edit_text);
         lastNameEditText = findViewById(R.id.last_name_edit_text);
         phoneEditText = findViewById(R.id.phone_edit_text);
         submitButton = findViewById(R.id.submit_button);
-        refreshButton = findViewById(R.id.refresh_button);
+        resetButton = findViewById(R.id.reset_button);
 
         firstNameBackground = firstNameEditText.getBackground();
         lastNameBackground = lastNameEditText.getBackground();
@@ -45,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         firstNameAutoCompleteTextView.setThreshold(1);
         lastNameAutoCompleteTextView.setThreshold(1);
         phoneAutoCompleteTextView.setThreshold(1);
+    }
 
+    private void setupSearchListeners() {
         updateAdapters();
 
         firstNameAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,68 +92,71 @@ public class MainActivity extends AppCompatActivity {
                 phoneAutoCompleteTextView.setText(formatted);
             }
         });
+    }
 
+    private void setupValidationWatchers() {
         setupTextWatcher(firstNameEditText, firstNameBackground);
         setupTextWatcher(lastNameEditText, lastNameBackground);
         setupTextWatcher(phoneEditText, phoneBackground);
+    }
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String firstName = firstNameEditText.getText().toString().trim();
-                String lastName = lastNameEditText.getText().toString().trim();
-                String phone = phoneEditText.getText().toString().trim();
+    private void handleCatalogSubmission() {
+        String firstName = firstNameEditText.getText().toString().trim();
+        String lastName = lastNameEditText.getText().toString().trim();
+        String phone = phoneEditText.getText().toString().trim();
 
-                boolean isEmpty = false;
+        if (isInputValid(firstName, lastName, phone)) {
+            Person newPerson = new Person(firstName, lastName, phone);
+            CatalogHandler.addEntry(newPerson);
 
-                if (phone.isEmpty()) {
-                    phoneEditText.setBackgroundColor(Color.RED);
-                    phoneEditText.requestFocus();
-                    isEmpty = true;
-                }
-                if (lastName.isEmpty()) {
-                    lastNameEditText.setBackgroundColor(Color.RED);
-                    lastNameEditText.requestFocus();
-                    isEmpty = true;
-                }
-                if (firstName.isEmpty()) {
-                    firstNameEditText.setBackgroundColor(Color.RED);
-                    firstNameEditText.requestFocus();
-                    isEmpty = true;
-                }
+            updateAdapters();
+            clearInputFields();
+            showToast(getString(R.string.data_submitted_toast));
+        }
+    }
 
-                if (isEmpty) {
-                    showToast(getString(R.string.fill_all_fields_toast));
-                    return;
-                }
-                if (CatalogHandler.isDuplicatePhone(phone)) {
-                    phoneEditText.setBackgroundColor(Color.RED);
-                    phoneEditText.requestFocus();
-                    showToast(getString(R.string.duplicate_phone_toast));
-                    return;
-                }
+    private boolean isInputValid(String firstName, String lastName, String phone) {
+        boolean isValid = true;
 
-                Person newPerson = new Person(firstName, lastName, phone);
-                CatalogHandler.addEntry(newPerson);
+        if (phone.isEmpty()) {
+            phoneEditText.setBackgroundColor(Color.RED);
+            phoneEditText.requestFocus();
+            isValid = false;
+        }
+        if (lastName.isEmpty()) {
+            lastNameEditText.setBackgroundColor(Color.RED);
+            lastNameEditText.requestFocus();
+            isValid = false;
+        }
+        if (firstName.isEmpty()) {
+            firstNameEditText.setBackgroundColor(Color.RED);
+            firstNameEditText.requestFocus();
+            isValid = false;
+        }
+        if (!isValid) {
+            showToast(getString(R.string.fill_all_fields_toast));
+            return false;
+        }
+        if (CatalogHandler.isDuplicatePhone(phone)) {
+            phoneEditText.setBackgroundColor(Color.RED);
+            phoneEditText.requestFocus();
+            showToast(getString(R.string.duplicate_phone_toast));
+            return false;
+        }
 
-                updateAdapters();
+        return true;
+    }
 
-                firstNameEditText.setText("");
-                lastNameEditText.setText("");
-                phoneEditText.setText("");
+    private void clearInputFields() {
+        firstNameEditText.setText("");
+        lastNameEditText.setText("");
+        phoneEditText.setText("");
+    }
 
-                showToast(getString(R.string.data_submitted_toast));
-            }
-        });
-
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firstNameAutoCompleteTextView.setText("");
-                lastNameAutoCompleteTextView.setText("");
-                phoneAutoCompleteTextView.setText("");
-            }
-        });
+    private void clearSearchResults() {
+        firstNameAutoCompleteTextView.setText("");
+        lastNameAutoCompleteTextView.setText("");
+        phoneAutoCompleteTextView.setText("");
     }
 
     private void showToast(String message) {
@@ -149,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         phoneAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, CatalogHandler.phoneList);
         phoneAutoCompleteTextView.setAdapter(phoneAdapter);
     }
-    
+
     private void setupTextWatcher(final EditText editText, final Drawable originalBackground) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
