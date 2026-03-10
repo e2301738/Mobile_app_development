@@ -16,11 +16,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, phoneEditText;
+    private TextInputLayout educationInputLayout;
     private AutoCompleteTextView educationInputCombo;
     private CheckBox readingCheckBox, sportsCheckBox, musicCheckBox;
     private AutoCompleteTextView firstNameAutoCompleteTextView, lastNameAutoCompleteTextView, phoneAutoCompleteTextView, educationAutoCompleteTextView;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         firstNameEditText = findViewById(R.id.first_name_edit_text);
         lastNameEditText = findViewById(R.id.last_name_edit_text);
         phoneEditText = findViewById(R.id.phone_edit_text);
+        educationInputLayout = findViewById(R.id.education_input_layout);
         educationInputCombo = findViewById(R.id.education_auto_complete_input);
         readingCheckBox = findViewById(R.id.reading_check_box);
         sportsCheckBox = findViewById(R.id.sports_check_box);
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         lastNameAutoCompleteTextView.setThreshold(1);
         phoneAutoCompleteTextView.setThreshold(1);
         educationAutoCompleteTextView.setThreshold(1);
+        educationInputCombo.setThreshold(1);
     }
 
     private void setupInputComboBox() {
@@ -124,6 +129,17 @@ public class MainActivity extends AppCompatActivity {
         setupTextWatcher(firstNameEditText, firstNameBackground);
         setupTextWatcher(lastNameEditText, lastNameBackground);
         setupTextWatcher(phoneEditText, phoneBackground);
+        
+        educationInputCombo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                educationInputLayout.setError(null);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
     }
 
     private void handleCatalogSubmission() {
@@ -132,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         String phone = phoneEditText.getText().toString().trim();
         String education = educationInputCombo.getText().toString().trim();
 
-        if (isInputValid(firstName, lastName, phone)) {
+        if (isInputValid(firstName, lastName, phone, education)) {
             ArrayList<String> hobbies = getSelectedHobbies();
             Person newPerson = new Person(firstName, lastName, phone, education, hobbies);
             CatalogHandler.addEntry(newPerson);
@@ -143,9 +159,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isInputValid(String firstName, String lastName, String phone) {
+    private boolean isInputValid(String firstName, String lastName, String phone, String education) {
         boolean isValid = true;
 
+        if (education.isEmpty()) {
+            educationInputLayout.setError("Required");
+            educationInputCombo.requestFocus();
+            isValid = false;
+        }
         if (phone.isEmpty()) {
             phoneEditText.setBackgroundColor(Color.RED);
             phoneEditText.requestFocus();
@@ -194,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         lastNameEditText.setText("");
         phoneEditText.setText("");
         educationInputCombo.setText("");
+        educationInputLayout.setError(null);
         readingCheckBox.setChecked(false);
         sportsCheckBox.setChecked(false);
         musicCheckBox.setChecked(false);
@@ -202,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
     private void clearSearchResults() {
         firstNameAutoCompleteTextView.setText("");
         lastNameAutoCompleteTextView.setText("");
+        phoneAutoCompleteTextView.setText("");
         educationAutoCompleteTextView.setText("");
     }
 
