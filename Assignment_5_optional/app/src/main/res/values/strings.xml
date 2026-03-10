@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Phone Catalog</string>
+    <string name="header_1">Submit Personal Data</string>
+    <string name="first_name_label">First Name:</string>
+    <string name="last_name_label">Last Name:</string>
+    <string name="phone_label">Phone Number:</string>
+    <string name="education_label">Education Level:</string>
+    <string name="hobbies_label">Hobbies:</string>
+    <string name="hobby_reading">Reading</string>
+    <string name="hobby_sports">Sports</string>
+    <string name="hobby_music">Music</string>
+    <string name="hobby_none">None</string>
+    <string name="first_name_hint">John</string>
+    <string name="last_name_hint">Doe</string>
+    <string name="phone_hint">050 ....</string>
+    <string name="submit_button_text">Submit</string>
+    <string name="header_2">Search Personal Data</string>
+    <string name="auto_complete_hint_txt">Type one or more letters</string>
+    <string name="auto_complete_phone_hint_txt">Type one or more numbers</string>
+    <string name="data_submitted_toast">Data Submitted</string>
+    <string name="fill_all_fields_toast">Please fill all fields</string>
+    <string name="search_first_name_label">First Name Search:</string>
+    <string name="search_last_name_label">Last Name Search:</string>
+    <string name="search_phone_label">Phone Search:</string>
+    <string name="search_education_label">Education Search:</string>
+    <string name="duplicate_phone_toast">Phone number already exists!</string>
+    <string name="refresh_button_text">Refresh</string>
+</resources>
