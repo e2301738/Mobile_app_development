@@ -27,37 +27,37 @@ public class CatalogHandler {
     }
 
     public static void addEntry(Person person) {
-        String hobbiesString = TextUtils.join(", ", person.hobbies);
+        String hobbiesString = TextUtils.join(", ", person.getHobbies());
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(person.firstName).append(SEPARATOR)
-          .append(person.lastName).append(SEPARATOR)
-          .append(person.phone).append(SEPARATOR)
-          .append(person.education).append(SEPARATOR)
+        stringBuilder.append(person.getFirstName()).append(SEPARATOR)
+          .append(person.getLastName()).append(SEPARATOR)
+          .append(person.getPhone()).append(SEPARATOR)
+          .append(person.getEducation()).append(SEPARATOR)
           .append(hobbiesString);
         firstNameList.add(stringBuilder.toString());
 
         stringBuilder.setLength(0);
-        stringBuilder.append(person.lastName).append(SEPARATOR)
-          .append(person.firstName).append(SEPARATOR)
-          .append(person.phone).append(SEPARATOR)
-          .append(person.education).append(SEPARATOR)
+        stringBuilder.append(person.getLastName()).append(SEPARATOR)
+          .append(person.getFirstName()).append(SEPARATOR)
+          .append(person.getPhone()).append(SEPARATOR)
+          .append(person.getEducation()).append(SEPARATOR)
           .append(hobbiesString);
         lastNameList.add(stringBuilder.toString());
 
         stringBuilder.setLength(0);
-        stringBuilder.append(person.education).append(SEPARATOR)
-          .append(person.firstName).append(SEPARATOR)
-          .append(person.lastName).append(SEPARATOR)
-          .append(person.phone).append(SEPARATOR)
+        stringBuilder.append(person.getEducation()).append(SEPARATOR)
+          .append(person.getFirstName()).append(SEPARATOR)
+          .append(person.getLastName()).append(SEPARATOR)
+          .append(person.getPhone()).append(SEPARATOR)
           .append(hobbiesString);
         educationList.add(stringBuilder.toString());
 
         stringBuilder.setLength(0);
-        stringBuilder.append(person.phone).append(SEPARATOR)
-          .append(person.firstName).append(SEPARATOR)
-          .append(person.lastName).append(SEPARATOR)
-          .append(person.education).append(SEPARATOR)
+        stringBuilder.append(person.getPhone()).append(SEPARATOR)
+          .append(person.getFirstName()).append(SEPARATOR)
+          .append(person.getLastName()).append(SEPARATOR)
+          .append(person.getEducation()).append(SEPARATOR)
           .append(hobbiesString);
         phoneList.add(stringBuilder.toString());
     }

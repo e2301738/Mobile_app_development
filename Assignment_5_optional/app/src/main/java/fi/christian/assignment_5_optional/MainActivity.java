@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
         firstNameAutoCompleteTextView.setThreshold(1);
         lastNameAutoCompleteTextView.setThreshold(1);
         educationAutoCompleteTextView.setThreshold(1);
-
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.education_levels, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        educationSpinner.setAdapter(spinnerAdapter);
 
         updateAdapters();
 
@@ -102,9 +96,15 @@ public class MainActivity extends AppCompatActivity {
                 String education = educationSpinner.getSelectedItem().toString();
 
                 ArrayList<String> hobbies = new ArrayList<>();
-                if (readingCheckBox.isChecked()) hobbies.add(readingCheckBox.getText().toString());
-                if (sportsCheckBox.isChecked()) hobbies.add(sportsCheckBox.getText().toString());
-                if (musicCheckBox.isChecked()) hobbies.add(musicCheckBox.getText().toString());
+                if (readingCheckBox.isChecked()) {
+                    hobbies.add(readingCheckBox.getText().toString());
+                }
+                if (sportsCheckBox.isChecked()) {
+                    hobbies.add(sportsCheckBox.getText().toString());
+                }
+                if (musicCheckBox.isChecked()) {
+                    hobbies.add(musicCheckBox.getText().toString());
+                }
 
                 boolean isEmpty = false;
 
