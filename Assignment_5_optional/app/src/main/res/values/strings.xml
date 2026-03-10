@@ -10,6 +10,7 @@
     <string name="hobby_sports">Sports</string>
     <string name="hobby_music">Music</string>
     <string name="hobby_none">None</string>
+    <string name="education_none">None</string>
     <string name="first_name_hint">John</string>
     <string name="last_name_hint">Doe</string>
     <string name="phone_hint">050 ....</string>
@@ -24,5 +25,5 @@
     <string name="search_phone_label">Phone Search:</string>
     <string name="search_education_label">Education Search:</string>
     <string name="duplicate_phone_toast">Phone number already exists!</string>
-    <string name="refresh_button_text">Refresh</string>
+    <string name="reset_button_text">Reset</string>
 </resources>

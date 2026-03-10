@@ -10,6 +10,7 @@ public class CatalogHandler {
     public static final String NEW_LINE= "\n";
     public static final String SEARCH_CHOICE_FIRST_NAME = "FIRST_NAME";
     public static final String SEARCH_CHOICE_LAST_NAME = "LAST_NAME";
+    public static final String SEARCH_CHOICE_PHONE = "PHONE";
     public static final String SEARCH_CHOICE_EDUCATION = "EDUCATION";
     public static ArrayList<String> firstNameList = new ArrayList<>();
     public static ArrayList<String> lastNameList = new ArrayList<>();
@@ -46,6 +47,14 @@ public class CatalogHandler {
         lastNameList.add(stringBuilder.toString());
 
         stringBuilder.setLength(0);
+        stringBuilder.append(person.getPhone()).append(SEPARATOR)
+                .append(person.getFirstName()).append(SEPARATOR)
+                .append(person.getLastName()).append(SEPARATOR)
+                .append(person.getEducation()).append(SEPARATOR)
+                .append(hobbiesString);
+        phoneList.add(stringBuilder.toString());
+
+        stringBuilder.setLength(0);
         stringBuilder.append(person.getEducation()).append(SEPARATOR)
           .append(person.getFirstName()).append(SEPARATOR)
           .append(person.getLastName()).append(SEPARATOR)
@@ -53,13 +62,6 @@ public class CatalogHandler {
           .append(hobbiesString);
         educationList.add(stringBuilder.toString());
 
-        stringBuilder.setLength(0);
-        stringBuilder.append(person.getPhone()).append(SEPARATOR)
-          .append(person.getFirstName()).append(SEPARATOR)
-          .append(person.getLastName()).append(SEPARATOR)
-          .append(person.getEducation()).append(SEPARATOR)
-          .append(hobbiesString);
-        phoneList.add(stringBuilder.toString());
     }
 
     public static String getFormattedResult(String catalogString, String searchChoice, Context context) {
@@ -72,6 +74,11 @@ public class CatalogHandler {
         String educationLabel = context.getString(R.string.education_label);
         String hobbiesLabel = context.getString(R.string.hobbies_label);
 
+        String education = catalogSplitArray[3];
+        if (education.isEmpty()) {
+            education = context.getString(R.string.education_none);
+        }
+
         String hobbies = catalogSplitArray[4];
         if (hobbies.isEmpty()) {
             hobbies = context.getString(R.string.hobby_none);
@@ -82,15 +89,22 @@ public class CatalogHandler {
                 stringBuilder.append(firstNameLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
                   .append(lastNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
                   .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
-                  .append(educationLabel).append(SPACE).append(catalogSplitArray[3]).append(NEW_LINE)
+                  .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
                   .append(hobbiesLabel).append(SPACE).append(hobbies);
                 break;
             case SEARCH_CHOICE_LAST_NAME:
                 stringBuilder.append(lastNameLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
                   .append(firstNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
                   .append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
-                  .append(educationLabel).append(SPACE).append(catalogSplitArray[3]).append(NEW_LINE)
+                  .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
                   .append(hobbiesLabel).append(SPACE).append(hobbies);
+                break;
+            case SEARCH_CHOICE_PHONE:
+                stringBuilder.append(phoneNumberLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
+                        .append(firstNameLabel).append(SPACE).append(catalogSplitArray[1]).append(NEW_LINE)
+                        .append(lastNameLabel).append(SPACE).append(catalogSplitArray[2]).append(NEW_LINE)
+                        .append(educationLabel).append(SPACE).append(education).append(NEW_LINE)
+                        .append(hobbiesLabel).append(SPACE).append(hobbies);
                 break;
             case SEARCH_CHOICE_EDUCATION:
                 stringBuilder.append(educationLabel).append(SPACE).append(catalogSplitArray[0]).append(NEW_LINE)
