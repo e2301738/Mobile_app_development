@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class Person {
     private String firstName;
     private String lastName;
-    private String phone;
+    private final String phone;
     private String education;
-    private ArrayList<String> hobbies;
+    private final ArrayList<String> hobbies;
 
     public Person(String firstName, String lastName, String phone, String education, ArrayList<String> hobbies) {
         this.firstName = firstName;

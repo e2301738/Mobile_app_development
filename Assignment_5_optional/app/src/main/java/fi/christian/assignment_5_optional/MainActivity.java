@@ -12,7 +12,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, phoneEditText;
-    private Spinner educationSpinner;
+    private AutoCompleteTextView educationInputCombo;
     private CheckBox readingCheckBox, sportsCheckBox, musicCheckBox;
     private AutoCompleteTextView firstNameAutoCompleteTextView, lastNameAutoCompleteTextView, educationAutoCompleteTextView;
     private Button submitButton, refreshButton;
@@ -37,11 +36,10 @@ public class MainActivity extends AppCompatActivity {
         firstNameEditText = findViewById(R.id.first_name_edit_text);
         lastNameEditText = findViewById(R.id.last_name_edit_text);
         phoneEditText = findViewById(R.id.phone_edit_text);
-        educationSpinner = findViewById(R.id.education_spinner);
+        educationInputCombo = findViewById(R.id.education_auto_complete_input);
         readingCheckBox = findViewById(R.id.reading_check_box);
         sportsCheckBox = findViewById(R.id.sports_check_box);
         musicCheckBox = findViewById(R.id.music_check_box);
-        
         submitButton = findViewById(R.id.submit_button);
         refreshButton = findViewById(R.id.refresh_button);
 
@@ -56,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         firstNameAutoCompleteTextView.setThreshold(1);
         lastNameAutoCompleteTextView.setThreshold(1);
         educationAutoCompleteTextView.setThreshold(1);
+
+        ArrayAdapter<String> comboAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.education_levels));
+        educationInputCombo.setAdapter(comboAdapter);
 
         updateAdapters();
 
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 String firstName = firstNameEditText.getText().toString().trim();
                 String lastName = lastNameEditText.getText().toString().trim();
                 String phone = phoneEditText.getText().toString().trim();
-                String education = educationSpinner.getSelectedItem().toString();
+                String education = educationInputCombo.getText().toString().trim();
 
                 ArrayList<String> hobbies = new ArrayList<>();
                 if (readingCheckBox.isChecked()) {
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 firstNameEditText.setText("");
                 lastNameEditText.setText("");
                 phoneEditText.setText("");
-                educationSpinner.setSelection(0);
+                educationInputCombo.setText("");
                 readingCheckBox.setChecked(false);
                 sportsCheckBox.setChecked(false);
                 musicCheckBox.setChecked(false);
