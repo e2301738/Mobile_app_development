@@ -8,4 +8,6 @@
     <string name="no_time_selected">No time selected</string>
     <string name="toast_select_date_time">Please select both date and time</string>
     <string name="toast_event_added">Event added!</string>
+    <string name="selected_date_is">Selected date is: %s</string>
+    <string name="selected_time_is">Selected time is: %s</string>
 </resources>

@@ -5,22 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90da9dc5-1167-403b-9079-42e80479c5f0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assignment_6/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/DatePickerFragment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/Event.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/EventAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/EventHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/TimePickerFragment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/res/layout/event_item.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/res/values/array.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_6/settings.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/DatePickerFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/DatePickerFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/TimePickerFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/TimePickerFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

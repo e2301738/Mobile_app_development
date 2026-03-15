@@ -20,7 +20,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        
+        return datePickerDialog;
     }
 
     @Override
@@ -28,7 +31,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         String[] monthAbbreviations = getResources().getStringArray(R.array.month_abbreviations);
         String dateValue = dayOfMonth + " " + monthAbbreviations[month];
 
-        Toast.makeText(getActivity(), "Selected date is: " + dateValue, Toast.LENGTH_SHORT).show();
+        String message = getString(R.string.selected_date_is, dateValue);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
         TextView selectedDateTextView = getActivity().findViewById(R.id.selected_date_TextView);
         selectedDateTextView.setText(dateValue);

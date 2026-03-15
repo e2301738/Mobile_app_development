@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void showDatePicker() {
         DatePickerFragment datePicker = new DatePickerFragment();
-        datePicker.show(getSupportFragmentManager(), "datePicker");
+        datePicker.show(getSupportFragmentManager(), "DatePicker");
     }
 
     private void showTimePicker() {
         TimePickerFragment timePicker = new TimePickerFragment();
-        timePicker.show(getSupportFragmentManager(), "timePicker");
+        timePicker.show(getSupportFragmentManager(), "TimePicker");
     }
 
     private void addEvent() {

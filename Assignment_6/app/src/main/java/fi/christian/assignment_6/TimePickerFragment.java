@@ -26,8 +26,9 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String timeValue = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-        
-        Toast.makeText(getActivity(), "Selected time is: " + timeValue, Toast.LENGTH_SHORT).show();
+
+        String message = getString(R.string.selected_time_is, timeValue);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
         TextView selectedTimeTextView = getActivity().findViewById(R.id.selected_time_TextView);
         selectedTimeTextView.setText(timeValue);
