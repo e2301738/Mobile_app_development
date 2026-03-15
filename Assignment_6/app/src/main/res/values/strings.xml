@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Event Planner</string>
+    <string name="button_submit">Submit</string>
+    <string name="select_event_type">Select Event Type</string>
+    <string name="button_set_date">Set Date</string>
+    <string name="button_set_time">Set Time</string>
+    <string name="no_date_selected">No date selected</string>
+    <string name="no_time_selected">No time selected</string>
+    <string name="toast_select_date_time">Please select both date and time</string>
+    <string name="toast_event_added">Event added!</string>
+</resources>
