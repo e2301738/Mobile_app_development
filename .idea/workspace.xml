@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90da9dc5-1167-403b-9079-42e80479c5f0" name="Changes" comment="" />
+    <list default="true" id="90da9dc5-1167-403b-9079-42e80479c5f0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/DatePickerFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/DatePickerFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/TimePickerFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/java/fi/christian/assignment_6/TimePickerFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assignment_6/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_6/app/src/main/res/values/strings.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,7 +55,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Assignment__5__optional",
+    "git-widget-placeholder": "Assignment__6",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/christian/StudioProjects/Mobile_app_development"
   }
