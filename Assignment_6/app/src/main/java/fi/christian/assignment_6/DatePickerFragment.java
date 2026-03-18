@@ -21,7 +21,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
+        if ("DatePicker".equals(getTag())) {
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        }
         
         return datePickerDialog;
     }
@@ -34,7 +37,14 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         String message = getString(R.string.selected_date_is, dateValue);
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
-        TextView selectedDateTextView = getActivity().findViewById(R.id.selected_date_TextView);
-        selectedDateTextView.setText(dateValue);
+        TextView targetTextView;
+        if ("SearchDatePicker".equals(getTag())) {
+            targetTextView = getActivity().findViewById(R.id.search_date_TextView);
+        } else {
+            targetTextView = getActivity().findViewById(R.id.selected_date_TextView);
+
+        }
+
+        targetTextView.setText(dateValue);
     }
 }
