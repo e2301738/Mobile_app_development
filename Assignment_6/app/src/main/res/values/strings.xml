@@ -15,4 +15,5 @@
     <string name="filter_event_type">Select Event Filter</string>
     <string name="button_search">Search</string>
     <string name="button_clear">Clear</string>
+    <string name="all_events">All events</string>
 </resources>

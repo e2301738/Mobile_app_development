@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
     private Button setDateButton, setTimeButton, submitEventButton, searchButton, clearSearchButton, searchDateButton;
+    private static final String NO_FILTER = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,23 +87,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void searchEvents() {
-        String searchType = searchTypeSpinner.getSelectedItem().toString();
-        String searchDateText = searchDateTextView.getText().toString();
-        String dateParam = "";
-        if (searchDateText.equals(getString(R.string.no_search_date))){
-            dateParam = null;
+        String selectedType = searchTypeSpinner.getSelectedItem().toString();
+        String eventTypeParameter;
+        if (selectedType.equals(getString(R.string.all_events))) {
+            eventTypeParameter = NO_FILTER;
         } else {
-            dateParam = searchDateText;
+            eventTypeParameter = selectedType;
+        }
+
+        String selectedDate = searchDateTextView.getText().toString();
+        String dateParameter;
+        if (selectedDate.equals(getString(R.string.no_search_date))) {
+            dateParameter = NO_FILTER;
+        } else {
+            dateParameter = selectedDate;
         }
         
-        eventAdapter.updateList(EventHandler.getFilteredList(searchType, dateParam));
-        eventAdapter.notifyDataSetChanged();
+        eventAdapter.updateList(EventHandler.getFilteredList(eventTypeParameter, dateParameter));
     }
 
     private void clearSearch() {
         searchDateTextView.setText(R.string.no_search_date);
+        searchTypeSpinner.setSelection(0);
         eventAdapter.updateList(EventHandler.getEventList());
-        eventAdapter.notifyDataSetChanged();
     }
 
     private void showDatePicker(String tag) {
@@ -136,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
         resetForm(noDate, noTime);
         showToast(getString(R.string.toast_event_added));
-        eventAdapter.notifyDataSetChanged();
     }
 
     private void resetForm(String noDate, String noTime) {
