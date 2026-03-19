@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePicker(getString(R.string.date_picker_tag));
+                showDatePicker("DatePicker");
             }
         });
 
@@ -80,21 +80,29 @@ public class MainActivity extends AppCompatActivity {
         searchDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePicker(getString(R.string.date_search_tag));
+                showDatePicker("SearchDatePicker");
             }
         });
     }
 
     private void searchEvents() {
         String searchType = searchTypeSpinner.getSelectedItem().toString();
-        String searchDate = searchDateTextView.getText().toString();
-
-        eventAdapter.updateList(EventHandler.getFilteredList(searchType, searchDate));
+        String searchDateText = searchDateTextView.getText().toString();
+        String dateParam = "";
+        if (searchDateText.equals(getString(R.string.no_search_date))){
+            dateParam = null;
+        } else {
+            dateParam = searchDateText;
+        }
+        
+        eventAdapter.updateList(EventHandler.getFilteredList(searchType, dateParam));
+        eventAdapter.notifyDataSetChanged();
     }
 
     private void clearSearch() {
         searchDateTextView.setText(R.string.no_search_date);
         eventAdapter.updateList(EventHandler.getEventList());
+        eventAdapter.notifyDataSetChanged();
     }
 
     private void showDatePicker(String tag) {
@@ -104,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showTimePicker() {
         TimePickerFragment timePicker = new TimePickerFragment();
-        timePicker.show(getSupportFragmentManager(), getString(R.string.time_picker_tag));
+        timePicker.show(getSupportFragmentManager(), "TimePicker");
     }
 
     private void addEvent() {
@@ -128,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         resetForm(noDate, noTime);
         showToast(getString(R.string.toast_event_added));
+        eventAdapter.notifyDataSetChanged();
     }
 
     private void resetForm(String noDate, String noTime) {

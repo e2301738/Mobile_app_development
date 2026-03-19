@@ -15,8 +15,4 @@
     <string name="filter_event_type">Select Event Filter</string>
     <string name="button_search">Search</string>
     <string name="button_clear">Clear</string>
-    <string name="date_picker_tag">DatePicker</string>
-    <string name="date_search_tag">SearchDatePicker</string>
-    <string name="time_picker_tag">TimePicker</string>
-
 </resources>

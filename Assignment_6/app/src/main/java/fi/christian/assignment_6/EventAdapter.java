@@ -18,7 +18,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     public void updateList(ArrayList<Event> newList) {
         this.eventList = newList;
-        notifyDataSetChanged();
     }
 
     @NonNull
