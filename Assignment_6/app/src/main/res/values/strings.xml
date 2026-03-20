@@ -10,4 +10,10 @@
     <string name="toast_event_added">Event added!</string>
     <string name="selected_date_is">Selected date is: %s</string>
     <string name="selected_time_is">Selected time is: %s</string>
+    <string name="button_set_search_date">Search Date</string>
+    <string name="no_search_date">All dates</string>
+    <string name="filter_event_type">Select Event Filter</string>
+    <string name="button_search">Search</string>
+    <string name="button_clear">Clear</string>
+    <string name="all_events">All events</string>
 </resources>

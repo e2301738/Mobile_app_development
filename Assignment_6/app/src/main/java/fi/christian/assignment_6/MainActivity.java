@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends AppCompatActivity {
 
     private Spinner eventTypeSpinner;
-    private TextView selectedDateTextView, selectedTimeTextView;
+    private Spinner searchTypeSpinner;
+    private TextView selectedDateTextView, selectedTimeTextView, searchDateTextView;
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
+    private Button setDateButton, setTimeButton, submitEventButton, searchButton, clearSearchButton, searchDateButton;
+    private static final String NO_FILTER = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +26,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         eventTypeSpinner = findViewById(R.id.spinner_event_type);
+        searchTypeSpinner = findViewById(R.id.spinner_search_type);
         selectedDateTextView = findViewById(R.id.selected_date_TextView);
         selectedTimeTextView = findViewById(R.id.selected_time_TextView);
+        searchDateTextView = findViewById(R.id.search_date_TextView);
         eventRecyclerView = findViewById(R.id.event_RecyclerView);
 
-        Button setDateButton = findViewById(R.id.button_set_date);
-        Button setTimeButton = findViewById(R.id.button_set_time);
-        Button submitEventButton = findViewById(R.id.button_submit);
+        setDateButton = findViewById(R.id.button_set_date);
+        setTimeButton = findViewById(R.id.button_set_time);
+        submitEventButton = findViewById(R.id.button_submit);
+        searchButton = findViewById(R.id.button_search);
+        clearSearchButton = findViewById(R.id.button_clear_search);
+        searchDateButton = findViewById(R.id.button_set_search_date);
 
         eventAdapter = new EventAdapter(EventHandler.getEventList());
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -38,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePicker();
+                showDatePicker("DatePicker");
             }
         });
 
@@ -55,11 +63,58 @@ public class MainActivity extends AppCompatActivity {
                 addEvent();
             }
         });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEvents();
+            }
+        });
+
+        clearSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearSearch();
+            }
+        });
+
+        searchDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker("SearchDatePicker");
+            }
+        });
     }
 
-    private void showDatePicker() {
+    private void searchEvents() {
+        String selectedType = searchTypeSpinner.getSelectedItem().toString();
+        String eventTypeParameter;
+        if (selectedType.equals(getString(R.string.all_events))) {
+            eventTypeParameter = NO_FILTER;
+        } else {
+            eventTypeParameter = selectedType;
+        }
+
+        String selectedDate = searchDateTextView.getText().toString();
+        String dateParameter;
+        if (selectedDate.equals(getString(R.string.no_search_date))) {
+            dateParameter = NO_FILTER;
+        } else {
+            dateParameter = selectedDate;
+        }
+        
+        eventAdapter.updateList(EventHandler.getFilteredList(eventTypeParameter, dateParameter));
+    }
+
+    private void clearSearch() {
+        searchDateTextView.setText(R.string.no_search_date);
+        searchTypeSpinner.setSelection(0);
+        eventAdapter.updateList(EventHandler.getEventList());
+    }
+
+    private void showDatePicker(String tag) {
         DatePickerFragment datePicker = new DatePickerFragment();
-        datePicker.show(getSupportFragmentManager(), "DatePicker");
+        datePicker.show(getSupportFragmentManager(), tag);
     }
 
     private void showTimePicker() {
@@ -84,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         Event newEvent = new Event(eventType, dateString, timeString);
         EventHandler.addEvent(newEvent);
         
-        eventAdapter.notifyDataSetChanged();
+        eventAdapter.updateList(EventHandler.getEventList());
 
         resetForm(noDate, noTime);
         showToast(getString(R.string.toast_event_added));
@@ -94,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
         selectedDateTextView.setText(noDate);
         selectedTimeTextView.setText(noTime);
         eventTypeSpinner.setSelection(0);
+        clearSearch();
     }
 
     private void showToast(String message) {
