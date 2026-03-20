@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -31,8 +32,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        String[] monthAbbreviations = getResources().getStringArray(R.array.month_abbreviations);
-        String dateValue = dayOfMonth + " " + monthAbbreviations[month];
+        ArrayList<String> months = EventHandler.getMonths();
+        String monthName = months.get(month);
+        
+        String dateValue = dayOfMonth + " " + monthName;
 
         String message = getString(R.string.selected_date_is, dateValue);
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -42,7 +45,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
             targetTextView = getActivity().findViewById(R.id.search_date_TextView);
         } else {
             targetTextView = getActivity().findViewById(R.id.selected_date_TextView);
-
         }
 
         targetTextView.setText(dateValue);
