@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        EventHandler.setMonths(getResources().getStringArray(R.array.month_abbreviations));
+
         eventTypeSpinner = findViewById(R.id.spinner_event_type);
         searchTypeSpinner = findViewById(R.id.spinner_search_type);
         selectedDateTextView = findViewById(R.id.selected_date_TextView);
