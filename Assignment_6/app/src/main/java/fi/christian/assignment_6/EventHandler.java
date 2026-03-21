@@ -45,7 +45,7 @@ public class EventHandler {
 
     public static void sortEvents() {
 
-        Collections.sort(eventList, new Comparator<Event>() {
+        eventList.sort(new Comparator<Event>() {
             @Override
             public int compare(Event event1, Event event2) {
                 int month1 = getMonthIndex(event1.getDate());
@@ -53,7 +53,7 @@ public class EventHandler {
                 if (month1 != month2) {
                     return Integer.compare(month1, month2);
                 }
-                
+
                 int day1 = getDay(event1.getDate());
                 int day2 = getDay(event2.getDate());
                 if (day1 != day2) {
@@ -64,15 +64,15 @@ public class EventHandler {
                 String time2 = event2.getTime();
                 return time1.compareTo(time2);
             }
-            
-            private int getMonthIndex(String dateStr) {
-                String[] parts = dateStr.split(" ");
-                return months.indexOf(parts[1]);
+
+            private int getMonthIndex(String dateString) {
+                String[] eventParts = dateString.split(" ");
+                return months.indexOf(eventParts[1]);
             }
-            
-            private int getDay(String dateStr) {
-                String[] parts = dateStr.split(" ");
-                return Integer.parseInt(parts[0]);
+
+            private int getDay(String dateString) {
+                String[] eventParts = dateString.split(" ");
+                return Integer.parseInt(eventParts[0]);
             }
         });
     }
