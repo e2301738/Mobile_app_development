@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Spinner eventTypeSpinner;
-    private Spinner searchTypeSpinner;
+    private Spinner eventTypeSpinner, searchTypeSpinner;
     private TextView selectedDateTextView, selectedTimeTextView, searchDateTextView;
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
@@ -27,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
 
         EventHandler.setMonths(getResources().getStringArray(R.array.month_abbreviations));
 
+        initializeViews();
+        setupRecyclerView();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
         eventTypeSpinner = findViewById(R.id.spinner_event_type);
         searchTypeSpinner = findViewById(R.id.spinner_search_type);
         selectedDateTextView = findViewById(R.id.selected_date_TextView);
@@ -40,11 +45,15 @@ public class MainActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.button_search);
         clearSearchButton = findViewById(R.id.button_clear_search);
         searchDateButton = findViewById(R.id.button_set_search_date);
+    }
 
+    private void setupRecyclerView() {
         eventAdapter = new EventAdapter(EventHandler.getEventList());
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventRecyclerView.setAdapter(eventAdapter);
+    }
 
+    private void setupClickListeners() {
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +97,36 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void addEvent() {
+        String dateString = selectedDateTextView.getText().toString();
+        String timeString = selectedTimeTextView.getText().toString();
+
+        String noDate = getString(R.string.no_date_selected);
+        String noTime = getString(R.string.no_time_selected);
+
+        if (dateString.equals(noDate) || timeString.equals(noTime)) {
+            showToast(getString(R.string.toast_select_date_time));
+            return;
+        }
+
+        String eventType = eventTypeSpinner.getSelectedItem().toString();
+
+        Event newEvent = new Event(eventType, dateString, timeString);
+        EventHandler.addEvent(newEvent);
+
+        eventAdapter.updateList(EventHandler.getEventList());
+
+        resetForm(noDate, noTime);
+        showToast(getString(R.string.toast_event_added));
+    }
+
+    private void resetForm(String noDate, String noTime) {
+        selectedDateTextView.setText(noDate);
+        selectedTimeTextView.setText(noTime);
+        eventTypeSpinner.setSelection(0);
+        clearSearch();
+    }
+
     private void searchEvents() {
         String selectedType = searchTypeSpinner.getSelectedItem().toString();
         String eventTypeParameter;
@@ -122,36 +161,6 @@ public class MainActivity extends AppCompatActivity {
     private void showTimePicker() {
         TimePickerFragment timePicker = new TimePickerFragment();
         timePicker.show(getSupportFragmentManager(), "TimePicker");
-    }
-
-    private void addEvent() {
-        String dateString = selectedDateTextView.getText().toString();
-        String timeString = selectedTimeTextView.getText().toString();
-        
-        String noDate = getString(R.string.no_date_selected);
-        String noTime = getString(R.string.no_time_selected);
-
-        if (dateString.equals(noDate) || timeString.equals(noTime)) {
-            showToast(getString(R.string.toast_select_date_time));
-            return;
-        }
-
-        String eventType = eventTypeSpinner.getSelectedItem().toString();
-
-        Event newEvent = new Event(eventType, dateString, timeString);
-        EventHandler.addEvent(newEvent);
-        
-        eventAdapter.updateList(EventHandler.getEventList());
-
-        resetForm(noDate, noTime);
-        showToast(getString(R.string.toast_event_added));
-    }
-
-    private void resetForm(String noDate, String noTime) {
-        selectedDateTextView.setText(noDate);
-        selectedTimeTextView.setText(noTime);
-        eventTypeSpinner.setSelection(0);
-        clearSearch();
     }
 
     private void showToast(String message) {
