@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Meeting Calendar</string>
+
+    <string name="summary_activity_title">Meeting Summary</string>
+    <string name="search_activity_title">Search Meetings</string>
+    <string name="update_activity_title">Update Meeting</string>
+    <string name="update_search_header">Search Meeting (by Title and Date)</string>
+
+    <string name="meeting_title_label">Meeting Title:</string>
+    <string name="meeting_place_label">Meeting Place:</string>
+    <string name="meeting_participants_label">Participants:</string>
+    <string name="meeting_date_label">Meeting Date:</string>
+    <string name="meeting_time_label">Meeting Time:</string>
+
+    <string name="meeting_title_hint">Enter meeting title</string>
+    <string name="meeting_place_hint">Enter meeting place</string>
+    <string name="meeting_participants_hint">e.g. John Doe, Jane Doe</string>
+    <string name="meeting_date_hint">e.g. 12.12.2023</string>
+    <string name="meeting_time_hint">e.g. 14:00</string>
+    <string name="search_query_hint">Search by title, date, time or participant</string>
+    <string name="update_search_hint">Enter exact title</string>
+    <string name="update_date_search_hint">Select meeting date</string>
+
+    <string name="submit_button_text">Submit</string>
+    <string name="summary_button_text">Summary</string>
+    <string name="search_button_text">Search</string>
+    <string name="update_button_text">Update</string>
+    <string name="back_to_main_button_text">Back to Main</string>
+    <string name="save_changes_button_text">Save Changes</string>
+    <string name="delete_button_text">Delete Meeting</string>
+    <string name="clear_button_text">Clear Search</string>
+
+    <string name="fill_fields">Please fill title and date</string>
+    <string name="no_meetings_text">No meetings scheduled yet.</string>
+    <string name="no_matches_found">No matches found.</string>
+    <string name="enter_search_title">Please enter a title to search</string>
+    <string name="meeting_not_found">Meeting not found</string>
+    <string name="toast_update_success">Meeting updated successfully</string>
+    <string name="toast_meeting_added">Added meeting</string>
+    <string name="toast_delete_success">Meeting deleted successfully</string>
+</resources>
