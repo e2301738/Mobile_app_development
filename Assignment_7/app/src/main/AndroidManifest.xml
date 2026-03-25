@@ -23,33 +23,15 @@
 
         <activity
             android:name=".SummaryActivity"
-            android:label="@string/summary_activity_title"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="fi.christian.assignment_7.SummaryActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
         <activity
             android:name=".SearchActivity"
-            android:label="@string/search_activity_title"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="fi.christian.assignment_7.SearchActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
         <activity
             android:name=".UpdateActivity"
-            android:label="@string/update_activity_title"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="fi.christian.assignment_7.UpdateActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
     </application>
 

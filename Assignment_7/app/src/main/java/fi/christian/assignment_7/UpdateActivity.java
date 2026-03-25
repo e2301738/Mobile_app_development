@@ -15,14 +15,13 @@ import java.util.ArrayList;
 
 public class UpdateActivity extends AppCompatActivity {
 
-    private EditText searchTitleEditText, searchDateEditText, titleEditText, placeEditText, participantsEditText, dateEditText, timeEditText;
-    private Button searchButton, clearSearchButton, saveButton, deleteButton, backButton;
+    private EditText searchTitleEditText, titleEditText, placeEditText, participantsEditText;
+    private Button searchDateButton, dateButton, timeButton, searchButton, clearSearchButton, saveButton, deleteButton, backButton;
     private LinearLayout editFieldsContainer;
     private RecyclerView searchResultsRecyclerView;
-    
-    private MeetingAdapter Meetingadapter;
-    private ArrayList<Meeting> searchResultsList = new ArrayList<>();
-    private ArrayList<Integer> actualIndices = new ArrayList<>();
+    private MeetingAdapter meetingAdapter;
+    private final ArrayList<Meeting> searchResultsList = new ArrayList<>();
+    private final ArrayList<Integer> indexList = new ArrayList<>();
     private int selectedIndex;
 
     @Override
@@ -36,43 +35,36 @@ public class UpdateActivity extends AppCompatActivity {
 
     private void initializeViews() {
         searchTitleEditText = findViewById(R.id.searchTitleEditText);
-        searchDateEditText = findViewById(R.id.searchDateEditText);
+        searchDateButton = findViewById(R.id.searchDateButton);
         searchButton = findViewById(R.id.searchButton);
         clearSearchButton = findViewById(R.id.clearSearchButton);
         titleEditText = findViewById(R.id.titleEditText);
         placeEditText = findViewById(R.id.placeEditText);
         participantsEditText = findViewById(R.id.participantsEditText);
-        dateEditText = findViewById(R.id.dateEditText);
-        timeEditText = findViewById(R.id.timeEditText);
+        dateButton = findViewById(R.id.dateButton);
+        timeButton = findViewById(R.id.timeButton);
         saveButton = findViewById(R.id.saveButton);
         deleteButton = findViewById(R.id.deleteButton);
         backButton = findViewById(R.id.backButton);
         editFieldsContainer = findViewById(R.id.editFieldsContainer);
         searchResultsRecyclerView = findViewById(R.id.searchResultsRecyclerView);
 
-        searchDateEditText.setFocusable(false);
-        searchDateEditText.setClickable(true);
-        dateEditText.setFocusable(false);
-        dateEditText.setClickable(true);
-        timeEditText.setFocusable(false);
-        timeEditText.setClickable(true);
-
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Meetingadapter = new MeetingAdapter(searchResultsList, new MeetingAdapter.OnItemClickListener() {
+        meetingAdapter = new MeetingAdapter(searchResultsList, new MeetingAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, Meeting meeting) {
-                selectedIndex = actualIndices.get(position);
+                selectedIndex = indexList.get(position);
                 populateFields(meeting);
                 editFieldsContainer.setVisibility(View.VISIBLE);
                 searchResultsRecyclerView.setVisibility(View.GONE);
             }
         });
-        searchResultsRecyclerView.setAdapter(Meetingadapter);
+        searchResultsRecyclerView.setAdapter(meetingAdapter);
     }
 
     private void setupListeners() {
-        searchDateEditText.setOnClickListener(new View.OnClickListener() {
+        searchDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerFragment newFragment = new DatePickerFragment();
@@ -80,19 +72,19 @@ public class UpdateActivity extends AppCompatActivity {
             }
         });
 
-        dateEditText.setOnClickListener(new View.OnClickListener() {
+        dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerFragment newFragment = new DatePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "DatePicker");
+                newFragment.show(getSupportFragmentManager(), "UpdateDatePicker");
             }
         });
 
-        timeEditText.setOnClickListener(new View.OnClickListener() {
+        timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePickerFragment newFragment = new TimePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "timePicker");
+                newFragment.show(getSupportFragmentManager(), "UpdateTimePicker");
             }
         });
 
@@ -107,7 +99,7 @@ public class UpdateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 searchTitleEditText.setText("");
-                searchDateEditText.setText("");
+                searchDateButton.setText(R.string.update_date_search_hint);
                 searchResultsRecyclerView.setVisibility(View.GONE);
                 editFieldsContainer.setVisibility(View.GONE);
             }
@@ -136,40 +128,36 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private void performSearch() {
-        String titleSearch = searchTitleEditText.getText().toString().trim();
-        String dateSearch = searchDateEditText.getText().toString().trim();
+        String titleSearch = searchTitleEditText.getText().toString().toLowerCase().trim();
+        String dateSearch = searchDateButton.getText().toString().trim();
+        String dateHint = getString(R.string.update_date_search_hint);
 
-        if (titleSearch.isEmpty()) {
-            Toast.makeText(this, getString(R.string.enter_search_title), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        ArrayList<Meeting> foundMeetings = new ArrayList<>();
-        actualIndices.clear();
+        searchResultsList.clear();
+        indexList.clear();
         ArrayList<Meeting> allMeetings = MeetingManager.getMeetings();
 
         for (int i = 0; i < allMeetings.size(); i++) {
             Meeting meeting = allMeetings.get(i);
-            boolean titleMatches = meeting.getTitle().equals(titleSearch);
-            boolean dateMatches = dateSearch.isEmpty() || meeting.getDate().equals(dateSearch);
+            boolean titleMatches = meeting.getTitle().toLowerCase().contains(titleSearch);
+            boolean dateMatches = dateSearch.equals(dateHint) || meeting.getDate().equals(dateSearch);
 
             if (titleMatches && dateMatches) {
-                foundMeetings.add(meeting);
-                actualIndices.add(i);
+                searchResultsList.add(meeting);
+                indexList.add(i);
             }
         }
 
-        if (foundMeetings.isEmpty()) {
-            Toast.makeText(this, getString(R.string.meeting_not_found), Toast.LENGTH_SHORT).show();
+        if (searchResultsList.isEmpty()) {
+            toastMessage(getString(R.string.meeting_not_found));
             searchResultsRecyclerView.setVisibility(View.GONE);
             editFieldsContainer.setVisibility(View.GONE);
-        } else if (foundMeetings.size() == 1) {
-            selectedIndex = actualIndices.get(0);
-            populateFields(foundMeetings.get(0));
+        } else if (searchResultsList.size() == 1) {
+            selectedIndex = indexList.get(0);
+            populateFields(searchResultsList.get(0));
             editFieldsContainer.setVisibility(View.VISIBLE);
             searchResultsRecyclerView.setVisibility(View.GONE);
         } else {
-            Meetingadapter.updateList(foundMeetings);
+            meetingAdapter.updateList(searchResultsList);
             searchResultsRecyclerView.setVisibility(View.VISIBLE);
             editFieldsContainer.setVisibility(View.GONE);
         }
@@ -179,19 +167,19 @@ public class UpdateActivity extends AppCompatActivity {
         String title = titleEditText.getText().toString();
         String place = placeEditText.getText().toString();
         String participants = participantsEditText.getText().toString();
-        String date = dateEditText.getText().toString();
-        String time = timeEditText.getText().toString();
+        String date = dateButton.getText().toString();
+        String time = timeButton.getText().toString();
 
         Meeting meeting = new Meeting(title, place, participants, date, time);
         MeetingManager.updateMeeting(selectedIndex, meeting);
-        
-        Toast.makeText(this, getString(R.string.toast_update_success), Toast.LENGTH_SHORT).show();
+
+        toastMessage(getString(R.string.toast_update_success));
         finish();
     }
 
     private void performDelete() {
         MeetingManager.deleteMeeting(selectedIndex);
-        Toast.makeText(this, getString(R.string.toast_delete_success), Toast.LENGTH_SHORT).show();
+        toastMessage(getString(R.string.toast_delete_success));
         finish();
     }
 
@@ -199,7 +187,11 @@ public class UpdateActivity extends AppCompatActivity {
         titleEditText.setText(meeting.getTitle());
         placeEditText.setText(meeting.getPlace());
         participantsEditText.setText(meeting.getParticipants());
-        dateEditText.setText(meeting.getDate());
-        timeEditText.setText(meeting.getTime());
+        dateButton.setText(meeting.getDate());
+        timeButton.setText(meeting.getTime());
+    }
+
+    private void toastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

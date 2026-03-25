@@ -7,13 +7,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
     private EditText searchEditText;
     private Button searchButton, backButton;
-    private TextView resultsTextView;
+    private RecyclerView searchResultsRecyclerView;
+    private TextView noResultsTextView;
+    private MeetingAdapter meetingAdapter;
+    private ArrayList<Meeting> resultsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +33,19 @@ public class SearchActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
         searchButton = findViewById(R.id.searchButton);
         backButton = findViewById(R.id.backButton);
-        resultsTextView = findViewById(R.id.resultsTextView);
+        searchResultsRecyclerView = findViewById(R.id.searchResultsRecyclerView);
+        noResultsTextView = findViewById(R.id.noResultsTextView);
+
+        searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        meetingAdapter = new MeetingAdapter(resultsList, null);
+        searchResultsRecyclerView.setAdapter(meetingAdapter);
     }
 
     private void setupListeners() {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String searchString = searchEditText.getText().toString().trim();
+                String searchString = searchEditText.getText().toString().toLowerCase().trim();
                 displayResults(searchString);
                 searchEditText.setText("");
             }
@@ -50,16 +60,16 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void displayResults(String searchString) {
-        ArrayList<Meeting> results = MeetingManager.searchMeetings(searchString);
+        resultsList.clear();
+        resultsList.addAll(MeetingManager.searchMeetings(searchString));
 
-        if (results.isEmpty()) {
-            resultsTextView.setText(getString(R.string.no_matches_found));
+        if (resultsList.isEmpty()) {
+            noResultsTextView.setVisibility(View.VISIBLE);
+            searchResultsRecyclerView.setVisibility(View.GONE);
         } else {
-            StringBuilder builder = new StringBuilder();
-            for (Meeting meeting : results) {
-                builder.append(meeting.toString()).append("\n\n");
-            }
-            resultsTextView.setText(builder.toString());
+            noResultsTextView.setVisibility(View.GONE);
+            searchResultsRecyclerView.setVisibility(View.VISIBLE);
+            meetingAdapter.updateList(resultsList);
         }
     }
 }

@@ -43,7 +43,9 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingV
             @Override
             public void onClick(View v) {
                 int currentPosition = holder.getBindingAdapterPosition();
-                clickListener.onItemClick(currentPosition, meetingList.get(currentPosition));
+                if (clickListener != null && currentPosition != RecyclerView.NO_POSITION) {
+                    clickListener.onItemClick(currentPosition, meetingList.get(currentPosition));
+                }
             }
         });
     }

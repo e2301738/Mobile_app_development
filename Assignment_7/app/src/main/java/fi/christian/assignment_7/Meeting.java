@@ -1,11 +1,11 @@
 package fi.christian.assignment_7;
 
 public class Meeting {
-    private String title;
-    private String place;
-    private String participants;
-    private String date;
-    private String time;
+    private final String title;
+    private final String place;
+    private final String participants;
+    private final String date;
+    private final String time;
 
     public Meeting(String title, String place, String participants, String date, String time) {
         this.title = title;
@@ -38,7 +38,7 @@ public class Meeting {
         stringbuilder.append("Place: ").append(place).append("\n");
         stringbuilder.append("Participants: ").append(participants).append("\n");
         stringbuilder.append("Date: ").append(date).append("\n");
-        stringbuilder.append("Time: ").append(time);
+        stringbuilder.append("Time: ").append(time).append("\n");
         return stringbuilder.toString();
     }
 }

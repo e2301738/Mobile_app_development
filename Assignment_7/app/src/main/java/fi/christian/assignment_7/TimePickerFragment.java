@@ -3,7 +3,7 @@ package fi.christian.assignment_7;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -28,7 +28,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String timeValue = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
         
-        EditText timeEditText = getActivity().findViewById(R.id.timeEditText);
-        timeEditText.setText(timeValue);
+        Button targetButton;
+        if ("UpdateTimePicker".equals(getTag())) {
+            targetButton = getActivity().findViewById(R.id.timeButton);
+        } else {
+            targetButton = getActivity().findViewById(R.id.timeButton);
+        }
+
+        targetButton.setText(timeValue);
     }
 }

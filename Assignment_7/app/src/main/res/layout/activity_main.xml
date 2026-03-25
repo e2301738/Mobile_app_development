@@ -2,12 +2,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/mainTitleTextView"
@@ -63,12 +64,13 @@
             android:text="@string/meeting_date_label"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
-        <EditText
-            android:id="@+id/dateEditText"
+        <Button
+            android:id="@+id/dateButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/meeting_date_hint"
-            android:inputType="date" />
+            android:text="@string/meeting_date_hint"
+            android:textAlignment="center" />
 
         <TextView
             android:layout_width="match_parent"
@@ -76,12 +78,13 @@
             android:text="@string/meeting_time_label"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
-        <EditText
-            android:id="@+id/timeEditText"
+        <Button
+            android:id="@+id/timeButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/meeting_time_hint"
-            android:inputType="time" />
+            android:text="@string/meeting_time_hint"
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/submitButton"

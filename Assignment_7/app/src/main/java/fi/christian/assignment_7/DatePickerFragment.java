@@ -3,9 +3,8 @@ package fi.christian.assignment_7;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -24,11 +23,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
-
-        if ("DatePicker".equals(getTag())) {
-            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-        }
-        
         return datePickerDialog;
     }
 
@@ -36,15 +30,12 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String dateValue = String.format(Locale.getDefault(), "%02d.%02d.%d", dayOfMonth, month + 1, year);
 
-        EditText targetEditText;
-        if ("SearchDatePicker".equals(getTag())) {
-            targetEditText = getActivity().findViewById(R.id.searchDateEditText);
+        Button targetButton;
+        if ("DatePicker".equals(getTag()) || "UpdateDatePicker".equals(getTag())) {
+            targetButton = getActivity().findViewById(R.id.dateButton);
         } else {
-            targetEditText = getActivity().findViewById(R.id.dateEditText);
+            targetButton = getActivity().findViewById(R.id.searchDateButton);
         }
-
-        if (targetEditText != null) {
-            targetEditText.setText(dateValue);
-        }
+        targetButton.setText(dateValue);
     }
 }

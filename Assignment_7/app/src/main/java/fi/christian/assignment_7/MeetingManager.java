@@ -16,9 +16,10 @@ public class MeetingManager {
     public static ArrayList<Meeting> searchMeetings(String searchString) {
         ArrayList<Meeting> results = new ArrayList<>();
         String lowerCaseSearchString = searchString.toLowerCase();
-        
+
         for (Meeting meeting : meetings) {
-            if (meeting.getTitle().contains(searchString) || meeting.getPlace().toLowerCase().contains(lowerCaseSearchString) ||
+            if (meeting.getTitle().toLowerCase().contains(lowerCaseSearchString) || 
+                meeting.getPlace().toLowerCase().contains(lowerCaseSearchString) ||
                 meeting.getDate().toLowerCase().contains(lowerCaseSearchString) ||
                 meeting.getTime().toLowerCase().contains(lowerCaseSearchString) ||
                 meeting.getParticipants().toLowerCase().contains(lowerCaseSearchString)) {

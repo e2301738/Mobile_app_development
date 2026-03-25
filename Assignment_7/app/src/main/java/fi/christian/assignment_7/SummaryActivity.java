@@ -6,12 +6,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class SummaryActivity extends AppCompatActivity {
-    private TextView resultsTextView;
+    private RecyclerView summaryRecyclerView;
+    private TextView noMeetingsTextView;
     private Button backButton;
+    private MeetingAdapter meetingAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +28,15 @@ public class SummaryActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        resultsTextView = findViewById(R.id.resultsTextView);
+        summaryRecyclerView = findViewById(R.id.summaryRecyclerView);
+        noMeetingsTextView = findViewById(R.id.noMeetingsTextView);
         backButton = findViewById(R.id.backButton);
+
+        summaryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        
+        ArrayList<Meeting> meetings = MeetingManager.getMeetings();
+        meetingAdapter = new MeetingAdapter(meetings, null);
+        summaryRecyclerView.setAdapter(meetingAdapter);
     }
 
     private void setupListeners() {
@@ -39,15 +50,14 @@ public class SummaryActivity extends AppCompatActivity {
 
     private void displayResults() {
         ArrayList<Meeting> meetings = MeetingManager.getMeetings();
-        StringBuilder builder = new StringBuilder();
-        for (Meeting meeting : meetings) {
-            builder.append(meeting.toString()).append("\n\n");
-        }
         
         if (meetings.isEmpty()) {
-            resultsTextView.setText(getString(R.string.no_meetings_text));
+            noMeetingsTextView.setVisibility(View.VISIBLE);
+            summaryRecyclerView.setVisibility(View.GONE);
         } else {
-            resultsTextView.setText(builder.toString());
+            noMeetingsTextView.setVisibility(View.GONE);
+            summaryRecyclerView.setVisibility(View.VISIBLE);
+            meetingAdapter.updateList(meetings);
         }
     }
 }
