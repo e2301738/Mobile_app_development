@@ -1,10 +1,7 @@
 package fi.christian.assignment_7;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,9 +55,9 @@ public class UpdateActivity extends AppCompatActivity {
         placeBackground = placeEditText.getBackground();
         participantsBackground = participantsEditText.getBackground();
 
-        setupTextWatcher(titleEditText, titleBackground);
-        setupTextWatcher(placeEditText, placeBackground);
-        setupTextWatcher(participantsEditText, participantsBackground);
+        InputHandler.setupTextWatcher(titleEditText, titleBackground);
+        InputHandler.setupTextWatcher(placeEditText, placeBackground);
+        InputHandler.setupTextWatcher(participantsEditText, participantsBackground);
 
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -145,19 +142,13 @@ public class UpdateActivity extends AppCompatActivity {
         String dateSearch = searchDateButton.getText().toString().trim();
         String dateHint = getString(R.string.update_date_search_hint);
 
-        searchResultsList.clear();
         indexList.clear();
+        indexList.addAll(MeetingManager.getMeetingIndex(titleSearch, dateSearch, dateHint));
+
+        searchResultsList.clear();
         ArrayList<Meeting> allMeetings = MeetingManager.getMeetings();
-
-        for (int i = 0; i < allMeetings.size(); i++) {
-            Meeting meeting = allMeetings.get(i);
-            boolean titleMatches = meeting.getTitle().toLowerCase().contains(titleSearch);
-            boolean dateMatches = dateSearch.equals(dateHint) || meeting.getDate().equals(dateSearch);
-
-            if (titleMatches && dateMatches) {
-                searchResultsList.add(meeting);
-                indexList.add(i);
-            }
+        for (int index : indexList) {
+            searchResultsList.add(allMeetings.get(index));
         }
 
         if (searchResultsList.isEmpty()) {
@@ -183,56 +174,35 @@ public class UpdateActivity extends AppCompatActivity {
         String date = dateButton.getText().toString();
         String time = timeButton.getText().toString();
 
-        if (!isInputValid(title, place, participants)) {
+        if (!isInputValid()) {
             return;
         }
 
         Meeting meeting = new Meeting(title, place, participants, date, time);
         MeetingManager.updateMeeting(selectedIndex, meeting);
-
+        MeetingManager.sortMeetings();
         toastMessage(getString(R.string.toast_update_success));
         finish();
     }
 
-    private boolean isInputValid(String title, String place, String participants) {
+    private boolean isInputValid() {
         boolean isValid = true;
 
-        if (participants.isEmpty()) {
-            participantsEditText.setBackgroundColor(Color.RED);
-            participantsEditText.requestFocus();
+        if (!InputHandler.validateInputIsEmpty(participantsEditText)) {
             isValid = false;
         }
-        if (place.isEmpty()) {
-            placeEditText.setBackgroundColor(Color.RED);
-            placeEditText.requestFocus();
+        if (!InputHandler.validateInputIsEmpty(placeEditText)) {
             isValid = false;
         }
-        if (title.isEmpty()) {
-            titleEditText.setBackgroundColor(Color.RED);
-            titleEditText.requestFocus();
+        if (!InputHandler.validateInputIsEmpty(titleEditText)) {
             isValid = false;
         }
 
         if (!isValid) {
-            Toast.makeText(this, getString(R.string.fill_fields), Toast.LENGTH_SHORT).show();
-            return false;
+            toastMessage(getString(R.string.fill_fields));
         }
 
-        return true;
-    }
-
-    private void setupTextWatcher(final EditText editText, final Drawable originalBackground) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                editText.setBackground(originalBackground);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+        return isValid;
     }
 
     private void performDelete() {

@@ -1,6 +1,7 @@
 package fi.christian.assignment_7;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class MeetingManager {
     private static final ArrayList<Meeting> meetings = new ArrayList<>();
@@ -29,52 +30,55 @@ public class MeetingManager {
         return results;
     }
 
-    /**
-     * Searches for meetings and returns their original indices in the main list.
-     * Used by UpdateActivity to maintain reference to the correct meeting.
-     */
-    public static ArrayList<Integer> searchUpdateMeetingIndices(String titleQuery, String dateQuery, String dateHint) {
-        ArrayList<Integer> foundIndices = new ArrayList<>();
-        String lowerTitle = titleQuery.toLowerCase();
+    public static ArrayList<Integer> getMeetingIndex(String titleSearch, String dateSearch, String dateHint) {
+        ArrayList<Integer> index = new ArrayList<>();
+        String title = titleSearch.toLowerCase().trim();
 
         for (int i = 0; i < meetings.size(); i++) {
             Meeting meeting = meetings.get(i);
-            boolean titleMatches = meeting.getTitle().toLowerCase().contains(lowerTitle);
-            boolean dateMatches = dateQuery.equals(dateHint) || meeting.getDate().equals(dateQuery);
+            boolean titleMatches = meeting.getTitle().toLowerCase().contains(title);
+            boolean dateMatches = dateSearch.equals(dateHint) || meeting.getDate().equals(dateSearch);
 
             if (titleMatches && dateMatches) {
-                foundIndices.add(i);
+                index.add(i);
             }
         }
-        return foundIndices;
-    }
-
-    /**
-     * Validates if the meeting data is complete and not default hints.
-     */
-    public static boolean isInputValid(String title, String place, String participants, String date, String time, String dateHint, String timeHint) {
-        if (title.trim().isEmpty() || place.trim().isEmpty() || participants.trim().isEmpty()) {
-            return false;
-        }
-        if (date.isEmpty() || date.equalsIgnoreCase(dateHint)) {
-            return false;
-        }
-        if (time.isEmpty() || time.equalsIgnoreCase(timeHint)) {
-            return false;
-        }
-        return true;
+        return index;
     }
 
     public static void updateMeeting(int index, Meeting meeting) {
-        if (index >= 0 && index < meetings.size()) {
             meetings.set(index, meeting);
-        }
     }
 
     public static void deleteMeeting(int index) {
-        if (index >= 0 && index < meetings.size()) {
             meetings.remove(index);
-        }
+    }
+
+    public static void sortMeetings() {
+        meetings.sort(new Comparator<Meeting>() {
+            @Override
+            public int compare(Meeting m1, Meeting m2) {
+                String[] parts1 = m1.getDate().split("\\.");
+                String[] parts2 = m2.getDate().split("\\.");
+
+                int yearCompare = parts1[2].compareTo(parts2[2]);
+                if (yearCompare != 0) {
+                    return yearCompare;
+                }
+
+                int monthCompare = parts1[1].compareTo(parts2[1]);
+                if (monthCompare != 0) {
+                    return monthCompare;
+                }
+
+                int dayCompare = parts1[0].compareTo(parts2[0]);
+                if (dayCompare != 0) {
+                    return dayCompare;
+                }
+
+                return m1.getTime().compareTo(m2.getTime());
+            }
+        });
     }
 
     public static void initializeMockData() {

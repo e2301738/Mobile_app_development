@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
         placeBackground = placeEditText.getBackground();
         participantsBackground = participantsEditText.getBackground();
 
-        setupTextWatcher(titleEditText, titleBackground);
-        setupTextWatcher(placeEditText, placeBackground);
-        setupTextWatcher(participantsEditText, participantsBackground);
+        InputHandler.setupTextWatcher(titleEditText, titleBackground);
+        InputHandler.setupTextWatcher(placeEditText, placeBackground);
+        InputHandler.setupTextWatcher(participantsEditText, participantsBackground);
     }
 
     private void setupListeners() {
@@ -103,78 +101,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void submitMeeting() {
+        if (!isInputValid()) {
+            return;
+        }
+
         String title = titleEditText.getText().toString();
         String place = placeEditText.getText().toString();
         String participants = participantsEditText.getText().toString();
         String date = dateButton.getText().toString();
         String time = timeButton.getText().toString();
 
-        if (!isInputValid(title, place, participants, date, time)) {
-            return;
-        }
-
         Meeting meeting = new Meeting(title, place, participants, date, time);
         MeetingManager.addMeeting(meeting);
         Toast.makeText(this, getString(R.string.toast_meeting_added), Toast.LENGTH_SHORT).show();
         clearFields();
+        MeetingManager.sortMeetings();
         startSummaryActivity();
     }
 
-    private boolean isInputValid(String title, String place, String participants, String date, String time) {
+    private boolean isInputValid() {
         boolean isValid = true;
 
-        String dateHint = getString(R.string.meeting_date_hint);
-        String timeHint = getString(R.string.meeting_time_hint);
-
-        if (time.equals(timeHint)) {
-            timeButton.setTextColor(Color.RED);
-            isValid = false;
-        } else {
-            timeButton.setTextColor(Color.BLACK);
-        }
-
-        if (date.equals(dateHint)) {
-            dateButton.setTextColor(Color.RED);
-            isValid = false;
-        } else {
-            dateButton.setTextColor(Color.BLACK);
-        }
-        if (participants.isEmpty()) {
-            participantsEditText.setBackgroundColor(Color.RED);
-            participantsEditText.requestFocus();
+        if (!InputHandler.validatePickedDateAndTime(timeButton, getString(R.string.meeting_time_hint))) {
             isValid = false;
         }
-        if (place.isEmpty()) {
-            placeEditText.setBackgroundColor(Color.RED);
-            placeEditText.requestFocus();
+        if (!InputHandler.validatePickedDateAndTime(dateButton, getString(R.string.meeting_date_hint))) {
             isValid = false;
         }
-        if (title.isEmpty()) {
-            titleEditText.setBackgroundColor(Color.RED);
-            titleEditText.requestFocus();
+        if (!InputHandler.validateInputIsEmpty(participantsEditText)) {
+            isValid = false;
+        }
+        if (!InputHandler.validateInputIsEmpty(placeEditText)) {
+            isValid = false;
+        }
+        if (!InputHandler.validateInputIsEmpty(titleEditText)) {
             isValid = false;
         }
 
         if (!isValid) {
             Toast.makeText(this, getString(R.string.fill_fields), Toast.LENGTH_SHORT).show();
-            return false;
         }
 
-        return true;
-    }
-
-    private void setupTextWatcher(final EditText editText, final Drawable originalBackground) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                editText.setBackground(originalBackground);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+        return isValid;
     }
 
     private void clearFields() {
