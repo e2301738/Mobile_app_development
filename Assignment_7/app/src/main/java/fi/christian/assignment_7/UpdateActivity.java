@@ -1,6 +1,10 @@
 package fi.christian.assignment_7;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +27,7 @@ public class UpdateActivity extends AppCompatActivity {
     private final ArrayList<Meeting> searchResultsList = new ArrayList<>();
     private final ArrayList<Integer> indexList = new ArrayList<>();
     private int selectedIndex;
+    private Drawable titleBackground, placeBackground, participantsBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,14 @@ public class UpdateActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         editFieldsContainer = findViewById(R.id.editFieldsContainer);
         searchResultsRecyclerView = findViewById(R.id.searchResultsRecyclerView);
+
+        titleBackground = titleEditText.getBackground();
+        placeBackground = placeEditText.getBackground();
+        participantsBackground = participantsEditText.getBackground();
+
+        setupTextWatcher(titleEditText, titleBackground);
+        setupTextWatcher(placeEditText, placeBackground);
+        setupTextWatcher(participantsEditText, participantsBackground);
 
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -170,11 +183,56 @@ public class UpdateActivity extends AppCompatActivity {
         String date = dateButton.getText().toString();
         String time = timeButton.getText().toString();
 
+        if (!isInputValid(title, place, participants)) {
+            return;
+        }
+
         Meeting meeting = new Meeting(title, place, participants, date, time);
         MeetingManager.updateMeeting(selectedIndex, meeting);
 
         toastMessage(getString(R.string.toast_update_success));
         finish();
+    }
+
+    private boolean isInputValid(String title, String place, String participants) {
+        boolean isValid = true;
+
+        if (participants.isEmpty()) {
+            participantsEditText.setBackgroundColor(Color.RED);
+            participantsEditText.requestFocus();
+            isValid = false;
+        }
+        if (place.isEmpty()) {
+            placeEditText.setBackgroundColor(Color.RED);
+            placeEditText.requestFocus();
+            isValid = false;
+        }
+        if (title.isEmpty()) {
+            titleEditText.setBackgroundColor(Color.RED);
+            titleEditText.requestFocus();
+            isValid = false;
+        }
+
+        if (!isValid) {
+            Toast.makeText(this, getString(R.string.fill_fields), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void setupTextWatcher(final EditText editText, final Drawable originalBackground) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                editText.setBackground(originalBackground);
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
     }
 
     private void performDelete() {
@@ -189,6 +247,10 @@ public class UpdateActivity extends AppCompatActivity {
         participantsEditText.setText(meeting.getParticipants());
         dateButton.setText(meeting.getDate());
         timeButton.setText(meeting.getTime());
+        
+        titleEditText.setBackground(titleBackground);
+        placeEditText.setBackground(placeBackground);
+        participantsEditText.setBackground(participantsBackground);
     }
 
     private void toastMessage(String message) {

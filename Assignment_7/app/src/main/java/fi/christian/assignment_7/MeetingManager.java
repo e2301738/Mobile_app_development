@@ -3,7 +3,7 @@ package fi.christian.assignment_7;
 import java.util.ArrayList;
 
 public class MeetingManager {
-    private static ArrayList<Meeting> meetings = new ArrayList<>();
+    private static final ArrayList<Meeting> meetings = new ArrayList<>();
 
     public static void addMeeting(Meeting meeting) {
         meetings.add(meeting);
@@ -29,12 +29,52 @@ public class MeetingManager {
         return results;
     }
 
+    /**
+     * Searches for meetings and returns their original indices in the main list.
+     * Used by UpdateActivity to maintain reference to the correct meeting.
+     */
+    public static ArrayList<Integer> searchUpdateMeetingIndices(String titleQuery, String dateQuery, String dateHint) {
+        ArrayList<Integer> foundIndices = new ArrayList<>();
+        String lowerTitle = titleQuery.toLowerCase();
+
+        for (int i = 0; i < meetings.size(); i++) {
+            Meeting meeting = meetings.get(i);
+            boolean titleMatches = meeting.getTitle().toLowerCase().contains(lowerTitle);
+            boolean dateMatches = dateQuery.equals(dateHint) || meeting.getDate().equals(dateQuery);
+
+            if (titleMatches && dateMatches) {
+                foundIndices.add(i);
+            }
+        }
+        return foundIndices;
+    }
+
+    /**
+     * Validates if the meeting data is complete and not default hints.
+     */
+    public static boolean isInputValid(String title, String place, String participants, String date, String time, String dateHint, String timeHint) {
+        if (title.trim().isEmpty() || place.trim().isEmpty() || participants.trim().isEmpty()) {
+            return false;
+        }
+        if (date.isEmpty() || date.equalsIgnoreCase(dateHint)) {
+            return false;
+        }
+        if (time.isEmpty() || time.equalsIgnoreCase(timeHint)) {
+            return false;
+        }
+        return true;
+    }
+
     public static void updateMeeting(int index, Meeting meeting) {
-        meetings.set(index, meeting);
+        if (index >= 0 && index < meetings.size()) {
+            meetings.set(index, meeting);
+        }
     }
 
     public static void deleteMeeting(int index) {
-        meetings.remove(index);
+        if (index >= 0 && index < meetings.size()) {
+            meetings.remove(index);
+        }
     }
 
     public static void initializeMockData() {

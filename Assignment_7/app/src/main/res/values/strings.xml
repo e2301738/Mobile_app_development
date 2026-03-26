@@ -30,7 +30,7 @@
     <string name="delete_button_text">Delete Meeting</string>
     <string name="clear_button_text">Clear Search</string>
 
-    <string name="fill_fields">Please fill title and date</string>
+    <string name="fill_fields">Please fill all fields</string>
     <string name="no_meetings_text">No meetings scheduled yet.</string>
     <string name="no_matches_found">No matches found.</string>
     <string name="enter_search_title">Please enter a title to search</string>

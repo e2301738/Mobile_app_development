@@ -35,14 +35,14 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MeetingViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MeetingViewHolder meetingViewHolder, int position) {
         Meeting meeting = meetingList.get(position);
-        holder.meetingDetailsTextView.setText(meeting.toString());
-        
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        meetingViewHolder.meetingDetailsTextView.setText(meeting.toString());
+
+        meetingViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int currentPosition = holder.getBindingAdapterPosition();
+                int currentPosition = meetingViewHolder.getBindingAdapterPosition();
                 if (clickListener != null && currentPosition != RecyclerView.NO_POSITION) {
                     clickListener.onItemClick(currentPosition, meetingList.get(currentPosition));
                 }

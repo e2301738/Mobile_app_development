@@ -48,20 +48,6 @@ public class MainActivity extends AppCompatActivity {
         setupTextWatcher(participantsEditText, participantsBackground);
     }
 
-    private void setupTextWatcher(final EditText editText, final Drawable originalBackground) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                editText.setBackground(originalBackground);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-    }
-
     private void setupListeners() {
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +102,24 @@ public class MainActivity extends AppCompatActivity {
         newFragment.show(getSupportFragmentManager(), "TimePicker");
     }
 
+    private void submitMeeting() {
+        String title = titleEditText.getText().toString();
+        String place = placeEditText.getText().toString();
+        String participants = participantsEditText.getText().toString();
+        String date = dateButton.getText().toString();
+        String time = timeButton.getText().toString();
+
+        if (!isInputValid(title, place, participants, date, time)) {
+            return;
+        }
+
+        Meeting meeting = new Meeting(title, place, participants, date, time);
+        MeetingManager.addMeeting(meeting);
+        Toast.makeText(this, getString(R.string.toast_meeting_added), Toast.LENGTH_SHORT).show();
+        clearFields();
+        startSummaryActivity();
+    }
+
     private boolean isInputValid(String title, String place, String participants, String date, String time) {
         boolean isValid = true;
 
@@ -159,27 +163,18 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void submitMeeting() {
-        String title = titleEditText.getText().toString();
-        String place = placeEditText.getText().toString();
-        String participants = participantsEditText.getText().toString();
-        String date = dateButton.getText().toString();
-        String time = timeButton.getText().toString();
+    private void setupTextWatcher(final EditText editText, final Drawable originalBackground) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
-        if (!isInputValid(title, place, participants, date, time)) {
-            return;
-        }
-
-        Meeting meeting = new Meeting(title, place, participants, date, time);
-        MeetingManager.addMeeting(meeting);
-        Toast.makeText(this, getString(R.string.toast_meeting_added), Toast.LENGTH_SHORT).show();
-        clearFields();
-        startSummaryActivity();
-    }
-
-    private void startSummaryActivity() {
-        Intent intent = new Intent(this, SummaryActivity.class);
-        startActivity(intent);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                editText.setBackground(originalBackground);
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
     }
 
     private void clearFields() {
@@ -191,6 +186,11 @@ public class MainActivity extends AppCompatActivity {
         timeButton.setText(R.string.meeting_time_hint);
         timeButton.setTextColor(Color.BLACK);
         titleEditText.requestFocus();
+    }
+
+    private void startSummaryActivity() {
+        Intent intent = new Intent(this, SummaryActivity.class);
+        startActivity(intent);
     }
 
     private void startSearchActivity() {
