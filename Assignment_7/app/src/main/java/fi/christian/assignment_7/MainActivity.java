@@ -7,21 +7,45 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText titleEditText, placeEditText, participantsEditText;
-    private Button dateButton, timeButton, submitButton, summaryButton, searchButton, updateButton;
-    private Drawable titleBackground, placeBackground, participantsBackground;
+    private EditText titleEditText, placeEditText;
+    private TextView participantsDisplayTextView;
+    private Button dateButton, timeButton, addParticipantsButton, submitButton, summaryButton, searchButton, updateButton;
+    private Drawable titleBackground, placeBackground;
+    private ArrayList<String> selectedParticipants = new ArrayList<>();
+    private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MeetingManager.initializeMockData();
+
+        participantsActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            selectedParticipants = result.getData().getStringArrayListExtra("participants");
+                            updateParticipantsDisplay();
+                            addParticipantsButton.setTextColor(Color.BLACK);
+                        }
+                    }
+                });
+
         initializeViews();
         setupListeners();
     }
@@ -29,9 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private void initializeViews() {
         titleEditText = findViewById(R.id.titleEditText);
         placeEditText = findViewById(R.id.placeEditText);
-        participantsEditText = findViewById(R.id.participantsEditText);
+        participantsDisplayTextView = findViewById(R.id.participantsDisplayTextView);
         dateButton = findViewById(R.id.dateButton);
         timeButton = findViewById(R.id.timeButton);
+        addParticipantsButton = findViewById(R.id.addParticipantsButton);
         submitButton = findViewById(R.id.submitButton);
         summaryButton = findViewById(R.id.summaryButton);
         searchButton = findViewById(R.id.searchButton);
@@ -39,14 +64,19 @@ public class MainActivity extends AppCompatActivity {
 
         titleBackground = titleEditText.getBackground();
         placeBackground = placeEditText.getBackground();
-        participantsBackground = participantsEditText.getBackground();
 
         InputHandler.setupTextWatcher(titleEditText, titleBackground);
         InputHandler.setupTextWatcher(placeEditText, placeBackground);
-        InputHandler.setupTextWatcher(participantsEditText, participantsBackground);
     }
 
     private void setupListeners() {
+        addParticipantsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startParticipantsActivity();
+            }
+        });
+
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +120,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void startParticipantsActivity() {
+        Intent intent = new Intent(this, ParticipantsActivity.class);
+        intent.putStringArrayListExtra("participants", selectedParticipants);
+        participantsActivityResultLauncher.launch(intent);
+    }
+
+    private void updateParticipantsDisplay() {
+        if (selectedParticipants == null || selectedParticipants.isEmpty()) {
+            participantsDisplayTextView.setText(R.string.no_participants_selected);
+            participantsDisplayTextView.setTextColor(Color.GRAY);
+        } else {
+            participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
+            participantsDisplayTextView.setTextColor(Color.BLACK);
+        }
+    }
+
     private void showDatePicker() {
         DatePickerFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "DatePicker");
@@ -107,15 +153,13 @@ public class MainActivity extends AppCompatActivity {
 
         String title = titleEditText.getText().toString();
         String place = placeEditText.getText().toString();
-        String participants = participantsEditText.getText().toString();
         String date = dateButton.getText().toString();
         String time = timeButton.getText().toString();
 
-        Meeting meeting = new Meeting(title, place, participants, date, time);
+        Meeting meeting = new Meeting(title, place, new ArrayList<>(selectedParticipants), date, time);
         MeetingManager.addMeeting(meeting);
         Toast.makeText(this, getString(R.string.toast_meeting_added), Toast.LENGTH_SHORT).show();
         clearFields();
-        MeetingManager.sortMeetings();
         startSummaryActivity();
     }
 
@@ -128,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         if (!InputHandler.validatePickedDateAndTime(dateButton, getString(R.string.meeting_date_hint))) {
             isValid = false;
         }
-        if (!InputHandler.validateInputIsEmpty(participantsEditText)) {
+        if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) {
             isValid = false;
         }
         if (!InputHandler.validateInputIsEmpty(placeEditText)) {
@@ -148,7 +192,9 @@ public class MainActivity extends AppCompatActivity {
     private void clearFields() {
         titleEditText.setText("");
         placeEditText.setText("");
-        participantsEditText.setText("");
+        selectedParticipants.clear();
+        updateParticipantsDisplay();
+        addParticipantsButton.setTextColor(Color.BLACK);
         dateButton.setText(R.string.meeting_date_hint);
         dateButton.setTextColor(Color.BLACK);
         timeButton.setText(R.string.meeting_time_hint);

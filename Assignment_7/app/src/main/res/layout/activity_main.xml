@@ -51,12 +51,21 @@
             android:text="@string/meeting_participants_label"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
-        <EditText
-            android:id="@+id/participantsEditText"
+
+        <Button
+            android:id="@+id/addParticipantsButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/meeting_participants_hint"
-            android:inputType="text" />
+            android:text="@string/add_participants_button_text" />
+
+        <TextView
+            android:id="@+id/participantsDisplayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/no_participants_selected"
+            android:fontStyle="italic" />
 
         <TextView
             android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class InputHandler {
 
@@ -20,6 +21,16 @@ public class InputHandler {
     
     public static boolean validatePickedDateAndTime(Button button, String hint) {
         if (button.getText().toString().equals(hint)) {
+            button.setTextColor(Color.RED);
+            return false;
+        } else {
+            button.setTextColor(Color.BLACK);
+            return true;
+        }
+    }
+
+    public static boolean validateParticipants(TextView display, Button button) {
+        if (display.getText().toString().equals("No participants selected") || display.getText().toString().isEmpty()) {
             button.setTextColor(Color.RED);
             return false;
         } else {

@@ -5,6 +5,7 @@
     <string name="search_activity_title">Search Meeting</string>
     <string name="update_activity_title">Update Meeting</string>
     <string name="update_search_header">Search Meeting (by Title or Date)</string>
+    <string name="participants_activity_title">Manage Participants</string>
 
     <string name="meeting_title_label">Meeting Title:</string>
     <string name="meeting_place_label">Meeting Place:</string>
@@ -14,7 +15,7 @@
 
     <string name="meeting_title_hint">Enter meeting title</string>
     <string name="meeting_place_hint">Enter meeting place</string>
-    <string name="meeting_participants_hint">e.g. John Doe, Jane Doe</string>
+    <string name="meeting_participants_hint">Enter name and press Add</string>
     <string name="meeting_date_hint">Set date</string>
     <string name="meeting_time_hint">Set time</string>
     <string name="search_query_hint">Search by title, place, date, time or participant</string>
@@ -29,6 +30,9 @@
     <string name="save_changes_button_text">Save Changes</string>
     <string name="delete_button_text">Delete Meeting</string>
     <string name="clear_button_text">Clear Search</string>
+    <string name="add_participants_button_text">Add Participants</string>
+    <string name="add_button_text">Add</string>
+    <string name="done_button_text">Done</string>
 
     <string name="fill_fields">Please fill all fields</string>
     <string name="no_meetings_text">No meetings scheduled yet.</string>
@@ -38,4 +42,5 @@
     <string name="toast_update_success">Meeting updated successfully</string>
     <string name="toast_meeting_added">Added meeting</string>
     <string name="toast_delete_success">Meeting deleted successfully</string>
+    <string name="no_participants_selected">No participants selected</string>
 </resources>

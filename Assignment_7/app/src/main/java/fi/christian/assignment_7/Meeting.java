@@ -1,13 +1,15 @@
 package fi.christian.assignment_7;
 
+import java.util.ArrayList;
+
 public class Meeting {
     private final String title;
     private final String place;
-    private final String participants;
+    private final ArrayList<String> participants;
     private final String date;
     private final String time;
 
-    public Meeting(String title, String place, String participants, String date, String time) {
+    public Meeting(String title, String place, ArrayList<String> participants, String date, String time) {
         this.title = title;
         this.place = place;
         this.participants = participants;
@@ -21,7 +23,7 @@ public class Meeting {
     public String getPlace() {
         return place;
     }
-    public String getParticipants() {
+    public ArrayList<String> getParticipants() {
         return participants;
     }
     public String getDate() {
@@ -36,7 +38,7 @@ public class Meeting {
         StringBuilder stringbuilder = new StringBuilder();
         stringbuilder.append("Title: ").append(title).append("\n");
         stringbuilder.append("Place: ").append(place).append("\n");
-        stringbuilder.append("Participants: ").append(participants).append("\n");
+        stringbuilder.append("Participants: ").append(String.join(", ", participants)).append("\n");
         stringbuilder.append("Date: ").append(date).append("\n");
         stringbuilder.append("Time: ").append(time).append("\n");
         return stringbuilder.toString();
