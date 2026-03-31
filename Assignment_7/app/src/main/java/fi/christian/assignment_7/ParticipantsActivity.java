@@ -1,6 +1,7 @@
 package fi.christian.assignment_7;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ public class ParticipantsActivity extends AppCompatActivity {
     private ListView participantsListView;
     private ArrayList<String> participantsList;
     private ArrayAdapter<String> adapter;
+    private Drawable originalBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,9 @@ public class ParticipantsActivity extends AppCompatActivity {
         addParticipantButton = findViewById(R.id.addParticipantButton);
         doneButton = findViewById(R.id.doneButton);
         participantsListView = findViewById(R.id.participantsListView);
+
+        originalBackground = participantNameEditText.getBackground();
+        InputHandler.setupTextWatcher(participantNameEditText, originalBackground);
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, participantsList);
         participantsListView.setAdapter(adapter);
@@ -67,15 +72,16 @@ public class ParticipantsActivity extends AppCompatActivity {
     }
 
     private void addParticipant() {
-        String name = participantNameEditText.getText().toString().trim();
-        if (!name.isEmpty()) {
-            participantsList.add(name);
-            adapter.notifyDataSetChanged();
-            participantsListView.setItemChecked(participantsList.size() - 1, true);
-            participantNameEditText.setText("");
-        } else {
-            Toast.makeText(this, "Enter a name", Toast.LENGTH_SHORT).show();
+        if (!InputHandler.validateInputIsEmpty(participantNameEditText)) {
+            Toast.makeText(this, getString(R.string.toast_enter_name), Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        String name = participantNameEditText.getText().toString().trim();
+        participantsList.add(name);
+        adapter.notifyDataSetChanged();
+        participantsListView.setItemChecked(participantsList.size() - 1, true);
+        participantNameEditText.setText("");
     }
 
     private void returnResult() {

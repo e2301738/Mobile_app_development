@@ -42,5 +42,6 @@
     <string name="toast_update_success">Meeting updated successfully</string>
     <string name="toast_meeting_added">Added meeting</string>
     <string name="toast_delete_success">Meeting deleted successfully</string>
+    <string name="toast_enter_name">Please enter a name</string>
     <string name="no_participants_selected">No participants selected</string>
 </resources>
