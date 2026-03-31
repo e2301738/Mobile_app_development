@@ -50,6 +50,7 @@ public class UpdateActivity extends AppCompatActivity {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             selectedParticipants = result.getData().getStringArrayListExtra("participants");
                             updateParticipantsDisplay();
+                            addParticipantsButton.setTextColor(Color.BLACK);
                         }
                     }
                 });
@@ -171,7 +172,7 @@ public class UpdateActivity extends AppCompatActivity {
     private void updateParticipantsDisplay() {
         if (selectedParticipants.isEmpty()) {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
-            participantsDisplayTextView.setTextColor(Color.GRAY);
+            participantsDisplayTextView.setTextColor(Color.RED);
         } else {
             participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
             participantsDisplayTextView.setTextColor(Color.BLACK);
@@ -228,12 +229,15 @@ public class UpdateActivity extends AppCompatActivity {
     private boolean isInputValid() {
         boolean isValid = true;
 
-        if (selectedParticipants.isEmpty()) {
-            participantsDisplayTextView.setTextColor(Color.RED);
+        if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) {
             isValid = false;
         }
-        if (!InputHandler.validateInputIsEmpty(placeEditText)) isValid = false;
-        if (!InputHandler.validateInputIsEmpty(titleEditText)) isValid = false;
+        if (!InputHandler.validateInputIsEmpty(placeEditText)) {
+            isValid = false;
+        }
+        if (!InputHandler.validateInputIsEmpty(titleEditText)) {
+            isValid = false;
+        }
 
         if (!isValid) {
             toastMessage(getString(R.string.fill_fields));
@@ -253,11 +257,11 @@ public class UpdateActivity extends AppCompatActivity {
         placeEditText.setText(meeting.getPlace());
         selectedParticipants = new ArrayList<>(meeting.getParticipants());
         updateParticipantsDisplay();
+        addParticipantsButton.setTextColor(Color.BLACK);
         dateButton.setText(meeting.getDate());
         timeButton.setText(meeting.getTime());
         
         titleEditText.setBackground(titleBackground);
-        placeBackground = placeEditText.getBackground();
         placeEditText.setBackground(placeBackground);
     }
 
