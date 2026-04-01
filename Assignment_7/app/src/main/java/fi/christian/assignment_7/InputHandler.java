@@ -30,7 +30,7 @@ public class InputHandler {
     }
 
     public static boolean validateParticipants(TextView display, Button button) {
-        if (display.getText().toString().equals("No participants selected") || display.getText().toString().isEmpty()) {
+        if (display.getText().toString().equals("No participants selected")) {
             button.setTextColor(Color.RED);
             return false;
         } else {

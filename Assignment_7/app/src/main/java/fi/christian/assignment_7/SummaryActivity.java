@@ -33,9 +33,7 @@ public class SummaryActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         summaryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        
-        ArrayList<Meeting> meetings = MeetingManager.getMeetings();
-        meetingAdapter = new MeetingAdapter(meetings, null);
+        meetingAdapter = new MeetingAdapter(MeetingManager.getMeetings(), null);
         summaryRecyclerView.setAdapter(meetingAdapter);
     }
 
