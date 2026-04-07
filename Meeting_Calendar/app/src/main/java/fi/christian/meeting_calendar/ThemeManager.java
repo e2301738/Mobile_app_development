@@ -18,26 +18,20 @@ public class ThemeManager {
     public static final String PREFERENCE_NAME = "theme_settings_preferences";
     public static final String KEY_FONT_SIZE = "font_size";
     public static final String KEY_FONT_TYPE = "font_type";
-    public static final String KEY_FONT_COLOR_RED = "font_color_red";
-    public static final String KEY_FONT_COLOR_GREEN = "font_color_green";
-    public static final String KEY_FONT_COLOR_BLUE = "font_color_blue";
-    public static final String KEY_BACKGROUND_COLOR_RED = "background_color_red";
-    public static final String KEY_BACKGROUND_COLOR_GREEN = "background_color_green";
-    public static final String KEY_BACKGROUND_COLOR_BLUE = "background_color_blue";
+    public static final String KEY_FONT_COLOR = "font_color";
+    public static final String KEY_BACKGROUND_COLOR = "background_color";
     public static final int DEFAULT_FONT_SIZE = 18;
     public static final int DEFAULT_FONT_TYPE_INDEX = 0;
-    public static final int DEFAULT_COLOR_BLACK = 0;
-    public static final int DEFAULT_COLOR_WHITE = 255;
+    public static final int DEFAULT_FONT_COLOR = Color.BLACK;
+    public static final int DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 
     public static void applyTheme(Context context, View view) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
 
         int fontSize = sharedPreferences.getInt(KEY_FONT_SIZE, DEFAULT_FONT_SIZE);
         int fontTypePos = sharedPreferences.getInt(KEY_FONT_TYPE, DEFAULT_FONT_TYPE_INDEX);
-        
         int fontColor = getFontColor(context);
         int backgroundColor = getBackgroundColor(context);
-        
         Typeface typeface = getTypeface(fontTypePos);
 
         view.setBackgroundColor(backgroundColor);
@@ -47,25 +41,19 @@ public class ThemeManager {
 
     public static int getFontColor(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        int r = sharedPreferences.getInt(KEY_FONT_COLOR_RED, DEFAULT_COLOR_BLACK);
-        int g = sharedPreferences.getInt(KEY_FONT_COLOR_GREEN, DEFAULT_COLOR_BLACK);
-        int b = sharedPreferences.getInt(KEY_FONT_COLOR_BLUE, DEFAULT_COLOR_BLACK);
-        return Color.rgb(r, g, b);
+        return sharedPreferences.getInt(KEY_FONT_COLOR, DEFAULT_FONT_COLOR);
     }
 
     public static int getBackgroundColor(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        int r = sharedPreferences.getInt(KEY_BACKGROUND_COLOR_RED, DEFAULT_COLOR_WHITE);
-        int g = sharedPreferences.getInt(KEY_BACKGROUND_COLOR_GREEN, DEFAULT_COLOR_WHITE);
-        int b = sharedPreferences.getInt(KEY_BACKGROUND_COLOR_BLUE, DEFAULT_COLOR_WHITE);
-        return Color.rgb(r, g, b);
+        return sharedPreferences.getInt(KEY_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
     }
 
     public static Typeface getTypeface(int position) {
         switch (position) {
-            case 1: return Typeface.MONOSPACE;
+            case 1: return Typeface.DEFAULT_BOLD;
             case 2: return Typeface.SERIF;
-            case 3: return Typeface.SANS_SERIF;
+            case 3: return Typeface.MONOSPACE;
             default: return Typeface.DEFAULT;
         }
     }
@@ -81,7 +69,7 @@ public class ThemeManager {
         }
     }
 
-    private static void applyStyleToView(View view, int fontSize, int fontColor, Typeface typeface) {
+    public static void applyStyleToView(View view, int fontSize, int fontColor, Typeface typeface) {
         if (view instanceof TextView) {
             TextView textView = (TextView) view;
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
@@ -100,13 +88,16 @@ public class ThemeManager {
             editText.setHintTextColor(fontColor & 0x80FFFFFF);
             editText.setTextColor(fontColor);
         }
-        
+
         if (view instanceof Spinner){
             Spinner spinner = (Spinner) view;
             spinner.setBackgroundTintList(ColorStateList.valueOf(fontColor));
             View selectedView = spinner.getSelectedView();
             if (selectedView instanceof TextView) {
-                ((TextView) selectedView).setTextColor(fontColor);
+                TextView textView = (TextView) selectedView;
+                textView.setTextColor(fontColor);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                textView.setTypeface(typeface);
             }
         }
     }

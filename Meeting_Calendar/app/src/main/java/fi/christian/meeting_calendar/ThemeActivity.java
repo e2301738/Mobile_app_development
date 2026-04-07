@@ -63,7 +63,7 @@ public class ThemeActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 updatePreview();
-            }
+                ThemeManager.applyStyleToView(fontTypeSpinner, fontSizeSeekBar.getProgress(), Color.rgb(fontColorRedSeekBar.getProgress(), fontColorGreenSeekBar.getProgress(), fontColorBlueSeekBar.getProgress()), ThemeManager.getTypeface(fontTypeSpinner.getSelectedItemPosition()));}
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
@@ -124,13 +124,15 @@ public class ThemeActivity extends AppCompatActivity {
         fontSizeSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_FONT_SIZE, ThemeManager.DEFAULT_FONT_SIZE));
         fontTypeSpinner.setSelection(sharedPreferences.getInt(ThemeManager.KEY_FONT_TYPE, ThemeManager.DEFAULT_FONT_TYPE_INDEX));
         
-        fontColorRedSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_FONT_COLOR_RED, ThemeManager.DEFAULT_COLOR_BLACK));
-        fontColorGreenSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_FONT_COLOR_GREEN, ThemeManager.DEFAULT_COLOR_BLACK));
-        fontColorBlueSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_FONT_COLOR_BLUE, ThemeManager.DEFAULT_COLOR_BLACK));
+        int fontColor = sharedPreferences.getInt(ThemeManager.KEY_FONT_COLOR, ThemeManager.DEFAULT_FONT_COLOR);
+        fontColorRedSeekBar.setProgress(Color.red(fontColor));
+        fontColorGreenSeekBar.setProgress(Color.green(fontColor));
+        fontColorBlueSeekBar.setProgress(Color.blue(fontColor));
         
-        backgroundColorRedSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_BACKGROUND_COLOR_RED, ThemeManager.DEFAULT_COLOR_WHITE));
-        backgroundColorGreenSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_BACKGROUND_COLOR_GREEN, ThemeManager.DEFAULT_COLOR_WHITE));
-        backgroundColorBlueSeekBar.setProgress(sharedPreferences.getInt(ThemeManager.KEY_BACKGROUND_COLOR_BLUE, ThemeManager.DEFAULT_COLOR_WHITE));
+        int backGroudColor = sharedPreferences.getInt(ThemeManager.KEY_BACKGROUND_COLOR, ThemeManager.DEFAULT_BACKGROUND_COLOR);
+        backgroundColorRedSeekBar.setProgress(Color.red(backGroudColor));
+        backgroundColorGreenSeekBar.setProgress(Color.green(backGroudColor));
+        backgroundColorBlueSeekBar.setProgress(Color.blue(backGroudColor));
 
         updatePreview();
     }
@@ -139,13 +141,13 @@ public class ThemeActivity extends AppCompatActivity {
         fontSizeSeekBar.setProgress(ThemeManager.DEFAULT_FONT_SIZE);
         fontTypeSpinner.setSelection(ThemeManager.DEFAULT_FONT_TYPE_INDEX);
         
-        fontColorRedSeekBar.setProgress(ThemeManager.DEFAULT_COLOR_BLACK);
-        fontColorGreenSeekBar.setProgress(ThemeManager.DEFAULT_COLOR_BLACK);
-        fontColorBlueSeekBar.setProgress(ThemeManager.DEFAULT_COLOR_BLACK);
+        fontColorRedSeekBar.setProgress(Color.red(ThemeManager.DEFAULT_FONT_COLOR));
+        fontColorGreenSeekBar.setProgress(Color.green(ThemeManager.DEFAULT_FONT_COLOR));
+        fontColorBlueSeekBar.setProgress(Color.blue(ThemeManager.DEFAULT_FONT_COLOR));
         
-        backgroundColorRedSeekBar.setProgress(ThemeManager.DEFAULT_COLOR_WHITE);
-        backgroundColorGreenSeekBar.setProgress(ThemeManager.DEFAULT_COLOR_WHITE);
-        backgroundColorBlueSeekBar.setProgress(ThemeManager.DEFAULT_COLOR_WHITE);
+        backgroundColorRedSeekBar.setProgress(Color.red(ThemeManager.DEFAULT_BACKGROUND_COLOR));
+        backgroundColorGreenSeekBar.setProgress(Color.green(ThemeManager.DEFAULT_BACKGROUND_COLOR));
+        backgroundColorBlueSeekBar.setProgress(Color.blue(ThemeManager.DEFAULT_BACKGROUND_COLOR));
         
         updatePreview();
     }
@@ -155,13 +157,11 @@ public class ThemeActivity extends AppCompatActivity {
         editor.putInt(ThemeManager.KEY_FONT_SIZE, fontSizeSeekBar.getProgress());
         editor.putInt(ThemeManager.KEY_FONT_TYPE, fontTypeSpinner.getSelectedItemPosition());
         
-        editor.putInt(ThemeManager.KEY_FONT_COLOR_RED, fontColorRedSeekBar.getProgress());
-        editor.putInt(ThemeManager.KEY_FONT_COLOR_GREEN, fontColorGreenSeekBar.getProgress());
-        editor.putInt(ThemeManager.KEY_FONT_COLOR_BLUE, fontColorBlueSeekBar.getProgress());
+        int fontColor = Color.rgb(fontColorRedSeekBar.getProgress(), fontColorGreenSeekBar.getProgress(), fontColorBlueSeekBar.getProgress());
+        editor.putInt(ThemeManager.KEY_FONT_COLOR, fontColor);
         
-        editor.putInt(ThemeManager.KEY_BACKGROUND_COLOR_RED, backgroundColorRedSeekBar.getProgress());
-        editor.putInt(ThemeManager.KEY_BACKGROUND_COLOR_GREEN, backgroundColorGreenSeekBar.getProgress());
-        editor.putInt(ThemeManager.KEY_BACKGROUND_COLOR_BLUE, backgroundColorBlueSeekBar.getProgress());
+        int backGroudColor = Color.rgb(backgroundColorRedSeekBar.getProgress(), backgroundColorGreenSeekBar.getProgress(), backgroundColorBlueSeekBar.getProgress());
+        editor.putInt(ThemeManager.KEY_BACKGROUND_COLOR, backGroudColor);
         
         editor.apply();
 
@@ -172,13 +172,12 @@ public class ThemeActivity extends AppCompatActivity {
     private void updatePreview() {
         int fontSize = fontSizeSeekBar.getProgress();
         int fontColor = Color.rgb(fontColorRedSeekBar.getProgress(), fontColorGreenSeekBar.getProgress(), fontColorBlueSeekBar.getProgress());
-        int bgColor = Color.rgb(backgroundColorRedSeekBar.getProgress(), backgroundColorGreenSeekBar.getProgress(), backgroundColorBlueSeekBar.getProgress());
-        
+        int backGroudColor = Color.rgb(backgroundColorRedSeekBar.getProgress(), backgroundColorGreenSeekBar.getProgress(), backgroundColorBlueSeekBar.getProgress());
+        Typeface typeface = ThemeManager.getTypeface(fontTypeSpinner.getSelectedItemPosition());
+
         themePreviewTextView.setTextSize(fontSize);
         themePreviewTextView.setTextColor(fontColor);
-        themePreviewTextView.setBackgroundColor(bgColor);
-        
-        Typeface typeface = ThemeManager.getTypeface(fontTypeSpinner.getSelectedItemPosition());
+        themePreviewTextView.setBackgroundColor(backGroudColor);
         themePreviewTextView.setTypeface(typeface);
     }
 }

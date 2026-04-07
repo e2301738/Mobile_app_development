@@ -64,8 +64,8 @@
 
     <string-array name="font_types">
         <item>Default</item>
+        <item>Default Bold</item>
         <item>Monospace</item>
         <item>Serif</item>
-        <item>Sans-Serif</item>
     </string-array>
 </resources>
