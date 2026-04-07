@@ -23,8 +23,7 @@ public class ThemeActivity extends AppCompatActivity {
     private Spinner fontTypeSpinner;
     private SeekBar fontColorRedSeekBar, fontColorGreenSeekBar, fontColorBlueSeekBar;
     private SeekBar backgroundColorRedSeekBar, backgroundColorGreenSeekBar, backgroundColorBlueSeekBar;
-    private Button saveThemeButton;
-    private Button resetThemeButton;
+    private Button saveThemeButton, resetThemeButton;
     private ImageButton backButton;
     private SharedPreferences sharedPreferences;
 
