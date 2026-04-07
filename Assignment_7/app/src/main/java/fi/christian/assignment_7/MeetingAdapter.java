@@ -38,6 +38,8 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingV
     public void onBindViewHolder(@NonNull MeetingViewHolder meetingViewHolder, int position) {
         Meeting meeting = meetingList.get(position);
         meetingViewHolder.meetingDetailsTextView.setText(meeting.toString());
+        
+        ThemeManager.applyTheme(meetingViewHolder.itemView.getContext(), meetingViewHolder.itemView);
 
         meetingViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

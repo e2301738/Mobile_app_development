@@ -1,12 +1,12 @@
 package fi.christian.assignment_7;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText titleEditText, placeEditText;
     private TextView participantsDisplayTextView;
     private Button dateButton, timeButton, addParticipantsButton, submitButton, summaryButton, searchButton, updateButton;
+    private ImageButton themeButton;
     private Drawable titleBackground, placeBackground;
     private ArrayList<String> selectedParticipants = new ArrayList<>();
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
@@ -40,13 +41,19 @@ public class MainActivity extends AppCompatActivity {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             selectedParticipants = result.getData().getStringArrayListExtra("participants");
                             updateParticipantsDisplay();
-                            addParticipantsButton.setTextColor(Color.BLACK);
+                            addParticipantsButton.setTextColor(ThemeManager.getFontColor(MainActivity.this));
                         }
                     }
                 });
 
         initializeViews();
         setupListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ThemeManager.applyTheme(this, findViewById(R.id.mainLayout));
     }
 
     private void initializeViews() {
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         summaryButton = findViewById(R.id.summaryButton);
         searchButton = findViewById(R.id.searchButton);
         updateButton = findViewById(R.id.updateButton);
+        themeButton = findViewById(R.id.settingsButton);
 
         titleBackground = titleEditText.getBackground();
         placeBackground = placeEditText.getBackground();
@@ -117,6 +125,13 @@ public class MainActivity extends AppCompatActivity {
                 startUpdateActivity();
             }
         });
+
+        themeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startThemeActivity();
+            }
+        });
     }
 
     private void startParticipantsActivity() {
@@ -125,14 +140,18 @@ public class MainActivity extends AppCompatActivity {
         participantsActivityResultLauncher.launch(intent);
     }
 
+    private void startThemeActivity() {
+        Intent intent = new Intent(this, ThemeActivity.class);
+        startActivity(intent);
+    }
+
     private void updateParticipantsDisplay() {
         if (selectedParticipants == null || selectedParticipants.isEmpty()) {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
-            participantsDisplayTextView.setTextColor(Color.GRAY);
         } else {
             participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
-            participantsDisplayTextView.setTextColor(Color.BLACK);
         }
+        participantsDisplayTextView.setTextColor(ThemeManager.getFontColor(this));
     }
 
     private void showDatePicker() {
@@ -193,11 +212,11 @@ public class MainActivity extends AppCompatActivity {
         placeEditText.setText("");
         selectedParticipants.clear();
         updateParticipantsDisplay();
-        addParticipantsButton.setTextColor(Color.BLACK);
+        addParticipantsButton.setTextColor(ThemeManager.getFontColor(this));
         dateButton.setText(R.string.meeting_date_hint);
-        dateButton.setTextColor(Color.BLACK);
+        dateButton.setTextColor(ThemeManager.getFontColor(this));
         timeButton.setText(R.string.meeting_time_hint);
-        timeButton.setTextColor(Color.BLACK);
+        timeButton.setTextColor(ThemeManager.getFontColor(this));
         titleEditText.requestFocus();
     }
 

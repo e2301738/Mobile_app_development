@@ -24,17 +24,19 @@ public class InputHandler {
             button.setTextColor(Color.RED);
             return false;
         } else {
-            button.setTextColor(Color.BLACK);
+            button.setTextColor(ThemeManager.getFontColor(button.getContext()));
             return true;
         }
     }
 
     public static boolean validateParticipants(TextView display, Button button) {
-        if (display.getText().toString().equals(display.getContext().getString(R.string.no_participants_selected))) {
+        String noParticipantsText = display.getContext().getString(R.string.no_participants_selected);
+        
+        if (display.getText().toString().equals(noParticipantsText) || display.getText().toString().isEmpty()) {
             button.setTextColor(Color.RED);
             return false;
         } else {
-            button.setTextColor(Color.BLACK);
+            button.setTextColor(ThemeManager.getFontColor(button.getContext()));
             return true;
         }
     }

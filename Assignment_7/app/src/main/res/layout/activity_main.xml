@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/mainTitleTextView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:id="@+id/mainTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/app_name"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/settings_button_text"
+                android:src="@drawable/ic_theme_palette" />
+
+        </RelativeLayout>
 
         <TextView
+            android:id="@+id/titleLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/meeting_title_label"
             android:textStyle="bold" />
+
         <EditText
             android:id="@+id/titleEditText"
             android:layout_width="match_parent"
@@ -33,11 +53,13 @@
             android:inputType="text" />
 
         <TextView
+            android:id="@+id/placeLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/meeting_place_label"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
+
         <EditText
             android:id="@+id/placeEditText"
             android:layout_width="match_parent"
@@ -46,6 +68,7 @@
             android:inputType="text" />
 
         <TextView
+            android:id="@+id/participantsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/meeting_participants_label"
@@ -64,15 +87,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@string/no_participants_selected"
-            android:fontStyle="italic" />
+            android:text="@string/no_participants_selected" />
 
         <TextView
+            android:id="@+id/dateLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/meeting_date_label"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
+
         <Button
             android:id="@+id/dateButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -82,11 +106,13 @@
             android:textAlignment="center" />
 
         <TextView
+            android:id="@+id/timeLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/meeting_time_label"
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
+
         <Button
             android:id="@+id/timeButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -97,6 +123,7 @@
 
         <Button
             android:id="@+id/submitButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/submit_button_text"
@@ -104,18 +131,21 @@
 
         <Button
             android:id="@+id/summaryButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/summary_button_text" />
 
         <Button
             android:id="@+id/searchButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/search_button_text" />
 
         <Button
             android:id="@+id/updateButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/update_button_text" />

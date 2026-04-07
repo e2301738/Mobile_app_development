@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/updateLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/updateTitleTextView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/update_activity_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="24dp" />
+        android:layout_marginBottom="24dp">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back_to_main_button_text"
+            android:src="@android:drawable/ic_menu_revert" />
+
+        <TextView
+            android:id="@+id/updateTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/update_activity_title"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +47,8 @@
             android:id="@+id/searchTitleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/update_search_hint" />
+            android:hint="@string/update_search_hint"
+            android:inputType="text" />
 
         <Button
             android:id="@+id/searchDateButton"
@@ -39,16 +56,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/update_date_search_hint"
-            android:textAlignment="viewStart" />
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/searchButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/search_button_text" />
 
         <Button
             android:id="@+id/clearSearchButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/clear_button_text" />
@@ -72,13 +91,15 @@
                 android:id="@+id/titleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/meeting_title_hint" />
+                android:hint="@string/meeting_title_hint"
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/placeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/meeting_place_hint" />
+                android:hint="@string/meeting_place_hint"
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/addParticipantsButton"
@@ -100,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/meeting_date_hint"
-                android:textAlignment="viewStart" />
+                android:textAlignment="center" />
 
             <Button
                 android:id="@+id/timeButton"
@@ -108,10 +129,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/meeting_time_hint"
-                android:textAlignment="viewStart" />
+                android:textAlignment="center" />
 
             <Button
                 android:id="@+id/saveButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/save_changes_button_text"
@@ -119,6 +141,7 @@
 
             <Button
                 android:id="@+id/deleteButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/delete_button_text"
@@ -126,12 +149,4 @@
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/back_to_main_button_text"
-        android:layout_marginTop="16dp" />
-
 </LinearLayout>

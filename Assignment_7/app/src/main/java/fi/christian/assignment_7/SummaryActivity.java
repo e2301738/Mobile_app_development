@@ -2,7 +2,7 @@ package fi.christian.assignment_7;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SummaryActivity extends AppCompatActivity {
     private RecyclerView summaryRecyclerView;
     private TextView noMeetingsTextView;
-    private Button backButton;
+    private ImageButton backButton;
     private MeetingAdapter meetingAdapter;
 
     @Override
@@ -25,6 +25,12 @@ public class SummaryActivity extends AppCompatActivity {
         initializeViews();
         displayResults();
         setupListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ThemeManager.applyTheme(this, findViewById(R.id.summaryLayout));
     }
 
     private void initializeViews() {

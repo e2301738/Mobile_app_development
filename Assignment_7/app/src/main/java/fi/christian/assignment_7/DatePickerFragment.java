@@ -2,7 +2,6 @@ package fi.christian.assignment_7;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -34,10 +33,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         Button targetButton;
         if ("DatePicker".equals(getTag()) || "UpdateDatePicker".equals(getTag())) {
             targetButton = getActivity().findViewById(R.id.dateButton);
-            targetButton.setTextColor(Color.BLACK);
         } else {
             targetButton = getActivity().findViewById(R.id.searchDateButton);
         }
         targetButton.setText(dateValue);
+        targetButton.setTextColor(ThemeManager.getFontColor(getActivity()));
     }
 }
