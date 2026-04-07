@@ -58,7 +58,7 @@ public class ThemeManager {
         }
     }
 
-    private static void loopAllViewObjects(View view, int fontSize, int fontColor, Typeface typeface) {
+    public static void loopAllViewObjects(View view, int fontSize, int fontColor, Typeface typeface) {
         if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
             for (int i = 0; i < group.getChildCount(); i++) {
