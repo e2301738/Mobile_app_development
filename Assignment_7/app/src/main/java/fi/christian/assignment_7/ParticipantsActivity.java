@@ -4,12 +4,17 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -18,6 +23,7 @@ public class ParticipantsActivity extends AppCompatActivity {
 
     private EditText participantNameEditText;
     private Button addParticipantButton, doneButton;
+    private ImageButton backButton;
     private ListView participantsListView;
     private ArrayList<String> participantsList;
     private ArrayAdapter<String> adapter;
@@ -37,16 +43,32 @@ public class ParticipantsActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ThemeManager.applyTheme(this, findViewById(R.id.participantsLayout));
+    }
+
     private void initializeViews() {
         participantNameEditText = findViewById(R.id.participantNameEditText);
         addParticipantButton = findViewById(R.id.addParticipantButton);
         doneButton = findViewById(R.id.doneButton);
+        backButton = findViewById(R.id.backButton);
         participantsListView = findViewById(R.id.participantsListView);
 
         originalBackground = participantNameEditText.getBackground();
         InputHandler.setupTextWatcher(participantNameEditText, originalBackground);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, participantsList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, participantsList) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ThemeManager.applyTheme(getContext(), view);
+                return view;
+            }
+        };
+
         participantsListView.setAdapter(adapter);
         participantsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -67,6 +89,13 @@ public class ParticipantsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 returnResult();
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

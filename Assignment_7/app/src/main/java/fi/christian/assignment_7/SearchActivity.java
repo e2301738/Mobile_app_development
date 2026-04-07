@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +15,8 @@ import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
     private EditText searchEditText;
-    private Button searchButton, backButton;
+    private Button searchButton;
+    private ImageButton backButton;
     private RecyclerView searchResultsRecyclerView;
     private TextView noResultsTextView;
     private MeetingAdapter meetingAdapter;
@@ -27,6 +29,12 @@ public class SearchActivity extends AppCompatActivity {
 
         initializeViews();
         setupListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ThemeManager.applyTheme(this, findViewById(R.id.searchLayout));
     }
 
     private void initializeViews() {

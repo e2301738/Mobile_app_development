@@ -2,7 +2,6 @@ package fi.christian.assignment_7;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TimePicker;
@@ -35,7 +34,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         } else {
             targetButton = getActivity().findViewById(R.id.timeButton);
         }
-        targetButton.setTextColor(Color.BLACK);
         targetButton.setText(timeValue);
+        targetButton.setTextColor(ThemeManager.getFontColor(getActivity()));
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +26,8 @@ public class UpdateActivity extends AppCompatActivity {
 
     private EditText searchTitleEditText, titleEditText, placeEditText;
     private TextView participantsDisplayTextView;
-    private Button searchDateButton, dateButton, timeButton, addParticipantsButton, searchButton, clearSearchButton, saveButton, deleteButton, backButton;
+    private Button searchDateButton, dateButton, timeButton, addParticipantsButton, searchButton, clearSearchButton, saveButton, deleteButton;
+    private ImageButton backButton;
     private LinearLayout editFieldsContainer;
     private RecyclerView searchResultsRecyclerView;
     private MeetingAdapter meetingAdapter;
@@ -50,13 +52,19 @@ public class UpdateActivity extends AppCompatActivity {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             selectedParticipants = result.getData().getStringArrayListExtra("participants");
                             updateParticipantsDisplay();
-                            addParticipantsButton.setTextColor(Color.BLACK);
+                            addParticipantsButton.setTextColor(ThemeManager.getFontColor(UpdateActivity.this));
                         }
                     }
                 });
 
         initializeViews();
         setupListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ThemeManager.applyTheme(this, findViewById(R.id.updateLayout));
     }
 
     private void initializeViews() {
@@ -91,6 +99,7 @@ public class UpdateActivity extends AppCompatActivity {
                 populateFields(meeting);
                 editFieldsContainer.setVisibility(View.VISIBLE);
                 searchResultsRecyclerView.setVisibility(View.GONE);
+                ThemeManager.applyTheme(UpdateActivity.this, editFieldsContainer);
             }
         });
         searchResultsRecyclerView.setAdapter(meetingAdapter);
@@ -170,12 +179,13 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private void updateParticipantsDisplay() {
-        if (selectedParticipants.isEmpty()) {
+        int fontColor = ThemeManager.getFontColor(this);
+        if (selectedParticipants == null || selectedParticipants.isEmpty()) {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
-            participantsDisplayTextView.setTextColor(Color.RED);
+            participantsDisplayTextView.setTextColor(fontColor & 0x80FFFFFF);
         } else {
             participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
-            participantsDisplayTextView.setTextColor(Color.BLACK);
+            participantsDisplayTextView.setTextColor(fontColor);
         }
     }
 
@@ -202,10 +212,12 @@ public class UpdateActivity extends AppCompatActivity {
             populateFields(searchResultsList.get(0));
             editFieldsContainer.setVisibility(View.VISIBLE);
             searchResultsRecyclerView.setVisibility(View.GONE);
+            ThemeManager.applyTheme(this, editFieldsContainer);
         } else {
             meetingAdapter.updateList(searchResultsList);
             searchResultsRecyclerView.setVisibility(View.VISIBLE);
             editFieldsContainer.setVisibility(View.GONE);
+            ThemeManager.applyTheme(this, searchResultsRecyclerView);
         }
     }
 
@@ -232,12 +244,9 @@ public class UpdateActivity extends AppCompatActivity {
         if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) {
             isValid = false;
         }
-        if (!InputHandler.validateInputIsEmpty(placeEditText)) {
-            isValid = false;
-        }
-        if (!InputHandler.validateInputIsEmpty(titleEditText)) {
-            isValid = false;
-        }
+
+        if (!InputHandler.validateInputIsEmpty(placeEditText)) isValid = false;
+        if (!InputHandler.validateInputIsEmpty(titleEditText)) isValid = false;
 
         if (!isValid) {
             toastMessage(getString(R.string.fill_fields));
@@ -257,7 +266,7 @@ public class UpdateActivity extends AppCompatActivity {
         placeEditText.setText(meeting.getPlace());
         selectedParticipants = new ArrayList<>(meeting.getParticipants());
         updateParticipantsDisplay();
-        addParticipantsButton.setTextColor(Color.BLACK);
+        addParticipantsButton.setTextColor(ThemeManager.getFontColor(this));
         dateButton.setText(meeting.getDate());
         timeButton.setText(meeting.getTime());
         
