@@ -216,7 +216,7 @@
 
         <Button
             android:id="@+id/resetThemeButton"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/reset_theme_button_text"

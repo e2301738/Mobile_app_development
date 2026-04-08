@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -72,7 +71,7 @@ public class ThemeManager {
     public static void applyStyleToView(View view, int fontSize, int fontColor, Typeface typeface) {
         if (view instanceof TextView) {
             TextView textView = (TextView) view;
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+            textView.setTextSize(fontSize);
             textView.setTextColor(fontColor);
             textView.setTypeface(typeface);
         }
@@ -80,7 +79,6 @@ public class ThemeManager {
         if (view instanceof MaterialButton) {
             MaterialButton button = (MaterialButton) view;
             button.setStrokeColor(ColorStateList.valueOf(fontColor));
-            button.setStrokeWidth(3);
         }
 
         if (view instanceof EditText) {
@@ -96,7 +94,7 @@ public class ThemeManager {
             if (selectedView instanceof TextView) {
                 TextView textView = (TextView) selectedView;
                 textView.setTextColor(fontColor);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+                textView.setTextSize(fontSize);
                 textView.setTypeface(typeface);
             }
         }
