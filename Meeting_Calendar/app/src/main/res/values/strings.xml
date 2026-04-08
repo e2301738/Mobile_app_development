@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Meeting Calendar</string>
+    <string name="prefs_file_name">theme_settings_prefs</string>
+
+    <string name="summary_activity_title">Meeting Summary</string>
+    <string name="search_activity_title">Search Meeting</string>
+    <string name="update_activity_title">Update Meeting</string>
+    <string name="update_search_header">Search Meeting (by Title or Date)</string>
+    <string name="participants_activity_title">Manage Participants</string>
+    <string name="theme_activity_title">Theme Settings</string>
+
+    <string name="meeting_title_label">Meeting Title:</string>
+    <string name="meeting_place_label">Meeting Place:</string>
+    <string name="meeting_participants_label">Participants:</string>
+    <string name="meeting_date_label">Meeting Date:</string>
+    <string name="meeting_time_label">Meeting Time:</string>
+
+    <string name="meeting_title_hint">Enter meeting title</string>
+    <string name="meeting_place_hint">Enter meeting place</string>
+    <string name="meeting_participants_hint">Enter name and press Add</string>
+    <string name="meeting_date_hint">Set date</string>
+    <string name="meeting_time_hint">Set time</string>
+    <string name="search_query_hint">Search by title, place, date, time or participant</string>
+    <string name="update_search_hint">Enter title</string>
+    <string name="update_date_search_hint">Select meeting date</string>
+
+    <string name="submit_button_text">Submit</string>
+    <string name="summary_button_text">Summary</string>
+    <string name="search_button_text">Search</string>
+    <string name="update_button_text">Update</string>
+    <string name="back_to_main_button_text">Back to Main</string>
+    <string name="save_changes_button_text">Save Changes</string>
+    <string name="delete_button_text">Delete Meeting</string>
+    <string name="clear_button_text">Clear Search</string>
+    <string name="add_participants_button_text">Add Participants</string>
+    <string name="add_button_text">Add</string>
+    <string name="done_button_text">Done</string>
+    <string name="settings_button_text">Settings</string>
+    <string name="save_theme_button_text">Save Theme</string>
+    <string name="reset_theme_button_text">Reset to Default</string>
+
+    <string name="fill_fields">Please fill all fields</string>
+    <string name="no_meetings_text">No meetings scheduled yet.</string>
+    <string name="no_matches_found">No matches found.</string>
+    <string name="enter_search_title">Please enter a title to search</string>
+    <string name="meeting_not_found">Meeting not found</string>
+    <string name="toast_update_success">Meeting updated successfully</string>
+    <string name="toast_meeting_added">Added meeting</string>
+    <string name="toast_delete_success">Meeting deleted successfully</string>
+    <string name="toast_enter_name">Please enter a name</string>
+    <string name="no_participants_selected">No participants selected</string>
+    <string name="settings_saved">Theme saved successfully!</string>
+    <string name="settings_save_failed">Failed to save theme settings</string>
+    <string name="preview_text">Theme Preview Text</string>
+
+    <string name="font_size_label">Font Size</string>
+    <string name="font_type_label">Font Type</string>
+    <string name="font_color_label">Font Color (RGB)</string>
+    <string name="background_color_label">Background Color (RGB)</string>
+
+    <string name="red_label">R: </string>
+    <string name="green_label">G: </string>
+    <string name="blue_label">B: </string>
+
+    <string-array name="font_types">
+        <item>Default</item>
+        <item>Default Bold</item>
+        <item>Monospace</item>
+        <item>Serif</item>
+    </string-array>
+</resources>
