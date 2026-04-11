@@ -11,6 +11,10 @@ public class MeetingManager {
         sortMeetings();
     }
 
+    public static void clearMeetings() {
+        meetings.clear();
+    }
+
     public static ArrayList<Meeting> getMeetings() {
         return meetings;
     }

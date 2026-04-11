@@ -3,10 +3,12 @@ package fi.christian.meeting_calendar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText titleEditText, placeEditText;
     private TextView participantsDisplayTextView;
     private Button dateButton, timeButton, addParticipantsButton, submitButton, summaryButton, searchButton, updateButton;
-    private ImageButton themeButton;
+    private ImageButton settingsButton;
     private Drawable titleBackground, placeBackground;
     private ArrayList<String> selectedParticipants = new ArrayList<>();
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            selectedParticipants = result.getData().getStringArrayListExtra("participants");
+                            selectedParticipants = result.getData().getStringArrayListExtra(getString(R.string.participants));
                             updateParticipantsDisplay();
                             addParticipantsButton.setTextColor(ThemeManager.getFontColor(MainActivity.this));
                         }
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         summaryButton = findViewById(R.id.summaryButton);
         searchButton = findViewById(R.id.searchButton);
         updateButton = findViewById(R.id.updateButton);
-        themeButton = findViewById(R.id.settingsButton);
+        settingsButton = findViewById(R.id.settingsButton);
 
         titleBackground = titleEditText.getBackground();
         placeBackground = placeEditText.getBackground();
@@ -126,22 +128,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        themeButton.setOnClickListener(new View.OnClickListener() {
+        settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startThemeActivity();
+                showSettingsMenu(v);
             }
         });
     }
 
+    private void showSettingsMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.getMenuInflater().inflate(R.menu.settings_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_theme) {
+                    startThemeActivity();
+                    return true;
+                } else if (itemId == R.id.action_write_to_file) {
+                    startFileActivity();
+                    return true;
+                }
+                return false;
+            }
+        });
+        popup.show();
+    }
+
     private void startParticipantsActivity() {
         Intent intent = new Intent(this, ParticipantsActivity.class);
-        intent.putStringArrayListExtra("participants", selectedParticipants);
+        intent.putStringArrayListExtra(getString(R.string.participants), selectedParticipants);
         participantsActivityResultLauncher.launch(intent);
     }
 
     private void startThemeActivity() {
         Intent intent = new Intent(this, ThemeActivity.class);
+        startActivity(intent);
+    }
+
+    private void startFileActivity() {
+        Intent intent = new Intent(this, FileActivity.class);
         startActivity(intent);
     }
 

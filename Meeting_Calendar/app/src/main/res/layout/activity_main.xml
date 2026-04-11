@@ -34,7 +34,7 @@
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/settings_button_text"
-                android:src="@drawable/ic_theme_palette" />
+                android:src="@drawable/ic_settings" />
 
         </RelativeLayout>
 
