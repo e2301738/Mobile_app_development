@@ -1,14 +1,17 @@
 package fi.christian.meeting_calendar;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,7 +27,7 @@ public class ThemeActivity extends AppCompatActivity {
     private SeekBar fontColorRedSeekBar, fontColorGreenSeekBar, fontColorBlueSeekBar;
     private SeekBar backgroundColorRedSeekBar, backgroundColorGreenSeekBar, backgroundColorBlueSeekBar;
     private Button saveThemeButton, resetThemeButton;
-    private ImageButton backButton;
+    private ImageButton backButton, settingsButton;
     private SharedPreferences sharedPreferences;
 
     private String preferenceName;
@@ -66,6 +69,7 @@ public class ThemeActivity extends AppCompatActivity {
         fontSizeSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         fontColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         fontColorGreenSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
+        fontColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener); // Fix: duplicate listener setting is harmless but clean
         fontColorBlueSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         backgroundColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         backgroundColorGreenSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
@@ -101,6 +105,36 @@ public class ThemeActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSettingsMenu(v);
+            }
+        });
+    }
+
+    private void showSettingsMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.getMenuInflater().inflate(R.menu.settings_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_write_to_file) {
+                    startFileActivity();
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+        popup.show();
+    }
+
+    private void startFileActivity() {
+        Intent intent = new Intent(this, FileActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -121,10 +155,11 @@ public class ThemeActivity extends AppCompatActivity {
         backgroundColorRedSeekBar = findViewById(R.id.backgroundColorRedSeekBar);
         backgroundColorGreenSeekBar = findViewById(R.id.backgroundColorGreenSeekBar);
         backgroundColorBlueSeekBar = findViewById(R.id.backgroundColorBlueSeekBar);
-        
+
         saveThemeButton = findViewById(R.id.saveThemeButton);
         resetThemeButton = findViewById(R.id.resetThemeButton);
         backButton = findViewById(R.id.backButton);
+        settingsButton = findViewById(R.id.settingsButton);
     }
 
     private void setupSpinner() {
@@ -162,7 +197,7 @@ public class ThemeActivity extends AppCompatActivity {
         backgroundColorRedSeekBar.setProgress(Color.red(ThemeManager.DEFAULT_BACKGROUND_COLOR));
         backgroundColorGreenSeekBar.setProgress(Color.green(ThemeManager.DEFAULT_BACKGROUND_COLOR));
         backgroundColorBlueSeekBar.setProgress(Color.blue(ThemeManager.DEFAULT_BACKGROUND_COLOR));
-        
+
         updatePreview();
     }
 
@@ -176,7 +211,7 @@ public class ThemeActivity extends AppCompatActivity {
         
         int backgroundColor = Color.rgb(backgroundColorRedSeekBar.getProgress(), backgroundColorGreenSeekBar.getProgress(), backgroundColorBlueSeekBar.getProgress());
         editor.putInt(keyBackgroundColor, backgroundColor);
-        
+
         editor.apply();
 
         ThemeManager.applyTheme(this, findViewById(R.id.themeLayout));

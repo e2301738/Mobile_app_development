@@ -83,7 +83,7 @@
     <string name="file_write_activity_title">File Storage</string>
     <string name="select_storage_label">Select Storage Location:</string>
     <string name="storage_internal">Internal</string>
-    <string name="storage_external">External (SD)</string>
+    <string name="storage_external">External</string>
     <string name="btn_save_to_file">Save All Meetings to File</string>
     <string name="btn_read_from_file">Load Meetings from File</string>
     <string name="storage_not_available">Storage not available</string>
@@ -104,4 +104,6 @@
 
     <string name="colon_separator">: </string>
     <string name="participants">participants</string>
+    <string name="btn_merge_data">Merge Into Storage</string>
+    <string name="toast_merge_success">Data merged successfully!</string>
 </resources>

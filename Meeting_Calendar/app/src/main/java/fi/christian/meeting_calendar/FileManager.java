@@ -14,6 +14,10 @@ public class FileManager {
     private static final int BLOCK_SIZE = 128;
 
     public static boolean saveMeetings(Context context, File directory, String fileName, ArrayList<Meeting> meetings) {
+        return saveMeetings(context, directory, fileName, meetings, null);
+    }
+
+    public static boolean saveMeetings(Context context, File directory, String fileName, ArrayList<Meeting> meetings, JSONObject settings) {
         try {
             JSONObject rootJsonObject = new JSONObject();
             JSONArray meetingsJsonArray = new JSONArray();
@@ -33,6 +37,12 @@ public class FileManager {
                 meetingsJsonArray.put(meetingJsonObject);
             }
             rootJsonObject.put(context.getString(R.string.json_key_meetings), meetingsJsonArray);
+            
+            if (settings != null) {
+                rootJsonObject.put(context.getString(R.string.json_key_settings), settings);
+            } else {
+                rootJsonObject.put(context.getString(R.string.json_key_settings), ThemeManager.getSettingsAsJson(context));
+            }
 
             File file = new File(directory, fileName);
             FileOutputStream fileOutputStream = new FileOutputStream(file, false);
@@ -46,42 +56,51 @@ public class FileManager {
         }
     }
 
-    public static boolean loadMeetings(Context context, File directory, String fileName) {
-        File file = new File(directory, fileName);
-        if (!file.exists()) return false;
+    public static JSONObject getSettingsFromFile(Context context, File directory, String fileName) {
+        String content = readFileContent(new File(directory, fileName));
+        try {
+            JSONObject root = new JSONObject(content);
+            return root.optJSONObject(context.getString(R.string.json_key_settings));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static boolean loadMeetings(Context context, File directory, String fileName, boolean merge) {
+        String content = readFileContent(new File(directory, fileName));
+        if (content.isEmpty()) return false;
 
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            char[] inputBuffer = new char[BLOCK_SIZE];
-            StringBuilder fileContent = new StringBuilder();
-            int charRead;
+            JSONObject rootJsonObject = new JSONObject(content);
 
-            while ((charRead = inputStreamReader.read(inputBuffer)) > 0) {
-                fileContent.append(String.copyValueOf(inputBuffer, 0, charRead));
+            if (!merge) {
+                MeetingManager.clearMeetings();
+                String keySettings = context.getString(R.string.json_key_settings);
+                if (rootJsonObject.has(keySettings)) {
+                    ThemeManager.applySettingsFromJson(context, rootJsonObject.getJSONObject(keySettings));
+                }
             }
-            inputStreamReader.close();
-
-            JSONObject rootJsonObject = new JSONObject(fileContent.toString());
-            MeetingManager.clearMeetings();
 
             String keyMeetings = context.getString(R.string.json_key_meetings);
             if (rootJsonObject.has(keyMeetings)) {
                 JSONArray meetingsArray = rootJsonObject.getJSONArray(keyMeetings);
                 for (int i = 0; i < meetingsArray.length(); i++) {
-                    JSONObject obj = meetingsArray.getJSONObject(i);
+                    JSONObject jsonObject = meetingsArray.getJSONObject(i);
                     ArrayList<String> participants = new ArrayList<>();
-                    JSONArray pArray = obj.getJSONArray(context.getString(R.string.json_key_participants));
-                    for (int j = 0; j < pArray.length(); j++) {
-                        participants.add(pArray.getString(j));
+                    JSONArray participantsArray = jsonObject.optJSONArray(context.getString(R.string.json_key_participants));
+
+                    if (participantsArray != null) {
+                        for (int j = 0; j < participantsArray.length(); j++) {
+                            participants.add(participantsArray.getString(j));
+                        }
                     }
 
                     Meeting meeting = new Meeting(
-                            obj.getString(context.getString(R.string.json_key_title)),
-                            obj.getString(context.getString(R.string.json_key_place)),
+                            jsonObject.getString(context.getString(R.string.json_key_title)),
+                            jsonObject.getString(context.getString(R.string.json_key_place)),
                             participants,
-                            obj.getString(context.getString(R.string.json_key_date)),
-                            obj.getString(context.getString(R.string.json_key_time))
+                            jsonObject.getString(context.getString(R.string.json_key_date)),
+                            jsonObject.getString(context.getString(R.string.json_key_time))
                     );
                     MeetingManager.addMeeting(meeting);
                 }
@@ -90,6 +109,25 @@ public class FileManager {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private static String readFileContent(File file) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            char[] inputBuffer = new char[BLOCK_SIZE];
+            StringBuilder stringBuilder = new StringBuilder();
+            int charRead;
+
+            while ((charRead = inputStreamReader.read(inputBuffer)) > 0) {
+                stringBuilder.append(String.copyValueOf(inputBuffer, 0, charRead));
+                inputBuffer = new char[BLOCK_SIZE];
+            }
+            inputStreamReader.close();
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            return "";
         }
     }
 }
