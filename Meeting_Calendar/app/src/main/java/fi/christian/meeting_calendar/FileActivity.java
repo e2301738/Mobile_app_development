@@ -35,17 +35,6 @@ public class FileActivity extends AppCompatActivity {
 
         initializeViews();
         setupListeners();
-    }
-
-    private void loadLastStoragePreference() {
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
-        boolean useInternal = prefs.getBoolean(getString(R.string.key_last_storage_type), true);
-
-        if (useInternal) {
-            internalRadioButton.setChecked(true);
-        } else {
-            externalRadioButton.setChecked(true);
-        }
         updateDestinationDirectory();
     }
 
@@ -59,7 +48,6 @@ public class FileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadLastStoragePreference();
         ThemeManager.applyTheme(this, findViewById(R.id.fileWriteLayout));
     }
 
