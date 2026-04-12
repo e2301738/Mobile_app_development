@@ -35,7 +35,6 @@ public class FileActivity extends AppCompatActivity {
 
         initializeViews();
         setupListeners();
-        updateDestinationDirectory();
     }
 
     private void saveStoragePreference() {
@@ -48,6 +47,16 @@ public class FileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
+        boolean useInternal = prefs.getBoolean(getString(R.string.key_last_storage_type), true);
+        if (useInternal) {
+            internalRadioButton.setChecked(true);
+        } else {
+            externalRadioButton.setChecked(true);
+        }
+        
+        updateDestinationDirectory();
         ThemeManager.applyTheme(this, findViewById(R.id.fileWriteLayout));
     }
 
@@ -66,7 +75,6 @@ public class FileActivity extends AppCompatActivity {
         internalRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveStoragePreference();
                 updateDestinationDirectory();
             }
         });
@@ -74,7 +82,6 @@ public class FileActivity extends AppCompatActivity {
         externalRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveStoragePreference();
                 updateDestinationDirectory();
             }
         });
@@ -163,6 +170,7 @@ public class FileActivity extends AppCompatActivity {
         boolean success = FileManager.writeMeetingsAndSettingsToFile(this, destinationDirectory, fileName, MeetingManager.getMeetings(), null);
 
         if (success) {
+            saveStoragePreference();
             int toastResourceId = externalRadioButton.isChecked() ? R.string.toast_file_written_sd : R.string.toast_file_written_phone;
             File file = new File(destinationDirectory, fileName);
             Toast.makeText(this, getString(toastResourceId) + ": " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
@@ -176,6 +184,7 @@ public class FileActivity extends AppCompatActivity {
 
         if (!merge) {
             if (FileManager.readMeetingsAndSettingsFromFile(this, destinationDirectory, fileName, false)) {
+                saveStoragePreference();
                 ThemeManager.applyTheme(this, findViewById(R.id.fileWriteLayout));
                 Toast.makeText(this, getString(R.string.file_load_fb), Toast.LENGTH_SHORT).show();
             } else {
@@ -183,14 +192,17 @@ public class FileActivity extends AppCompatActivity {
             }
         } else {
             JSONObject targetSettings = FileManager.fetchThemeSettingsFromFile(this, destinationDirectory, fileName);
-            FileManager.readMeetingsAndSettingsFromFile(this, destinationDirectory, fileName, true);
-            
-            boolean success = FileManager.writeMeetingsAndSettingsToFile(this, destinationDirectory, fileName, MeetingManager.getMeetings(), targetSettings);
-            
-            if (success) {
-                Toast.makeText(this, getString(R.string.toast_merge_success), Toast.LENGTH_SHORT).show();
+            if (FileManager.readMeetingsAndSettingsFromFile(this, destinationDirectory, fileName, true)) {
+                saveStoragePreference();
+                boolean success = FileManager.writeMeetingsAndSettingsToFile(this, destinationDirectory, fileName, MeetingManager.getMeetings(), targetSettings);
+                
+                if (success) {
+                    Toast.makeText(this, getString(R.string.toast_merge_success), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, getString(R.string.io_excp), Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, getString(R.string.io_excp), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.file_not_found_excp), Toast.LENGTH_SHORT).show();
             }
         }
     }
