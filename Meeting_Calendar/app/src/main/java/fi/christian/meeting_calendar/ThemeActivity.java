@@ -69,7 +69,7 @@ public class ThemeActivity extends AppCompatActivity {
         fontSizeSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         fontColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         fontColorGreenSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
-        fontColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener); // Fix: duplicate listener setting is harmless but clean
+        fontColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         fontColorBlueSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         backgroundColorRedSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         backgroundColorGreenSeekBar.setOnSeekBarChangeListener(seekBarChangeListener);

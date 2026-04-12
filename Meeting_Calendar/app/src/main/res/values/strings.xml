@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Meeting Calendar</string>
     <string name="prefs_file_name">theme_settings_preferences</string>
+    <string name="prefs_app_state">app_state_preferences</string>
 
     <string name="summary_activity_title">Meeting Summary</string>
     <string name="search_activity_title">Search Meeting</string>
@@ -79,17 +80,15 @@
     <string name="toast_file_written_sd">file written to sd</string>
     <string name="toast_file_written_phone">file written to phone memory</string>
 
-    <!-- specific strings -->
     <string name="file_write_activity_title">File Storage</string>
     <string name="select_storage_label">Select Storage Location:</string>
     <string name="storage_internal">Internal</string>
-    <string name="storage_external">External</string>
-    <string name="btn_save_to_file">Save All Meetings to File</string>
-    <string name="btn_read_from_file">Load Meetings from File</string>
+    <string name="storage_external">External (SD)</string>
+    <string name="btn_save_to_file">Overwrite File with Current List</string>
+    <string name="btn_read_from_file">Replace Current List from File</string>
     <string name="storage_not_available">Storage not available</string>
     <string name="meetings_data_dir">meetings_data</string>
 
-    <!-- JSON keys -->
     <string name="json_key_title">title</string>
     <string name="json_key_place">place</string>
     <string name="json_key_date">date</string>
@@ -104,6 +103,18 @@
 
     <string name="colon_separator">: </string>
     <string name="participants">participants</string>
-    <string name="btn_merge_data">Merge Into Storage</string>
+    <string name="btn_merge_data">Merge Current List and File</string>
     <string name="toast_merge_success">Data merged successfully!</string>
+
+    <string name="key_last_storage_type">last_storage_type</string>
+    <string name="btn_delete_storage">Delete Storage File</string>
+    <string name="delete_confirm_title">Delete File?</string>
+    <string name="delete_confirm_message">This will permanently delete the JSON file from the selected storage. Are you sure?</string>
+    <string name="delete_confirm_yes">Delete</string>
+    <string name="delete_confirm_no">Cancel</string>
+    <string name="toast_file_deleted">File deleted successfully</string>
+    <string name="toast_file_delete_error">Error deleting file</string>
+
+    <string name="log_error_create_json">Error creating settings JSON</string>
+    <string name="log_error_apply_json">Error applying settings from JSON</string>
 </resources>

@@ -1,6 +1,7 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +52,29 @@ public class MainActivity extends AppCompatActivity {
 
         initializeViews();
         setupListeners();
+        loadInitialData();
+    }
+
+    private void loadInitialData() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
+        boolean useInternal = prefs.getBoolean(getString(R.string.key_last_storage_type), true);
+        
+        String fileName = getString(R.string.meeting_file_name);
+        String destinationPath = getString(R.string.meetings_data_dir);
+        File directory;
+
+        if (useInternal) {
+            directory = new File(getFilesDir(), destinationPath);
+        } else {
+            directory = getExternalFilesDir(destinationPath);
+        }
+
+        if (directory != null && directory.exists()) {
+            File file = new File(directory, fileName);
+            if (file.exists()) {
+                FileManager.readMeetingsAndSettingsFromFile(this, directory, fileName, false);
+            }
+        }
     }
 
     @Override

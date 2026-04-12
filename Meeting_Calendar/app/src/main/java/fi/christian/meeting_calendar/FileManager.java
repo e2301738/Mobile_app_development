@@ -13,116 +13,94 @@ import java.util.ArrayList;
 public class FileManager {
     private static final int BLOCK_SIZE = 128;
 
-    public static boolean saveMeetings(Context context, File directory, String fileName, ArrayList<Meeting> meetings) {
-        return saveMeetings(context, directory, fileName, meetings, null);
-    }
-
-    public static boolean saveMeetings(Context context, File directory, String fileName, ArrayList<Meeting> meetings, JSONObject settings) {
+    public static boolean writeMeetingsAndSettingsToFile(Context context, File directory, String fileName, ArrayList<Meeting> meetings, JSONObject settings) {
         try {
-            JSONObject rootJsonObject = new JSONObject();
-            JSONArray meetingsJsonArray = new JSONArray();
+            JSONObject rootJSON = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
 
             for (Meeting meeting : meetings) {
-                JSONObject meetingJsonObject = new JSONObject();
-                meetingJsonObject.put(context.getString(R.string.json_key_title), meeting.getTitle());
-                meetingJsonObject.put(context.getString(R.string.json_key_place), meeting.getPlace());
-                meetingJsonObject.put(context.getString(R.string.json_key_date), meeting.getDate());
-                meetingJsonObject.put(context.getString(R.string.json_key_time), meeting.getTime());
-
-                JSONArray participantsJsonArray = new JSONArray();
-                for (String participant : meeting.getParticipants()) {
-                    participantsJsonArray.put(participant);
-                }
-                meetingJsonObject.put(context.getString(R.string.json_key_participants), participantsJsonArray);
-                meetingsJsonArray.put(meetingJsonObject);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(context.getString(R.string.json_key_title), meeting.getTitle());
+                jsonObject.put(context.getString(R.string.json_key_place), meeting.getPlace());
+                jsonObject.put(context.getString(R.string.json_key_date), meeting.getDate());
+                jsonObject.put(context.getString(R.string.json_key_time), meeting.getTime());
+                jsonObject.put(context.getString(R.string.json_key_participants), new JSONArray(meeting.getParticipants()));
+                jsonArray.put(jsonObject);
             }
-            rootJsonObject.put(context.getString(R.string.json_key_meetings), meetingsJsonArray);
-            
-            if (settings != null) {
-                rootJsonObject.put(context.getString(R.string.json_key_settings), settings);
-            } else {
-                rootJsonObject.put(context.getString(R.string.json_key_settings), ThemeManager.getSettingsAsJson(context));
-            }
+            rootJSON.put(context.getString(R.string.json_key_meetings), jsonArray);
+            rootJSON.put(context.getString(R.string.json_key_settings), settings != null ? settings : ThemeManager.getSettingsAsJson(context));
 
-            File file = new File(directory, fileName);
-            FileOutputStream fileOutputStream = new FileOutputStream(file, false);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-            outputStreamWriter.write(rootJsonObject.toString(4));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(new File(directory, fileName)));
+            outputStreamWriter.write(rootJSON.toString(4));
             outputStreamWriter.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
-    public static JSONObject getSettingsFromFile(Context context, File directory, String fileName) {
-        String content = readFileContent(new File(directory, fileName));
+    public static JSONObject fetchThemeSettingsFromFile(Context context, File directory, String fileName) {
         try {
-            JSONObject root = new JSONObject(content);
-            return root.optJSONObject(context.getString(R.string.json_key_settings));
+            JSONObject rootJSON = new JSONObject(readFileContent(new File(directory, fileName)));
+            return rootJSON.getJSONObject(context.getString(R.string.json_key_settings));
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static boolean loadMeetings(Context context, File directory, String fileName, boolean merge) {
-        String content = readFileContent(new File(directory, fileName));
-        if (content.isEmpty()) return false;
-
+    public static boolean readMeetingsAndSettingsFromFile(Context context, File directory, String fileName, boolean merge) {
         try {
-            JSONObject rootJsonObject = new JSONObject(content);
+            JSONObject rootJSON = new JSONObject(readFileContent(new File(directory, fileName)));
 
             if (!merge) {
                 MeetingManager.clearMeetings();
-                String keySettings = context.getString(R.string.json_key_settings);
-                if (rootJsonObject.has(keySettings)) {
-                    ThemeManager.applySettingsFromJson(context, rootJsonObject.getJSONObject(keySettings));
-                }
+                ThemeManager.applySettingsFromJson(context, rootJSON.getJSONObject(context.getString(R.string.json_key_settings)));
             }
 
-            String keyMeetings = context.getString(R.string.json_key_meetings);
-            if (rootJsonObject.has(keyMeetings)) {
-                JSONArray meetingsArray = rootJsonObject.getJSONArray(keyMeetings);
-                for (int i = 0; i < meetingsArray.length(); i++) {
-                    JSONObject jsonObject = meetingsArray.getJSONObject(i);
-                    ArrayList<String> participants = new ArrayList<>();
-                    JSONArray participantsArray = jsonObject.optJSONArray(context.getString(R.string.json_key_participants));
-
-                    if (participantsArray != null) {
-                        for (int j = 0; j < participantsArray.length(); j++) {
-                            participants.add(participantsArray.getString(j));
-                        }
-                    }
-
-                    Meeting meeting = new Meeting(
-                            jsonObject.getString(context.getString(R.string.json_key_title)),
-                            jsonObject.getString(context.getString(R.string.json_key_place)),
-                            participants,
-                            jsonObject.getString(context.getString(R.string.json_key_date)),
-                            jsonObject.getString(context.getString(R.string.json_key_time))
-                    );
-                    MeetingManager.addMeeting(meeting);
+            JSONArray array = rootJSON.getJSONArray(context.getString(R.string.json_key_meetings));
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+                JSONArray pArray = jsonObject.getJSONArray(context.getString(R.string.json_key_participants));
+                ArrayList<String> participants = new ArrayList<>();
+                for (int j = 0; j < pArray.length(); j++) {
+                    participants.add(pArray.getString(j));
                 }
+
+                MeetingManager.addMeeting(new Meeting(
+                        jsonObject.getString(context.getString(R.string.json_key_title)),
+                        jsonObject.getString(context.getString(R.string.json_key_place)),
+                        participants,
+                        jsonObject.getString(context.getString(R.string.json_key_date)),
+                        jsonObject.getString(context.getString(R.string.json_key_time))
+                ));
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean deleteFile(File directory, String fileName) {
+        try {
+            File file = new File(directory, fileName);
+            if (file.exists()) {
+                return file.delete();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
     }
 
     private static String readFileContent(File file) {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            char[] inputBuffer = new char[BLOCK_SIZE];
+            char[] buffer = new char[BLOCK_SIZE];
             StringBuilder stringBuilder = new StringBuilder();
-            int charRead;
-
-            while ((charRead = inputStreamReader.read(inputBuffer)) > 0) {
-                stringBuilder.append(String.copyValueOf(inputBuffer, 0, charRead));
-                inputBuffer = new char[BLOCK_SIZE];
+            int read;
+            while ((read = inputStreamReader.read(buffer)) > 0) {
+                stringBuilder.append(String.copyValueOf(buffer, 0, read));
             }
             inputStreamReader.close();
             return stringBuilder.toString();

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.google.android.material.button.MaterialButton;
 import org.json.JSONObject;
 
 public class ThemeManager {
+    private static final String TAG = "ThemeManager";
     public static final int DEFAULT_FONT_SIZE = 18;
     public static final int DEFAULT_FONT_TYPE_INDEX = 0;
     public static final int DEFAULT_FONT_COLOR = Color.BLACK;
@@ -70,16 +72,17 @@ public class ThemeManager {
         String keyBackgroundColor = context.getString(R.string.json_key_background_color);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
-        JSONObject settingsJsonObject = new JSONObject();
         try {
+            JSONObject settingsJsonObject = new JSONObject();
             settingsJsonObject.put(keyFontSize, sharedPreferences.getInt(keyFontSize, DEFAULT_FONT_SIZE));
             settingsJsonObject.put(keyFontType, sharedPreferences.getInt(keyFontType, DEFAULT_FONT_TYPE_INDEX));
             settingsJsonObject.put(keyFontColor, sharedPreferences.getInt(keyFontColor, DEFAULT_FONT_COLOR));
             settingsJsonObject.put(keyBackgroundColor, sharedPreferences.getInt(keyBackgroundColor, DEFAULT_BACKGROUND_COLOR));
+            return settingsJsonObject;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, context.getString(R.string.log_error_create_json), e);
+            return null;
         }
-        return settingsJsonObject;
     }
 
     public static void applySettingsFromJson(Context context, JSONObject settingsJsonObject) {
@@ -91,13 +94,21 @@ public class ThemeManager {
 
         SharedPreferences.Editor editor = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE).edit();
         try {
-            if (settingsJsonObject.has(keyFontSize)) editor.putInt(keyFontSize, settingsJsonObject.getInt(keyFontSize));
-            if (settingsJsonObject.has(keyFontType)) editor.putInt(keyFontType, settingsJsonObject.getInt(keyFontType));
-            if (settingsJsonObject.has(keyFontColor)) editor.putInt(keyFontColor, settingsJsonObject.getInt(keyFontColor));
-            if (settingsJsonObject.has(keyBackgroundColor)) editor.putInt(keyBackgroundColor, settingsJsonObject.getInt(keyBackgroundColor));
+            if (settingsJsonObject.has(keyFontSize)) {
+                editor.putInt(keyFontSize, settingsJsonObject.getInt(keyFontSize));
+            }
+            if (settingsJsonObject.has(keyFontType)) {
+                editor.putInt(keyFontType, settingsJsonObject.getInt(keyFontType));
+            }
+            if (settingsJsonObject.has(keyFontColor)) {
+                editor.putInt(keyFontColor, settingsJsonObject.getInt(keyFontColor));
+            }
+            if (settingsJsonObject.has(keyBackgroundColor)) {
+                editor.putInt(keyBackgroundColor, settingsJsonObject.getInt(keyBackgroundColor));
+            }
             editor.apply();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, context.getString(R.string.log_error_apply_json), e);
         }
     }
 

@@ -1,6 +1,7 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,7 @@ import java.io.File;
 public class FileActivity extends AppCompatActivity {
 
     private RadioButton internalRadioButton, externalRadioButton;
-    private Button saveToFileButton, readFromFileButton, mergeDataButton;
+    private Button saveToFileButton, readFromFileButton, mergeDataButton, deleteStorageButton;
     private ImageButton backButton, settingsButton;
     private String destinationPath, fileName;
     private File destinationDirectory;
@@ -33,7 +34,33 @@ public class FileActivity extends AppCompatActivity {
         destinationPath = getString(R.string.meetings_data_dir);
 
         initializeViews();
+        loadLastStoragePreference();
         setupListeners();
+    }
+
+    private void loadLastStoragePreference() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
+        boolean useInternal = prefs.getBoolean(getString(R.string.key_last_storage_type), true);
+
+        if (useInternal) {
+            internalRadioButton.setChecked(true);
+        } else {
+            externalRadioButton.setChecked(true);
+        }
+        updateDestinationDirectory();
+    }
+
+    private void saveStoragePreference() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(getString(R.string.key_last_storage_type), internalRadioButton.isChecked());
+        editor.apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveStoragePreference();
     }
 
     @Override
@@ -45,9 +72,10 @@ public class FileActivity extends AppCompatActivity {
     private void initializeViews() {
         internalRadioButton = findViewById(R.id.radioInternal);
         externalRadioButton = findViewById(R.id.radioExternal);
-        saveToFileButton = findViewById(R.id.btnSaveToFile);
-        readFromFileButton = findViewById(R.id.btnReadFromFile);
-        mergeDataButton = findViewById(R.id.btnMergeData);
+        saveToFileButton = findViewById(R.id.saveToFileButton);
+        readFromFileButton = findViewById(R.id.readFromFileButton);
+        mergeDataButton = findViewById(R.id.mergeDataButton);
+        deleteStorageButton = findViewById(R.id.deleteStorageButton);
         backButton = findViewById(R.id.backButton);
         settingsButton = findViewById(R.id.settingsButton);
     }
@@ -56,21 +84,28 @@ public class FileActivity extends AppCompatActivity {
         saveToFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveMeetingsToFile();
+                handleSaveToSelectedStorage();
             }
         });
 
         readFromFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadMeetings(false);
+                handleLoadOrMergeFromStorage(false);
             }
         });
 
         mergeDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadMeetings(true);
+                handleLoadOrMergeFromStorage(true);
+            }
+        });
+
+        deleteStorageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleDeleteStorageFile();
             }
         });
 
@@ -119,19 +154,15 @@ public class FileActivity extends AppCompatActivity {
             destinationDirectory = getExternalFilesDir(destinationPath);
         }
 
-        if (destinationDirectory != null && !destinationDirectory.exists()) {
+        if (!destinationDirectory.exists()) {
             destinationDirectory.mkdirs();
         }
     }
 
-    private void saveMeetingsToFile() {
+    private void handleSaveToSelectedStorage() {
         updateDestinationDirectory();
-        if (destinationDirectory == null) {
-            Toast.makeText(this, R.string.storage_not_available, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        boolean success = FileManager.saveMeetings(this, destinationDirectory, fileName, MeetingManager.getMeetings());
+        
+        boolean success = FileManager.writeMeetingsAndSettingsToFile(this, destinationDirectory, fileName, MeetingManager.getMeetings(), null);
 
         if (success) {
             int toastResourceId = externalRadioButton.isChecked() ? R.string.toast_file_written_sd : R.string.toast_file_written_phone;
@@ -142,21 +173,21 @@ public class FileActivity extends AppCompatActivity {
         }
     }
 
-    private void loadMeetings(boolean merge) {
+    private void handleLoadOrMergeFromStorage(boolean merge) {
         updateDestinationDirectory();
+
         if (!merge) {
-            if (FileManager.loadMeetings(this, destinationDirectory, fileName, false)) {
+            if (FileManager.readMeetingsAndSettingsFromFile(this, destinationDirectory, fileName, false)) {
                 ThemeManager.applyTheme(this, findViewById(R.id.fileWriteLayout));
                 Toast.makeText(this, getString(R.string.file_load_fb), Toast.LENGTH_SHORT).show();
             } else {
-                handleLoadError();
+                Toast.makeText(this, getString(R.string.file_not_found_excp), Toast.LENGTH_SHORT).show();
             }
         } else {
-
-
-            FileManager.loadMeetings(this, destinationDirectory, fileName, true);
-            JSONObject targetSettings = FileManager.getSettingsFromFile(this, destinationDirectory, fileName);
-            boolean success = FileManager.saveMeetings(this, destinationDirectory, fileName, MeetingManager.getMeetings(), targetSettings);
+            JSONObject targetSettings = FileManager.fetchThemeSettingsFromFile(this, destinationDirectory, fileName);
+            FileManager.readMeetingsAndSettingsFromFile(this, destinationDirectory, fileName, true);
+            
+            boolean success = FileManager.writeMeetingsAndSettingsToFile(this, destinationDirectory, fileName, MeetingManager.getMeetings(), targetSettings);
             
             if (success) {
                 Toast.makeText(this, getString(R.string.toast_merge_success), Toast.LENGTH_SHORT).show();
@@ -166,12 +197,13 @@ public class FileActivity extends AppCompatActivity {
         }
     }
 
-    private void handleLoadError() {
-        File file = new File(destinationDirectory, fileName);
-        if (!file.exists()) {
-            Toast.makeText(this, getString(R.string.file_not_found_excp), Toast.LENGTH_SHORT).show();
+    private void handleDeleteStorageFile() {
+        updateDestinationDirectory();
+
+        if (FileManager.deleteFile(destinationDirectory, fileName)) {
+            Toast.makeText(this, R.string.toast_file_deleted, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, getString(R.string.io_excp), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.toast_file_delete_error, Toast.LENGTH_SHORT).show();
         }
     }
 }

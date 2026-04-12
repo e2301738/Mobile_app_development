@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fileWriteLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -73,7 +74,7 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/btnSaveToFile"
+        android:id="@+id/saveToFileButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,7 +82,7 @@
         android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/btnReadFromFile"
+        android:id="@+id/readFromFileButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,11 +90,19 @@
         android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/btnMergeData"
+        android:id="@+id/mergeDataButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_merge_data"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/deleteStorageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_delete_storage"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>
