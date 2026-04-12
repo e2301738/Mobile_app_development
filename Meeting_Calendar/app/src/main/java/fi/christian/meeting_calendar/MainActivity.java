@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadInitialData() {
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
-        boolean useInternal = prefs.getBoolean(getString(R.string.key_last_storage_type), true);
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
+        boolean useInternal = sharedPreferences.getBoolean(getString(R.string.key_last_storage_type), true);
         
         String fileName = getString(R.string.meeting_file_name);
         String destinationPath = getString(R.string.meetings_data_dir);

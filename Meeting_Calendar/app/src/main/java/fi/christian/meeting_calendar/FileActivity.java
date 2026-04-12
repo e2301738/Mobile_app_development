@@ -34,7 +34,6 @@ public class FileActivity extends AppCompatActivity {
         destinationPath = getString(R.string.meetings_data_dir);
 
         initializeViews();
-        loadLastStoragePreference();
         setupListeners();
     }
 
@@ -58,14 +57,9 @@ public class FileActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        saveStoragePreference();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
+        loadLastStoragePreference();
         ThemeManager.applyTheme(this, findViewById(R.id.fileWriteLayout));
     }
 
@@ -81,6 +75,22 @@ public class FileActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        internalRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveStoragePreference();
+                updateDestinationDirectory();
+            }
+        });
+
+        externalRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveStoragePreference();
+                updateDestinationDirectory();
+            }
+        });
+
         saveToFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +164,7 @@ public class FileActivity extends AppCompatActivity {
             destinationDirectory = getExternalFilesDir(destinationPath);
         }
 
-        if (!destinationDirectory.exists()) {
+        if (destinationDirectory != null && !destinationDirectory.exists()) {
             destinationDirectory.mkdirs();
         }
     }
