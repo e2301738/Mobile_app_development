@@ -117,4 +117,5 @@
 
     <string name="log_error_create_json">Error creating settings JSON</string>
     <string name="log_error_apply_json">Error applying settings from JSON</string>
+    <string name="about_activity_title">About</string>
 </resources>

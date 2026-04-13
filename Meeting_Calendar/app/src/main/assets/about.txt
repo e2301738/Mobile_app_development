@@ -1,0 +1,21 @@
+Meeting Calendar Application
+
+This application allows you to manage your meetings effectively.
+
+Features:
+- Add meetings with title, place, date, and time.
+- Manage participants for each meeting.
+- Search for meetings by various criteria.
+- Update or delete existing meetings.
+- Customize the theme (colors, fonts, sizes).
+- Save and load meeting data to/from files.
+
+Instructions:
+1. To add a meeting, fill in the details on the main screen and press 'Submit'.
+2. Use the 'Summary' button to view all scheduled meetings.
+3. Use 'Search' to find specific meetings.
+4. 'Settings' allows you to customize the look and feel of the app.
+5. In 'File Settings', you can backup your data to internal or external storage.
+
+Developed by Christian Laiho.
+Version 1.0

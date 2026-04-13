@@ -33,16 +33,16 @@ public class MeetingManager {
 
         for (Meeting meeting : meetings) {
             boolean matchesParticipant = false;
-            for (String p : meeting.getParticipants()) {
-                if (p.toLowerCase().contains(lowerCaseSearchString)) {
+            for (Participant p : meeting.getParticipants()) {
+                if (p.getName().toLowerCase().contains(lowerCaseSearchString)) {
                     matchesParticipant = true;
                     break;
                 }
             }
 
             if (meeting.getTitle().toLowerCase().contains(lowerCaseSearchString) || 
-                meeting.getPlace().toLowerCase().contains(lowerCaseSearchString) ||
-                meeting.getDate().toLowerCase().contains(lowerCaseSearchString) ||
+                meeting.getPlace().toLowerCase().contains(lowerCaseSearchString) || 
+                meeting.getDate().toLowerCase().contains(lowerCaseSearchString) || 
                 meeting.getTime().toLowerCase().contains(lowerCaseSearchString) ||
                 matchesParticipant) {
                 results.add(meeting);

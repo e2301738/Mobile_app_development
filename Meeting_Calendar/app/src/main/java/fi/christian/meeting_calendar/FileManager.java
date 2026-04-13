@@ -3,6 +3,7 @@ package fi.christian.meeting_calendar;
 import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,6 +13,21 @@ import java.util.ArrayList;
 
 public class FileManager {
     private static final int BLOCK_SIZE = 128;
+
+    public static String readFromAssets(Context context, String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(fileName)));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            reader.close();
+        } catch (Exception e) {
+            return "Error reading file: " + e.getMessage();
+        }
+        return stringBuilder.toString();
+    }
 
     public static boolean writeMeetingsAndSettingsToFile(Context context, File directory, String fileName, ArrayList<Meeting> meetings, JSONObject settings) {
         try {
@@ -24,7 +40,16 @@ public class FileManager {
                 jsonObject.put(context.getString(R.string.json_key_place), meeting.getPlace());
                 jsonObject.put(context.getString(R.string.json_key_date), meeting.getDate());
                 jsonObject.put(context.getString(R.string.json_key_time), meeting.getTime());
-                jsonObject.put(context.getString(R.string.json_key_participants), new JSONArray(meeting.getParticipants()));
+                
+                JSONArray participantsArray = new JSONArray();
+                for (Participant p : meeting.getParticipants()) {
+                    JSONObject pJson = new JSONObject();
+                    pJson.put("name", p.getName());
+                    pJson.put("imagePath", p.getImagePath() == null ? JSONObject.NULL : p.getImagePath());
+                    participantsArray.put(pJson);
+                }
+                jsonObject.put(context.getString(R.string.json_key_participants), participantsArray);
+                
                 jsonArray.put(jsonObject);
             }
             rootJSON.put(context.getString(R.string.json_key_meetings), jsonArray);
@@ -60,10 +85,13 @@ public class FileManager {
             JSONArray array = rootJSON.getJSONArray(context.getString(R.string.json_key_meetings));
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
-                JSONArray pArray = jsonObject.getJSONArray(context.getString(R.string.json_key_participants));
-                ArrayList<String> participants = new ArrayList<>();
-                for (int j = 0; j < pArray.length(); j++) {
-                    participants.add(pArray.getString(j));
+                JSONArray participantsArray = jsonObject.getJSONArray(context.getString(R.string.json_key_participants));
+                ArrayList<Participant> participants = new ArrayList<>();
+                for (int j = 0; j < participantsArray.length(); j++) {
+                    JSONObject participantsJsonObject = participantsArray.getJSONObject(j);
+                    String name = participantsJsonObject.getString("name");
+                    String imagePath = participantsJsonObject.isNull("imagePath") ? null : participantsJsonObject.getString("imagePath");
+                    participants.add(new Participant(name, imagePath));
                 }
 
                 MeetingManager.addMeeting(new Meeting(

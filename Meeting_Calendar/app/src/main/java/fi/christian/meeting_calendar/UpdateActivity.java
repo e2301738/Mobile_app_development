@@ -3,6 +3,7 @@ package fi.christian.meeting_calendar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +35,7 @@ public class UpdateActivity extends AppCompatActivity {
     private final ArrayList<Integer> indexList = new ArrayList<>();
     private int selectedIndex;
     private Drawable titleBackground, placeBackground;
-    private ArrayList<String> selectedParticipants = new ArrayList<>();
+    private ArrayList<Participant> selectedParticipants = new ArrayList<>();
 
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
 
@@ -49,7 +50,13 @@ public class UpdateActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            selectedParticipants = result.getData().getStringArrayListExtra("participants");
+                            ArrayList<String> names = result.getData().getStringArrayListExtra("participants");
+                            selectedParticipants.clear();
+                            if (names != null) {
+                                for (String name : names) {
+                                    selectedParticipants.add(new Participant(name));
+                                }
+                            }
                             updateParticipantsDisplay();
                             addParticipantsButton.setTextColor(ThemeManager.getFontColor(UpdateActivity.this));
                         }
@@ -117,7 +124,11 @@ public class UpdateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UpdateActivity.this, ParticipantsActivity.class);
-                intent.putStringArrayListExtra("participants", selectedParticipants);
+                ArrayList<String> names = new ArrayList<>();
+                for (Participant p : selectedParticipants) {
+                    names.add(p.getName());
+                }
+                intent.putStringArrayListExtra("participants", names);
                 participantsActivityResultLauncher.launch(intent);
             }
         });
@@ -183,7 +194,8 @@ public class UpdateActivity extends AppCompatActivity {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
             participantsDisplayTextView.setTextColor(fontColor & 0x80FFFFFF);
         } else {
-            participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
+            String names = TextUtils.join(", ", selectedParticipants);
+            participantsDisplayTextView.setText(names);
             participantsDisplayTextView.setTextColor(fontColor);
         }
     }

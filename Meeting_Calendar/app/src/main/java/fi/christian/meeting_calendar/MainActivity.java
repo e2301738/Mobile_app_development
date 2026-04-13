@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Button dateButton, timeButton, addParticipantsButton, submitButton, summaryButton, searchButton, updateButton;
     private ImageButton settingsButton;
     private Drawable titleBackground, placeBackground;
-    private ArrayList<String> selectedParticipants = new ArrayList<>();
+    private ArrayList<Participant> selectedParticipants = new ArrayList<>();
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
 
     @Override
@@ -43,7 +44,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            selectedParticipants = result.getData().getStringArrayListExtra(getString(R.string.participants));
+                            ArrayList<String> names = result.getData().getStringArrayListExtra(getString(R.string.participants));
+                            selectedParticipants.clear();
+                            if (names != null) {
+                                for (String name : names) {
+                                    selectedParticipants.add(new Participant(name));
+                                }
+                            }
                             updateParticipantsDisplay();
                             addParticipantsButton.setTextColor(ThemeManager.getFontColor(MainActivity.this));
                         }
@@ -174,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (itemId == R.id.action_write_to_file) {
                     startFileActivity();
                     return true;
+                } else if (itemId == R.id.action_about) {
+                    startAboutActivity();
+                    return true;
                 }
                 return false;
             }
@@ -183,7 +193,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void startParticipantsActivity() {
         Intent intent = new Intent(this, ParticipantsActivity.class);
-        intent.putStringArrayListExtra(getString(R.string.participants), selectedParticipants);
+        ArrayList<String> names = new ArrayList<>();
+        for (Participant p : selectedParticipants) {
+            names.add(p.getName());
+        }
+        intent.putStringArrayListExtra(getString(R.string.participants), names);
         participantsActivityResultLauncher.launch(intent);
     }
 
@@ -197,11 +211,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void startAboutActivity() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
+
     private void updateParticipantsDisplay() {
         if (selectedParticipants == null || selectedParticipants.isEmpty()) {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
         } else {
-            participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
+            String names = TextUtils.join(", ", selectedParticipants);
+            participantsDisplayTextView.setText(names);
         }
         participantsDisplayTextView.setTextColor(ThemeManager.getFontColor(this));
     }
