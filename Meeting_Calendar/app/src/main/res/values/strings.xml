@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Meeting Calendar</string>
-    <string name="prefs_file_name">theme_settings_prefs</string>
+    <string name="prefs_file_name">theme_settings_preferences</string>
+    <string name="prefs_app_state">app_state_preferences</string>
 
     <string name="summary_activity_title">Meeting Summary</string>
     <string name="search_activity_title">Search Meeting</string>
@@ -38,6 +39,7 @@
     <string name="settings_button_text">Settings</string>
     <string name="save_theme_button_text">Save Theme</string>
     <string name="reset_theme_button_text">Reset to Default</string>
+    <string name="write_to_file_button_text">File settings</string>
 
     <string name="fill_fields">Please fill all fields</string>
     <string name="no_meetings_text">No meetings scheduled yet.</string>
@@ -68,4 +70,51 @@
         <item>Monospace</item>
         <item>Serif</item>
     </string-array>
+
+    <string name="file_save_fb">File saved successfully!</string>
+    <string name="file_load_fb">File loaded successfully!</string>
+    <string name="file_not_found_excp">File Not Found!</string>
+    <string name="io_excp">Input Output Error !</string>
+    <string name="meeting_file_name">meetings.json</string>
+    <string name="data_save_confirmation">Data saved successfully to: </string>
+    <string name="toast_file_written_sd">file written to sd</string>
+    <string name="toast_file_written_phone">file written to phone memory</string>
+
+    <string name="file_write_activity_title">File Storage</string>
+    <string name="select_storage_label">Select Storage Location:</string>
+    <string name="storage_internal">Internal</string>
+    <string name="storage_external">External (SD)</string>
+    <string name="btn_save_to_file">Overwrite File with Current List</string>
+    <string name="btn_read_from_file">Replace Current List from File</string>
+    <string name="storage_not_available">Storage not available</string>
+    <string name="meetings_data_dir">meetings_data</string>
+
+    <string name="json_key_title">title</string>
+    <string name="json_key_place">place</string>
+    <string name="json_key_date">date</string>
+    <string name="json_key_time">time</string>
+    <string name="json_key_participants">participants</string>
+    <string name="json_key_meetings">meetings</string>
+    <string name="json_key_settings">settings</string>
+    <string name="json_key_font_size">font_size</string>
+    <string name="json_key_font_type">font_type</string>
+    <string name="json_key_font_color">font_color</string>
+    <string name="json_key_background_color">background_color</string>
+
+    <string name="colon_separator">: </string>
+    <string name="participants">participants</string>
+    <string name="btn_merge_data">Merge Current List and File</string>
+    <string name="toast_merge_success">Data merged successfully!</string>
+
+    <string name="key_last_storage_type">last_storage_type</string>
+    <string name="btn_delete_storage">Delete Storage File</string>
+    <string name="delete_confirm_title">Delete File?</string>
+    <string name="delete_confirm_message">This will permanently delete the JSON file from the selected storage. Are you sure?</string>
+    <string name="delete_confirm_yes">Delete</string>
+    <string name="delete_confirm_no">Cancel</string>
+    <string name="toast_file_deleted">File deleted successfully</string>
+    <string name="toast_file_delete_error">Error deleting file</string>
+
+    <string name="log_error_create_json">Error creating settings JSON</string>
+    <string name="log_error_apply_json">Error applying settings from JSON</string>
 </resources>

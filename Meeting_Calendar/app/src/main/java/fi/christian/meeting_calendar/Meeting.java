@@ -1,5 +1,6 @@
 package fi.christian.meeting_calendar;
 
+import android.text.TextUtils;
 import java.util.ArrayList;
 
 public class Meeting {
@@ -35,12 +36,12 @@ public class Meeting {
 
     @Override
     public String toString() {
-        StringBuilder stringbuilder = new StringBuilder();
-        stringbuilder.append("Title: ").append(title).append("\n");
-        stringbuilder.append("Place: ").append(place).append("\n");
-        stringbuilder.append("Participants: ").append(String.join(", ", participants)).append("\n");
-        stringbuilder.append("Date: ").append(date).append("\n");
-        stringbuilder.append("Time: ").append(time).append("\n");
-        return stringbuilder.toString();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Title: ").append(title).append("\n");
+        stringBuilder.append("Place: ").append(place).append("\n");
+        stringBuilder.append("Participants: ").append(TextUtils.join(", ", participants)).append("\n");
+        stringBuilder.append("Date: ").append(date).append("\n");
+        stringBuilder.append("Time: ").append(time).append("\n");
+        return stringBuilder.toString();
     }
 }

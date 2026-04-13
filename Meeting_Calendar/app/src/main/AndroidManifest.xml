@@ -41,6 +41,10 @@
             android:name=".ThemeActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".FileActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

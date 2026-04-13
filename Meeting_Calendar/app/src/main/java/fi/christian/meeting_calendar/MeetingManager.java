@@ -7,8 +7,20 @@ public class MeetingManager {
     private static ArrayList<Meeting> meetings = new ArrayList<>();
 
     public static void addMeeting(Meeting meeting) {
+        for (Meeting m : meetings) {
+            if (m.getTitle().equals(meeting.getTitle()) &&
+                m.getPlace().equals(meeting.getPlace()) &&
+                m.getDate().equals(meeting.getDate()) &&
+                m.getTime().equals(meeting.getTime())) {
+                return;
+            }
+        }
         meetings.add(meeting);
         sortMeetings();
+    }
+
+    public static void clearMeetings() {
+        meetings.clear();
     }
 
     public static ArrayList<Meeting> getMeetings() {
