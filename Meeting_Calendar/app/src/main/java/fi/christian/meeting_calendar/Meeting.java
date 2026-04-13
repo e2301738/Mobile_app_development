@@ -1,10 +1,10 @@
 package fi.christian.meeting_calendar;
 
-import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Meeting {
+    private long id;
     private final String title;
     private final String place;
     private final ArrayList<Participant> participants;
@@ -17,6 +17,23 @@ public class Meeting {
         this.participants = participants;
         this.date = date;
         this.time = time;
+    }
+
+    public Meeting(long id, String title, String place, ArrayList<Participant> participants, String date, String time) {
+        this.id = id;
+        this.title = title;
+        this.place = place;
+        this.participants = participants;
+        this.date = date;
+        this.time = time;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {

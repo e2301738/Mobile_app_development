@@ -34,30 +34,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/participantNameEditText"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:hint="@string/meeting_participants_hint"
             android:inputType="textPersonName" />
 
         <Button
+            android:id="@+id/selectImageButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_select_image_txt" />
+
+        <ImageView
+            android:id="@+id/selectedParticipantImageView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/image_view_desc"
+            android:scaleType="centerInside"
+            android:visibility="gone" />
+
+        <Button
             android:id="@+id/addParticipantButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/add_button_text" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/participantsListView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/participantsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/doneButton"

@@ -1,21 +1,23 @@
 Meeting Calendar Application
 
-This application allows you to manage your meetings effectively.
+This application allows you to manage your meetings efficiently.
 
 Features:
-- Add meetings with title, place, date, and time.
-- Manage participants for each meeting.
+- Save meeting data (title, place, date, time) to a local SQLite database.
+- Add participants to meetings, including their photos.
+- Photos are stored as BLOB data in the SQLite database.
+- View meeting summaries with participant images and names.
 - Search for meetings by various criteria.
-- Update or delete existing meetings.
-- Customize the theme (colors, fonts, sizes).
-- Save and load meeting data to/from files.
+- Customize the user interface theme (colors, fonts, sizes).
+- Export and import data via JSON files.
 
-Instructions:
-1. To add a meeting, fill in the details on the main screen and press 'Submit'.
-2. Use the 'Summary' button to view all scheduled meetings.
-3. Use 'Search' to find specific meetings.
-4. 'Settings' allows you to customize the look and feel of the app.
-5. In 'File Settings', you can backup your data to internal or external storage.
+Database Information:
+The application uses an SQLite database (meeting_calendar.db) stored in the app-specific directory:
+/Android/data/fi.christian.meeting_calendar/files/data/app_db/
 
-Developed by Christian Laiho.
-Version 1.0
+How to use:
+1. Fill in meeting details on the main screen.
+2. Click 'Add Participants' to select people and their photos.
+3. Use the 'Submit' button to save the meeting to the database.
+4. Access 'Summary' to see all scheduled meetings and participant photos.
+5. Use 'Settings' to change the application's appearance.

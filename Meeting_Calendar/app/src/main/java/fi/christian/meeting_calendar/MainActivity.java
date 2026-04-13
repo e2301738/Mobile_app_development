@@ -1,7 +1,6 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,7 +19,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,25 +30,23 @@ public class MainActivity extends AppCompatActivity {
     private Drawable titleBackground, placeBackground;
     private ArrayList<Participant> selectedParticipants = new ArrayList<>();
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
+    private DBAdapter dbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbAdapter = DBManager.getAdapter(this);
+
         participantsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            ArrayList<String> names = result.getData().getStringArrayListExtra(getString(R.string.participants));
+                        if (result.getResultCode() == RESULT_OK) {
                             selectedParticipants.clear();
-                            if (names != null) {
-                                for (String name : names) {
-                                    selectedParticipants.add(new Participant(name));
-                                }
-                            }
+                            selectedParticipants.addAll(MeetingManager.getTempParticipants());
                             updateParticipantsDisplay();
                             addParticipantsButton.setTextColor(ThemeManager.getFontColor(MainActivity.this));
                         }
@@ -59,29 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
         initializeViews();
         setupListeners();
-        loadInitialData();
+        
+        loadFromDatabase();
     }
 
-    private void loadInitialData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.prefs_app_state), MODE_PRIVATE);
-        boolean useInternal = sharedPreferences.getBoolean(getString(R.string.key_last_storage_type), true);
-        
-        String fileName = getString(R.string.meeting_file_name);
-        String destinationPath = getString(R.string.meetings_data_dir);
-        File directory;
-
-        if (useInternal) {
-            directory = new File(getFilesDir(), destinationPath);
-        } else {
-            directory = getExternalFilesDir(destinationPath);
-        }
-
-        if (directory != null && directory.exists()) {
-            File file = new File(directory, fileName);
-            if (file.exists()) {
-                FileManager.readMeetingsAndSettingsFromFile(this, directory, fileName, false);
-            }
-        }
+    private void loadFromDatabase() {
+        ArrayList<Meeting> meetings = dbAdapter.getAllMeetings();
+        MeetingManager.setMeetings(meetings);
     }
 
     @Override
@@ -193,11 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startParticipantsActivity() {
         Intent intent = new Intent(this, ParticipantsActivity.class);
-        ArrayList<String> names = new ArrayList<>();
-        for (Participant p : selectedParticipants) {
-            names.add(p.getName());
-        }
-        intent.putStringArrayListExtra(getString(R.string.participants), names);
+        MeetingManager.setTempParticipants(new ArrayList<>(selectedParticipants));
         participantsActivityResultLauncher.launch(intent);
     }
 
@@ -220,8 +196,9 @@ public class MainActivity extends AppCompatActivity {
         if (selectedParticipants == null || selectedParticipants.isEmpty()) {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
         } else {
-            String names = TextUtils.join(", ", selectedParticipants);
-            participantsDisplayTextView.setText(names);
+            ArrayList<String> names = new ArrayList<>();
+            for (Participant p : selectedParticipants) names.add(p.getName());
+            participantsDisplayTextView.setText(TextUtils.join(", ", names));
         }
         participantsDisplayTextView.setTextColor(ThemeManager.getFontColor(this));
     }
@@ -247,7 +224,9 @@ public class MainActivity extends AppCompatActivity {
         String time = timeButton.getText().toString();
 
         Meeting meeting = new Meeting(title, place, new ArrayList<>(selectedParticipants), date, time);
+        dbAdapter.addMeeting(meeting);
         MeetingManager.addMeeting(meeting);
+        
         Toast.makeText(this, getString(R.string.toast_meeting_added), Toast.LENGTH_SHORT).show();
         clearFields();
         startSummaryActivity();
@@ -283,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
         titleEditText.setText("");
         placeEditText.setText("");
         selectedParticipants.clear();
+        MeetingManager.clearTempParticipants();
         updateParticipantsDisplay();
         addParticipantsButton.setTextColor(ThemeManager.getFontColor(this));
         dateButton.setText(R.string.meeting_date_hint);

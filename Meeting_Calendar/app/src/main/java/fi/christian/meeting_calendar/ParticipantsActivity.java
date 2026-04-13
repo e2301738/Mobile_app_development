@@ -1,44 +1,54 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ParticipantsActivity extends AppCompatActivity {
 
     private EditText participantNameEditText;
-    private Button addParticipantButton, doneButton;
+    private Button addParticipantButton, doneButton, selectImageButton;
     private ImageButton backButton;
-    private ListView participantsListView;
-    private ArrayList<String> participantsList;
-    private ArrayAdapter<String> adapter;
+    private ImageView selectedParticipantImageView;
+    private RecyclerView participantsRecyclerView;
+    private ArrayList<Participant> participantsList = new ArrayList<>();
+    private ParticipantAdapter adapter;
     private Drawable originalBackground;
+    private Bitmap currentBitmap = null;
+
+    private ActivityResultLauncher<Intent> selectImageActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_participants);
 
-        participantsList = getIntent().getStringArrayListExtra("participants");
-        if (participantsList == null) {
-            participantsList = new ArrayList<>();
+        ArrayList<Participant> temps = MeetingManager.getTempParticipants();
+        for (Participant p : temps) {
+            p.setSelected(true);
+            participantsList.add(p);
         }
-
+        
         initializeViews();
+        setupImagePicker();
         setupListeners();
     }
 
@@ -51,52 +61,53 @@ public class ParticipantsActivity extends AppCompatActivity {
     private void initializeViews() {
         participantNameEditText = findViewById(R.id.participantNameEditText);
         addParticipantButton = findViewById(R.id.addParticipantButton);
+        selectImageButton = findViewById(R.id.selectImageButton);
+        selectedParticipantImageView = findViewById(R.id.selectedParticipantImageView);
         doneButton = findViewById(R.id.doneButton);
         backButton = findViewById(R.id.backButton);
-        participantsListView = findViewById(R.id.participantsListView);
+        participantsRecyclerView = findViewById(R.id.participantsRecyclerView);
 
         originalBackground = participantNameEditText.getBackground();
         InputHandler.setupTextWatcher(participantNameEditText, originalBackground);
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, participantsList) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                ThemeManager.applyTheme(getContext(), view);
-                return view;
-            }
-        };
+        adapter = new ParticipantAdapter(participantsList, true);
+        participantsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        participantsRecyclerView.setAdapter(adapter);
+    }
 
-        participantsListView.setAdapter(adapter);
-        participantsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
-        for (int i = 0; i < participantsList.size(); i++) {
-            participantsListView.setItemChecked(i, true);
-        }
+    private void setupImagePicker() {
+        selectImageActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null) {
+                            try {
+                                InputStream inputStream = getContentResolver().openInputStream(uri);
+                                currentBitmap = BitmapFactory.decodeStream(inputStream);
+                                selectedParticipantImageView.setImageBitmap(currentBitmap);
+                                selectedParticipantImageView.setVisibility(View.VISIBLE);
+                            } catch (Exception e) {
+                                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
     }
 
     private void setupListeners() {
-        addParticipantButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addParticipant();
-            }
+        selectImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.setType("image/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            selectImageActivityResultLauncher.launch(intent);
         });
 
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                returnResult();
-            }
-        });
+        addParticipantButton.setOnClickListener(v -> addParticipant());
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        doneButton.setOnClickListener(v -> returnResult());
+
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void addParticipant() {
@@ -106,23 +117,28 @@ public class ParticipantsActivity extends AppCompatActivity {
         }
 
         String name = participantNameEditText.getText().toString().trim();
-        participantsList.add(name);
-        adapter.notifyDataSetChanged();
-        participantsListView.setItemChecked(participantsList.size() - 1, true);
+        Participant participant = new Participant(name, currentBitmap);
+        participant.setSelected(true);
+        participantsList.add(participant);
+        adapter.notifyItemInserted(participantsList.size() - 1);
+        participantsRecyclerView.scrollToPosition(participantsList.size() - 1);
+        
+        // Reset inputs
         participantNameEditText.setText("");
+        selectedParticipantImageView.setVisibility(View.GONE);
+        currentBitmap = null;
     }
 
     private void returnResult() {
-        ArrayList<String> selectedParticipants = new ArrayList<>();
-        for (int i = 0; i < participantsList.size(); i++) {
-            if (participantsListView.isItemChecked(i)) {
-                selectedParticipants.add(participantsList.get(i));
+        // Palautetaan vain ne, jotka on valittu checkboxilla
+        ArrayList<Participant> selectedOnly = new ArrayList<>();
+        for (Participant p : participantsList) {
+            if (p.isSelected()) {
+                selectedOnly.add(p);
             }
         }
-
-        Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra("participants", selectedParticipants);
-        setResult(RESULT_OK, resultIntent);
+        MeetingManager.setTempParticipants(selectedOnly);
+        setResult(RESULT_OK);
         finish();
     }
 }

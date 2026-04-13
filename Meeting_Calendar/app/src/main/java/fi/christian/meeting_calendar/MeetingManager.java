@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 public class MeetingManager {
     private static ArrayList<Meeting> meetings = new ArrayList<>();
+    private static ArrayList<Participant> tempParticipants = new ArrayList<>();
 
     public static void addMeeting(Meeting meeting) {
         for (Meeting m : meetings) {
@@ -19,12 +20,29 @@ public class MeetingManager {
         sortMeetings();
     }
 
+    public static void setMeetings(ArrayList<Meeting> newMeetings) {
+        meetings = new ArrayList<>(newMeetings);
+        sortMeetings();
+    }
+
     public static void clearMeetings() {
         meetings.clear();
     }
 
     public static ArrayList<Meeting> getMeetings() {
         return meetings;
+    }
+
+    public static void setTempParticipants(ArrayList<Participant> participants) {
+        tempParticipants = participants;
+    }
+
+    public static ArrayList<Participant> getTempParticipants() {
+        return tempParticipants;
+    }
+
+    public static void clearTempParticipants() {
+        tempParticipants.clear();
     }
 
     public static ArrayList<Meeting> searchMeetings(String searchString) {
@@ -83,6 +101,8 @@ public class MeetingManager {
             public int compare(Meeting m1, Meeting m2) {
                 String[] parts1 = m1.getDate().split("\\.");
                 String[] parts2 = m2.getDate().split("\\.");
+                
+                if (parts1.length < 3 || parts2.length < 3) return 0;
 
                 int yearCompare = parts1[2].compareTo(parts2[2]);
                 if (yearCompare != 0) {

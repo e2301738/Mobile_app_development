@@ -118,4 +118,57 @@
     <string name="log_error_create_json">Error creating settings JSON</string>
     <string name="log_error_apply_json">Error applying settings from JSON</string>
     <string name="about_activity_title">About</string>
+
+    <!-- Database and Image related strings -->
+    <string name="btn_select_image_txt">Select Image</string>
+    <string name="et_image_path_hint">Image Path</string>
+    <string name="select_image_title">Select Image</string>
+    <string name="image_view_desc">Selected Image</string>
+    <string name="btn_copy_db_file_txt">Copy DB File</string>
+    <string name="db_dir_name">data/app_db/</string>
+    <string name="db_name">meeting_calendar.db</string>
+    <string name="meetings_table_name">meetings</string>
+    <string name="participants_table_name">participants</string>
+    <string name="warning_copy_db_file">Copy database file first!</string>
+    <string name="returned_value">Returned value:</string>
+    <string name="db_class_tag">DBAdapter</string>
+    <string name="upgrading_db_version">Upgrading DB Version</string>
+    <string name="warning_data_delete">Data will be deleted permanently!</string>
+    <string name="bitmap_is_null">Bitmap is null</string>
+    <string name="query_result">Query Results</string>
+    <string name="btn_ok">OK</string>
+
+    <!-- New DB log strings -->
+    <string name="log_db_create_error">Error creating tables</string>
+    <string name="log_db_open_fallback">Failed to open database, falling back to helper</string>
+    <string name="log_db_fetch_error">Error fetching meetings</string>
+
+    <string-array name="meetings_column_names">
+        <item>id</item>
+        <item>title</item>
+        <item>place</item>
+        <item>date</item>
+        <item>time</item>
+    </string-array>
+    <string-array name="meetings_column_types">
+        <item>INTEGER</item>
+        <item>TEXT</item>
+        <item>TEXT</item>
+        <item>TEXT</item>
+        <item>TEXT</item>
+    </string-array>
+
+    <string-array name="participants_column_names">
+        <item>id</item>
+        <item>meeting_id</item>
+        <item>name</item>
+        <item>image</item>
+    </string-array>
+    <string-array name="participants_column_types">
+        <item>INTEGER</item>
+        <item>INTEGER</item>
+        <item>TEXT</item>
+        <item>BLOB</item>
+    </string-array>
+
 </resources>

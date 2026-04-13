@@ -1,18 +1,20 @@
 package fi.christian.meeting_calendar;
 
+import android.graphics.Bitmap;
 
 public class Participant {
     private String name;
-    private String imagePath;
+    private Bitmap image;
+    private boolean selected = true;
 
     public Participant(String name) {
         this.name = name;
-        this.imagePath = null;
+        this.image = null;
     }
 
-    public Participant(String name, String imagePath) {
+    public Participant(String name, Bitmap image) {
         this.name = name;
-        this.imagePath = imagePath;
+        this.image = image;
     }
 
     public String getName() {
@@ -23,12 +25,20 @@ public class Participant {
         this.name = name;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Bitmap getImage() {
+        return image;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override

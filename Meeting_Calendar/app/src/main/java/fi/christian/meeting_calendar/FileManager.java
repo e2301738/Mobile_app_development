@@ -1,9 +1,15 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -45,7 +51,15 @@ public class FileManager {
                 for (Participant p : meeting.getParticipants()) {
                     JSONObject pJson = new JSONObject();
                     pJson.put("name", p.getName());
-                    pJson.put("imagePath", p.getImagePath() == null ? JSONObject.NULL : p.getImagePath());
+                    
+                    if (p.getImage() != null) {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        p.getImage().compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        pJson.put("image", encodedImage);
+                    }
+                    
                     participantsArray.put(pJson);
                 }
                 jsonObject.put(context.getString(R.string.json_key_participants), participantsArray);
@@ -90,8 +104,15 @@ public class FileManager {
                 for (int j = 0; j < participantsArray.length(); j++) {
                     JSONObject participantsJsonObject = participantsArray.getJSONObject(j);
                     String name = participantsJsonObject.getString("name");
-                    String imagePath = participantsJsonObject.isNull("imagePath") ? null : participantsJsonObject.getString("imagePath");
-                    participants.add(new Participant(name, imagePath));
+                    
+                    Bitmap image = null;
+                    if (participantsJsonObject.has("image")) {
+                        String encodedImage = participantsJsonObject.getString("image");
+                        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                        image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    }
+                    
+                    participants.add(new Participant(name, image));
                 }
 
                 MeetingManager.addMeeting(new Meeting(

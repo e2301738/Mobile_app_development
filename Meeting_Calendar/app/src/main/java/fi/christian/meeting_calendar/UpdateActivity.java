@@ -20,7 +20,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class UpdateActivity extends AppCompatActivity {
 
@@ -33,10 +35,12 @@ public class UpdateActivity extends AppCompatActivity {
     private MeetingAdapter meetingAdapter;
     private final ArrayList<Meeting> searchResultsList = new ArrayList<>();
     private final ArrayList<Integer> indexList = new ArrayList<>();
-    private int selectedIndex;
+    private int selectedIndexInManager;
+    private Meeting selectedMeeting;
     private Drawable titleBackground, placeBackground;
     private ArrayList<Participant> selectedParticipants = new ArrayList<>();
 
+    private DBAdapter dbAdapter;
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
 
     @Override
@@ -44,19 +48,19 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
+        String dbName = getString(R.string.db_name);
+        String dirName = getString(R.string.db_dir_name);
+        String dbPath = Objects.requireNonNull(getExternalFilesDir(dirName)).getAbsolutePath() + File.separator;
+        dbAdapter = new DBAdapter(this, dbPath, dbName, getString(R.string.meetings_table_name), getString(R.string.participants_table_name));
+
         participantsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            ArrayList<String> names = result.getData().getStringArrayListExtra("participants");
+                        if (result.getResultCode() == RESULT_OK) {
                             selectedParticipants.clear();
-                            if (names != null) {
-                                for (String name : names) {
-                                    selectedParticipants.add(new Participant(name));
-                                }
-                            }
+                            selectedParticipants.addAll(MeetingManager.getTempParticipants());
                             updateParticipantsDisplay();
                             addParticipantsButton.setTextColor(ThemeManager.getFontColor(UpdateActivity.this));
                         }
@@ -101,7 +105,8 @@ public class UpdateActivity extends AppCompatActivity {
         meetingAdapter = new MeetingAdapter(searchResultsList, new MeetingAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, Meeting meeting) {
-                selectedIndex = indexList.get(position);
+                selectedIndexInManager = indexList.get(position);
+                selectedMeeting = meeting;
                 populateFields(meeting);
                 editFieldsContainer.setVisibility(View.VISIBLE);
                 searchResultsRecyclerView.setVisibility(View.GONE);
@@ -120,72 +125,36 @@ public class UpdateActivity extends AppCompatActivity {
             }
         });
 
-        addParticipantsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UpdateActivity.this, ParticipantsActivity.class);
-                ArrayList<String> names = new ArrayList<>();
-                for (Participant p : selectedParticipants) {
-                    names.add(p.getName());
-                }
-                intent.putStringArrayListExtra("participants", names);
-                participantsActivityResultLauncher.launch(intent);
-            }
+        addParticipantsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ParticipantsActivity.class);
+            MeetingManager.setTempParticipants(new ArrayList<>(selectedParticipants));
+            participantsActivityResultLauncher.launch(intent);
         });
 
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerFragment newFragment = new DatePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "UpdateDatePicker");
-            }
+        dateButton.setOnClickListener(v -> {
+            DatePickerFragment newFragment = new DatePickerFragment();
+            newFragment.show(getSupportFragmentManager(), "UpdateDatePicker");
         });
 
-        timeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerFragment newFragment = new TimePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "UpdateTimePicker");
-            }
+        timeButton.setOnClickListener(v -> {
+            TimePickerFragment newFragment = new TimePickerFragment();
+            newFragment.show(getSupportFragmentManager(), "UpdateTimePicker");
         });
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performSearch();
-            }
+        searchButton.setOnClickListener(v -> performSearch());
+
+        clearSearchButton.setOnClickListener(v -> {
+            searchTitleEditText.setText("");
+            searchDateButton.setText(R.string.update_date_search_hint);
+            searchResultsRecyclerView.setVisibility(View.GONE);
+            editFieldsContainer.setVisibility(View.GONE);
         });
 
-        clearSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchTitleEditText.setText("");
-                searchDateButton.setText(R.string.update_date_search_hint);
-                searchResultsRecyclerView.setVisibility(View.GONE);
-                editFieldsContainer.setVisibility(View.GONE);
-            }
-        });
+        saveButton.setOnClickListener(v -> performUpdate());
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performUpdate();
-            }
-        });
+        deleteButton.setOnClickListener(v -> performDelete());
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performDelete();
-            }
-        });
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void updateParticipantsDisplay() {
@@ -194,8 +163,9 @@ public class UpdateActivity extends AppCompatActivity {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
             participantsDisplayTextView.setTextColor(fontColor & 0x80FFFFFF);
         } else {
-            String names = TextUtils.join(", ", selectedParticipants);
-            participantsDisplayTextView.setText(names);
+            ArrayList<String> names = new ArrayList<>();
+            for (Participant p : selectedParticipants) names.add(p.getName());
+            participantsDisplayTextView.setText(TextUtils.join(", ", names));
             participantsDisplayTextView.setTextColor(fontColor);
         }
     }
@@ -219,8 +189,9 @@ public class UpdateActivity extends AppCompatActivity {
             searchResultsRecyclerView.setVisibility(View.GONE);
             editFieldsContainer.setVisibility(View.GONE);
         } else if (searchResultsList.size() == 1) {
-            selectedIndex = indexList.get(0);
-            populateFields(searchResultsList.get(0));
+            selectedIndexInManager = indexList.get(0);
+            selectedMeeting = searchResultsList.get(0);
+            populateFields(selectedMeeting);
             editFieldsContainer.setVisibility(View.VISIBLE);
             searchResultsRecyclerView.setVisibility(View.GONE);
             ThemeManager.applyTheme(this, editFieldsContainer);
@@ -233,43 +204,40 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private void performUpdate() {
+        if (!isInputValid()) return;
+
         String title = titleEditText.getText().toString();
         String place = placeEditText.getText().toString();
         String date = dateButton.getText().toString();
         String time = timeButton.getText().toString();
 
-        if (!isInputValid()) {
-            return;
-        }
+        Meeting updatedMeeting = new Meeting(selectedMeeting.getId(), title, place, new ArrayList<>(selectedParticipants), date, time);
+        
+        dbAdapter.deleteMeeting(selectedMeeting.getId());
+        dbAdapter.addMeeting(updatedMeeting);
 
-        Meeting meeting = new Meeting(title, place, new ArrayList<>(selectedParticipants), date, time);
-        MeetingManager.updateMeeting(selectedIndex, meeting);
+        MeetingManager.updateMeeting(selectedIndexInManager, updatedMeeting);
 
         toastMessage(getString(R.string.toast_update_success));
         finish();
     }
 
-    private boolean isInputValid() {
-        boolean isValid = true;
-
-        if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) {
-            isValid = false;
-        }
-
-        if (!InputHandler.validateInputIsEmpty(placeEditText)) isValid = false;
-        if (!InputHandler.validateInputIsEmpty(titleEditText)) isValid = false;
-
-        if (!isValid) {
-            toastMessage(getString(R.string.fill_fields));
-        }
-
-        return isValid;
-    }
-
     private void performDelete() {
-        MeetingManager.deleteMeeting(selectedIndex);
+        dbAdapter.deleteMeeting(selectedMeeting.getId());
+        MeetingManager.deleteMeeting(selectedIndexInManager);
         toastMessage(getString(R.string.toast_delete_success));
         finish();
+    }
+
+    private boolean isInputValid() {
+        boolean isValid = true;
+        if (!InputHandler.validatePickedDateAndTime(timeButton, getString(R.string.meeting_time_hint))) isValid = false;
+        if (!InputHandler.validatePickedDateAndTime(dateButton, getString(R.string.meeting_date_hint))) isValid = false;
+        if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) isValid = false;
+        if (!InputHandler.validateInputIsEmpty(placeEditText)) isValid = false;
+        if (!InputHandler.validateInputIsEmpty(titleEditText)) isValid = false;
+        if (!isValid) toastMessage(getString(R.string.fill_fields));
+        return isValid;
     }
 
     private void populateFields(Meeting meeting) {
