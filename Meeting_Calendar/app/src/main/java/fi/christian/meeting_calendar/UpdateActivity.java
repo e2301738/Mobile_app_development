@@ -20,9 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class UpdateActivity extends AppCompatActivity {
 
@@ -48,10 +46,7 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
-        String dbName = getString(R.string.db_name);
-        String dirName = getString(R.string.db_dir_name);
-        String dbPath = Objects.requireNonNull(getExternalFilesDir(dirName)).getAbsolutePath() + File.separator;
-        dbAdapter = new DBAdapter(this, dbPath, dbName, getString(R.string.meetings_table_name), getString(R.string.participants_table_name));
+        dbAdapter = DBManager.getAdapter(this);
 
         participantsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -213,13 +208,13 @@ public class UpdateActivity extends AppCompatActivity {
 
         Meeting updatedMeeting = new Meeting(selectedMeeting.getId(), title, place, new ArrayList<>(selectedParticipants), date, time);
         
-        dbAdapter.deleteMeeting(selectedMeeting.getId());
-        dbAdapter.addMeeting(updatedMeeting);
-
-        MeetingManager.updateMeeting(selectedIndexInManager, updatedMeeting);
-
-        toastMessage(getString(R.string.toast_update_success));
-        finish();
+        if (dbAdapter.updateMeeting(updatedMeeting)) {
+            MeetingManager.updateMeeting(selectedIndexInManager, updatedMeeting);
+            toastMessage(getString(R.string.toast_update_success));
+            finish();
+        } else {
+            toastMessage(getString(R.string.update_failed));
+        }
     }
 
     private void performDelete() {

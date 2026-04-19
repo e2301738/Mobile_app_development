@@ -61,10 +61,10 @@ public class Meeting {
         String participantsNames = participants.stream()
                 .map(Participant::getName)
                 .collect(Collectors.joining(", "));
-                
-        stringBuilder.append("Participants: ").append(participantsNames).append("\n");
+
         stringBuilder.append("Date: ").append(date).append("\n");
         stringBuilder.append("Time: ").append(time).append("\n");
+        stringBuilder.append("Participants: ").append(participantsNames).append("\n");
         return stringBuilder.toString();
     }
 }

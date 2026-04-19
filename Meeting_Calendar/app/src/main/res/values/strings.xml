@@ -127,7 +127,7 @@
     <string name="btn_copy_db_file_txt">Copy DB File</string>
     <string name="db_dir_name">data/app_db/</string>
     <string name="db_name">meeting_calendar.db</string>
-    <string name="meetings_table_name">meetings</string>
+    <string name="meetings_table_name">meeting</string>
     <string name="participants_table_name">participants</string>
     <string name="warning_copy_db_file">Copy database file first!</string>
     <string name="returned_value">Returned value:</string>
@@ -138,10 +138,19 @@
     <string name="query_result">Query Results</string>
     <string name="btn_ok">OK</string>
 
-    <!-- New DB log strings -->
     <string name="log_db_create_error">Error creating tables</string>
     <string name="log_db_open_fallback">Failed to open database, falling back to helper</string>
     <string name="log_db_fetch_error">Error fetching meetings</string>
+
+    <string name="error_reading_file">Error reading file: </string>
+    <string name="error_reading_raw">Error reading raw resource: </string>
+    <string name="update_failed">Update failed</string>
+    <string name="error_adding_meeting_to_database">Error adding meeting to database</string>
+    <string name="could_not_open_external_db_falling_back_to_helper">"Could not open external DB, falling back to helper: "</string>
+    <string name="error_in_oncreate">"Error in onCreate: "</string>
+    <string name="error_updating_meeting">"Error updating meeting: "</string>
+    <string name="error_deleting_meeting">"Error deleting meeting: "</string>
+    <string name="error_fetching_all_meetings">"Error fetching all meetings: "</string>
 
     <string-array name="meetings_column_names">
         <item>id</item>

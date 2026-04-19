@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -30,7 +31,23 @@ public class FileManager {
             }
             reader.close();
         } catch (Exception e) {
-            return "Error reading file: " + e.getMessage();
+            return context.getString(R.string.error_reading_file) + e.getMessage();
+        }
+        return stringBuilder.toString();
+    }
+
+    public static String readFromRaw(Context context, int resourceId) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            InputStream is = context.getResources().openRawResource(resourceId);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            reader.close();
+        } catch (Exception e) {
+            return context.getString(R.string.error_reading_raw) + e.getMessage();
         }
         return stringBuilder.toString();
     }

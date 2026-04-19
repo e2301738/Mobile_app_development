@@ -224,10 +224,12 @@ public class MainActivity extends AppCompatActivity {
         String time = timeButton.getText().toString();
 
         Meeting meeting = new Meeting(title, place, new ArrayList<>(selectedParticipants), date, time);
-        dbAdapter.addMeeting(meeting);
-        MeetingManager.addMeeting(meeting);
+        long id = dbAdapter.addMeeting(meeting);
         
-        Toast.makeText(this, getString(R.string.toast_meeting_added), Toast.LENGTH_SHORT).show();
+        meeting.setId(id);
+        MeetingManager.addMeeting(meeting);
+        Toast.makeText(getApplicationContext(), getString(R.string.returned_value) + " " + id, Toast.LENGTH_LONG).show();
+        
         clearFields();
         startSummaryActivity();
     }

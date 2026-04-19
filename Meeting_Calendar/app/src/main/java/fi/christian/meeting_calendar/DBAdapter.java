@@ -9,22 +9,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 
 public class DBAdapter {
     private static String[] meetingColumnNames, participantColumnNames;
-    private static String TAG;
     private static String meetingsTable, participantsTable;
     private static final int DATABASE_VERSION = 1;
-    private static String MEETINGS_CREATE_QUERY;
-    private static String PARTICIPANTS_CREATE_QUERY;
-    private static String MEETINGS_DELETE_QUERY;
-    private static String PARTICIPANTS_DELETE_QUERY;
-
     private Context context;
     private DatabaseHelper dbHelper;
     private SQLiteDatabase sqlLiteDb;
@@ -40,23 +32,6 @@ public class DBAdapter {
 
         meetingColumnNames = context.getResources().getStringArray(R.array.meetings_column_names);
         participantColumnNames = context.getResources().getStringArray(R.array.participants_column_names);
-        TAG = context.getString(R.string.db_class_tag);
-
-        MEETINGS_CREATE_QUERY = "CREATE TABLE " + meetingsTable + " (" +
-                meetingColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                meetingColumnNames[1] + " TEXT, " +
-                meetingColumnNames[2] + " TEXT, " +
-                meetingColumnNames[3] + " TEXT, " +
-                meetingColumnNames[4] + " TEXT);";
-
-        PARTICIPANTS_CREATE_QUERY = "CREATE TABLE " + participantsTable + " (" +
-                participantColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                participantColumnNames[1] + " INTEGER, " +
-                participantColumnNames[2] + " TEXT, " +
-                participantColumnNames[3] + " BLOB);";
-
-        MEETINGS_DELETE_QUERY = "DROP TABLE IF EXISTS " + meetingsTable;
-        PARTICIPANTS_DELETE_QUERY = "DROP TABLE IF EXISTS " + participantsTable;
 
         dbHelper = new DatabaseHelper(context);
     }
@@ -71,8 +46,8 @@ public class DBAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
             try {
-                db.execSQL(MEETINGS_CREATE_QUERY);
-                db.execSQL(PARTICIPANTS_CREATE_QUERY);
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + meetingsTable + " (" + meetingColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + meetingColumnNames[1] + " TEXT NOT NULL, " + meetingColumnNames[2] + " TEXT NOT NULL, " + meetingColumnNames[3] + " TEXT NOT NULL, " + meetingColumnNames[4] + " TEXT NOT NULL);");
+                db.execSQL("CREATE TABLE IF NOT EXISTS " + participantsTable + " (" + participantColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + participantColumnNames[1] + " INTEGER, " + participantColumnNames[2] + " TEXT NOT NULL, " + participantColumnNames[3] + " BLOB, FOREIGN KEY(" + participantColumnNames[1] + ") REFERENCES " + meetingsTable + "(" + meetingColumnNames[0] + ") ON DELETE CASCADE);");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -80,61 +55,76 @@ public class DBAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ". All old data will be deleted!");
-            db.execSQL(PARTICIPANTS_DELETE_QUERY);
-            db.execSQL(MEETINGS_DELETE_QUERY);
+            db.execSQL("DROP TABLE IF EXISTS " + participantsTable);
+            db.execSQL("DROP TABLE IF EXISTS " + meetingsTable);
             onCreate(db);
         }
     }
 
     public DBAdapter openDBConnection() {
-        try {
-            sqlLiteDb = SQLiteDatabase.openDatabase(dbPath + dbName, null, SQLiteDatabase.OPEN_READWRITE);
-        } catch (Exception e) {
-            sqlLiteDb = dbHelper.getWritableDatabase();
-        }
+        sqlLiteDb = SQLiteDatabase.openDatabase(dbPath + dbName, null, SQLiteDatabase.OPEN_READWRITE);
         return this;
     }
 
     public void closeDBConnection() {
-        if (sqlLiteDb != null && sqlLiteDb.isOpen()) {
-            sqlLiteDb.close();
-        }
         dbHelper.close();
     }
 
     public long addMeeting(Meeting meeting) {
+        openDBConnection();
         ContentValues initialValues = new ContentValues();
         initialValues.put(meetingColumnNames[1], meeting.getTitle());
         initialValues.put(meetingColumnNames[2], meeting.getPlace());
         initialValues.put(meetingColumnNames[3], meeting.getDate());
         initialValues.put(meetingColumnNames[4], meeting.getTime());
 
-        openDBConnection();
         long meetingId = sqlLiteDb.insert(meetingsTable, null, initialValues);
 
-        if (meetingId != -1) {
-            for (Participant participant : meeting.getParticipants()) {
-                ContentValues pValues = new ContentValues();
-                pValues.put(participantColumnNames[1], meetingId);
-                pValues.put(participantColumnNames[2], participant.getName());
+        for (Participant participant : meeting.getParticipants()) {
+            ContentValues pValues = new ContentValues();
+            pValues.put(participantColumnNames[1], meetingId);
+            pValues.put(participantColumnNames[2], participant.getName());
 
-                if (participant.getImage() != null) {
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    participant.getImage().compress(CompressFormat.PNG, 50, outputStream);
-                    pValues.put(participantColumnNames[3], outputStream.toByteArray());
-                }
-                sqlLiteDb.insert(participantsTable, null, pValues);
+            if (participant.getImage() != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                participant.getImage().compress(CompressFormat.PNG, 50, outputStream);
+                pValues.put(participantColumnNames[3], outputStream.toByteArray());
             }
+            sqlLiteDb.insert(participantsTable, null, pValues);
         }
         closeDBConnection();
         return meetingId;
     }
 
+    public boolean updateMeeting(Meeting meeting) {
+        long meetingId = meeting.getId();
+        openDBConnection();
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(meetingColumnNames[1], meeting.getTitle());
+        initialValues.put(meetingColumnNames[2], meeting.getPlace());
+        initialValues.put(meetingColumnNames[3], meeting.getDate());
+        initialValues.put(meetingColumnNames[4], meeting.getTime());
+
+        int updatedRows = sqlLiteDb.update(meetingsTable, initialValues, meetingColumnNames[0] + "=" + meetingId, null);
+
+        sqlLiteDb.delete(participantsTable, participantColumnNames[1] + "=" + meetingId, null);
+        for (Participant participant : meeting.getParticipants()) {
+            ContentValues pValues = new ContentValues();
+            pValues.put(participantColumnNames[1], meetingId);
+            pValues.put(participantColumnNames[2], participant.getName());
+            if (participant.getImage() != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                participant.getImage().compress(CompressFormat.PNG, 50, outputStream);
+                pValues.put(participantColumnNames[3], outputStream.toByteArray());
+            }
+            sqlLiteDb.insert(participantsTable, null, pValues);
+        }
+        closeDBConnection();
+        return updatedRows > 0;
+    }
+
     public void deleteMeeting(long rowID) {
         openDBConnection();
-        sqlLiteDb.delete(participantsTable, participantColumnNames[1] + "=" + rowID, null);
         sqlLiteDb.delete(meetingsTable, meetingColumnNames[0] + "=" + rowID, null);
         closeDBConnection();
     }
@@ -142,25 +132,21 @@ public class DBAdapter {
     public ArrayList<Meeting> getAllMeetings() {
         ArrayList<Meeting> meetingsList = new ArrayList<>();
         openDBConnection();
-        try {
-            Cursor cursor = sqlLiteDb.query(meetingsTable, meetingColumnNames, null, null, null, null, null);
+        Cursor cursor = sqlLiteDb.query(meetingsTable, meetingColumnNames, null, null, null, null, null);
 
-            if (cursor.moveToFirst()) {
-                do {
-                    long id = cursor.getLong(0);
-                    String title = cursor.getString(1);
-                    String place = cursor.getString(2);
-                    String date = cursor.getString(3);
-                    String time = cursor.getString(4);
+        if (cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(0);
+                String title = cursor.getString(1);
+                String place = cursor.getString(2);
+                String date = cursor.getString(3);
+                String time = cursor.getString(4);
 
-                    ArrayList<Participant> participants = getParticipantsForMeeting(id);
-                    meetingsList.add(new Meeting(id, title, place, participants, date, time));
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+                ArrayList<Participant> participants = getParticipantsForMeeting(id);
+                meetingsList.add(new Meeting(id, title, place, participants, date, time));
+            } while (cursor.moveToNext());
         }
+        cursor.close();
         closeDBConnection();
         return meetingsList;
     }

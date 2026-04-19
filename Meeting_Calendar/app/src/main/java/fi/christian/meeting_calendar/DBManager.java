@@ -19,7 +19,7 @@ public class DBManager {
             
             copyDBFileFromAssets(context, dbPath, dbName);
             
-            dbAdapter = new DBAdapter(context.getApplicationContext(), dbPath, dbName, 
+            dbAdapter = new DBAdapter(context, dbPath, dbName,
                     context.getString(R.string.meetings_table_name), 
                     context.getString(R.string.participants_table_name));
         }
