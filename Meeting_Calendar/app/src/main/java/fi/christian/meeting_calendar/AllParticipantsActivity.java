@@ -1,5 +1,6 @@
 package fi.christian.meeting_calendar;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,10 +28,9 @@ import java.util.ArrayList;
 public class AllParticipantsActivity extends AppCompatActivity {
 
     private RecyclerView allParticipantsRecyclerView;
-    private ParticipantAdapter adapter;
+    private ParticipantAdapter participantAdapter;
     private ArrayList<Participant> participantsList = new ArrayList<>();
     private DBAdapter dbAdapter;
-    
     private ActivityResultLauncher<Intent> editImageLauncher;
     private ImageView dialogImageView;
     private Bitmap tempDialogBitmap;
@@ -47,15 +47,21 @@ public class AllParticipantsActivity extends AppCompatActivity {
         loadParticipants();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ThemeManager.applyTheme(this, findViewById(R.id.allParticipantsLayout));
+    }
+
     private void initializeViews() {
         allParticipantsRecyclerView = findViewById(R.id.allParticipantsRecyclerView);
         ImageButton backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
 
         allParticipantsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        adapter = new ParticipantAdapter(participantsList, false); 
-        adapter.setOnItemClickListener(this::showEditDialog);
-        allParticipantsRecyclerView.setAdapter(adapter);
+        participantAdapter = new ParticipantAdapter(participantsList, false);
+        participantAdapter.setOnItemClickListener(this::showEditDialog);
+        allParticipantsRecyclerView.setAdapter(participantAdapter);
     }
 
     private void setupLaunchers() {
@@ -78,19 +84,19 @@ public class AllParticipantsActivity extends AppCompatActivity {
 
     private void loadParticipants() {
         participantsList.clear();
-        participantsList.addAll(dbAdapter.getAllParticipants());
+        ArrayList<Participant> fromDb = dbAdapter.getAllParticipants();
+        participantsList.addAll(fromDb);
 
-        MeetingManager.setAllParticipants(new ArrayList<>(participantsList));
-        MeetingManager.setMeetings(dbAdapter.getAllMeetings());
-        
-        adapter.notifyDataSetChanged();
-        ThemeManager.applyTheme(this, findViewById(R.id.allParticipantsLayout));
+        MeetingManager.setAllParticipants(fromDb);
+
+        participantAdapter.notifyDataSetChanged();
     }
 
     private void showEditDialog(Participant participant) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_participant, null);
-        builder.setView(dialogView);
+        dialog.setContentView(dialogView);
 
         EditText nameEditText = dialogView.findViewById(R.id.editParticipantName);
         dialogImageView = dialogView.findViewById(R.id.editParticipantImage);
@@ -109,12 +115,9 @@ public class AllParticipantsActivity extends AppCompatActivity {
             dialogImageView.setImageResource(android.R.drawable.ic_menu_report_image);
         }
 
-        AlertDialog dialog = builder.create();
-
         changeImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.setType("image/*");
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
             editImageLauncher.launch(intent);
         });
 
@@ -134,18 +137,11 @@ public class AllParticipantsActivity extends AppCompatActivity {
         });
 
         deleteButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                .setTitle(R.string.delete_confirm_title)
-                .setMessage(R.string.warning_data_delete)
-                .setPositiveButton(R.string.delete_confirm_yes, (d, w) -> {
-                    if (dbAdapter.deleteParticipant(participant.getId())) {
-                        Toast.makeText(this, R.string.deleted_from_db, Toast.LENGTH_SHORT).show();
-                        loadParticipants();
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+            if (dbAdapter.deleteParticipant(participant.getId())) {
+                Toast.makeText(this, R.string.deleted_from_db, Toast.LENGTH_SHORT).show();
+                loadParticipants();
+                dialog.dismiss();
+            }
         });
 
         dialog.show();
