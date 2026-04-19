@@ -46,7 +46,7 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
-        dbAdapter = DBManager.getAdapter(this);
+        dbAdapter = new DBAdapter(this);
 
         participantsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

@@ -9,8 +9,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class DBAdapter {
@@ -23,26 +29,22 @@ public class DBAdapter {
     private String dbPath;
     private static String dbName;
 
-    public DBAdapter(Context context, String dbPath, String dbName, String meetingsTable, String participantsTable) {
+    public DBAdapter(Context context) {
         this.context = context;
-        this.dbPath = dbPath;
-        DBAdapter.dbName = dbName;
-        DBAdapter.meetingsTable = meetingsTable;
-        DBAdapter.participantsTable = participantsTable;
-
+        dbName = context.getString(R.string.db_name);
+        dbPath = context.getFilesDir().getPath();
+        meetingsTable = context.getString(R.string.meetings_table_name);
+        participantsTable = context.getString(R.string.participants_table_name);
         meetingColumnNames = context.getResources().getStringArray(R.array.meetings_column_names);
         participantColumnNames = context.getResources().getStringArray(R.array.participants_column_names);
 
         dbHelper = new DatabaseHelper(context);
     }
 
-    public DBAdapter() {}
-
     private static class DatabaseHelper extends SQLiteOpenHelper {
         public DatabaseHelper(Context context) {
             super(context, dbName, null, DATABASE_VERSION);
         }
-
         @Override
         public void onCreate(SQLiteDatabase db) {
             try {
@@ -52,7 +54,6 @@ public class DBAdapter {
                 e.printStackTrace();
             }
         }
-
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + participantsTable);
@@ -62,8 +63,26 @@ public class DBAdapter {
     }
 
     public DBAdapter openDBConnection() {
-        sqlLiteDb = SQLiteDatabase.openDatabase(dbPath + dbName, null, SQLiteDatabase.OPEN_READWRITE);
+        copyDBFile();
+        File dbFile = new File(dbPath, dbName);
+        sqlLiteDb = SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
         return this;
+    }
+
+    private void copyDBFile() {
+        File dbFile = new File(dbPath, dbName);
+        if (!dbFile.exists()) {
+            new File(dbPath).mkdirs();
+            try {
+                InputStream inputStream = context.getAssets().open(dbName);
+                OutputStream outputStream = new FileOutputStream(dbFile);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) outputStream.write(buffer, 0, length);
+                outputStream.close();
+                inputStream.close();
+            } catch (IOException e) { e.printStackTrace(); }
+        }
     }
 
     public void closeDBConnection() {
@@ -77,14 +96,11 @@ public class DBAdapter {
         initialValues.put(meetingColumnNames[2], meeting.getPlace());
         initialValues.put(meetingColumnNames[3], meeting.getDate());
         initialValues.put(meetingColumnNames[4], meeting.getTime());
-
         long meetingId = sqlLiteDb.insert(meetingsTable, null, initialValues);
-
         for (Participant participant : meeting.getParticipants()) {
             ContentValues pValues = new ContentValues();
             pValues.put(participantColumnNames[1], meetingId);
             pValues.put(participantColumnNames[2], participant.getName());
-
             if (participant.getImage() != null) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 participant.getImage().compress(CompressFormat.PNG, 50, outputStream);
@@ -104,9 +120,7 @@ public class DBAdapter {
         initialValues.put(meetingColumnNames[2], meeting.getPlace());
         initialValues.put(meetingColumnNames[3], meeting.getDate());
         initialValues.put(meetingColumnNames[4], meeting.getTime());
-
         int updatedRows = sqlLiteDb.update(meetingsTable, initialValues, meetingColumnNames[0] + "=" + meetingId, null);
-
         sqlLiteDb.delete(participantsTable, participantColumnNames[1] + "=" + meetingId, null);
         for (Participant participant : meeting.getParticipants()) {
             ContentValues pValues = new ContentValues();
@@ -133,7 +147,6 @@ public class DBAdapter {
         ArrayList<Meeting> meetingsList = new ArrayList<>();
         openDBConnection();
         Cursor cursor = sqlLiteDb.query(meetingsTable, meetingColumnNames, null, null, null, null, null);
-
         if (cursor.moveToFirst()) {
             do {
                 long id = cursor.getLong(0);
@@ -141,7 +154,6 @@ public class DBAdapter {
                 String place = cursor.getString(2);
                 String date = cursor.getString(3);
                 String time = cursor.getString(4);
-
                 ArrayList<Participant> participants = getParticipantsForMeeting(id);
                 meetingsList.add(new Meeting(id, title, place, participants, date, time));
             } while (cursor.moveToNext());
@@ -153,17 +165,13 @@ public class DBAdapter {
 
     private ArrayList<Participant> getParticipantsForMeeting(long meetingId) {
         ArrayList<Participant> participants = new ArrayList<>();
-        Cursor cursor = sqlLiteDb.query(participantsTable, participantColumnNames,
-                participantColumnNames[1] + "=" + meetingId, null, null, null, null);
-
+        Cursor cursor = sqlLiteDb.query(participantsTable, participantColumnNames, participantColumnNames[1] + "=" + meetingId, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 String name = cursor.getString(2);
                 byte[] imgByte = cursor.getBlob(3);
                 Bitmap image = null;
-                if (imgByte != null) {
-                    image = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
-                }
+                if (imgByte != null) image = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
                 participants.add(new Participant(name, image));
             } while (cursor.moveToNext());
         }
