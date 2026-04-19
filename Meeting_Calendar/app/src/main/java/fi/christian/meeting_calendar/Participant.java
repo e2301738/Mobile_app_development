@@ -3,6 +3,7 @@ package fi.christian.meeting_calendar;
 import android.graphics.Bitmap;
 
 public class Participant {
+    private long id;
     private String name;
     private Bitmap image;
     private boolean selected = true;
@@ -15,6 +16,20 @@ public class Participant {
     public Participant(String name, Bitmap image) {
         this.name = name;
         this.image = image;
+    }
+
+    public Participant(long id, String name, Bitmap image) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

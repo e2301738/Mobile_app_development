@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 public class MeetingManager {
     private static ArrayList<Meeting> meetings = new ArrayList<>();
+    private static ArrayList<Participant> allParticipants = new ArrayList<>();
     private static ArrayList<Participant> tempParticipants = new ArrayList<>();
 
     public static void addMeeting(Meeting meeting) {
@@ -31,6 +32,14 @@ public class MeetingManager {
 
     public static ArrayList<Meeting> getMeetings() {
         return meetings;
+    }
+
+    public static void setAllParticipants(ArrayList<Participant> participants) {
+        allParticipants = new ArrayList<>(participants);
+    }
+
+    public static ArrayList<Participant> getAllParticipants() {
+        return allParticipants;
     }
 
     public static void setTempParticipants(ArrayList<Participant> participants) {

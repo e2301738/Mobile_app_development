@@ -106,7 +106,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/add_participants_button_text" />
+                android:text="@string/update_participants" />
 
             <TextView
                 android:id="@+id/participantsDisplayTextView"

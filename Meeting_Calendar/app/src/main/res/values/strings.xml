@@ -151,6 +151,20 @@
     <string name="error_updating_meeting">"Error updating meeting: "</string>
     <string name="error_deleting_meeting">"Error deleting meeting: "</string>
     <string name="error_fetching_all_meetings">"Error fetching all meetings: "</string>
+    <string name="manage_all_participants">Manage All Participants</string>
+    <string name="cancel">Cancel</string>
+    <string name="options_for">"Options for "</string>
+    <string name="update_details">Update Details</string>
+    <string name="delete_from_database">Delete From Database</string>
+    <string name="deleted_from_db">Deleted from DB</string>
+    <string name="updated_successfully">Updated successfully</string>
+    <string name="update_participant">Update Participant</string>
+    <string name="change_image">Change Image</string>
+    <string name="save">Save</string>
+    <string name="name_label">Name</string>
+    <string name="update_participants">Update participants</string>
+    <string name="delete_participant">Delete participant</string>
+    <string name="error_in_loading_image">Error in loading image</string>
 
     <string-array name="meetings_column_names">
         <item>id</item>

@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,12 +46,8 @@ public class DBAdapter {
         }
         @Override
         public void onCreate(SQLiteDatabase db) {
-            try {
-                db.execSQL("CREATE TABLE IF NOT EXISTS " + meetingsTable + " (" + meetingColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + meetingColumnNames[1] + " TEXT NOT NULL, " + meetingColumnNames[2] + " TEXT NOT NULL, " + meetingColumnNames[3] + " TEXT NOT NULL, " + meetingColumnNames[4] + " TEXT NOT NULL);");
-                db.execSQL("CREATE TABLE IF NOT EXISTS " + participantsTable + " (" + participantColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + participantColumnNames[1] + " INTEGER, " + participantColumnNames[2] + " TEXT NOT NULL, " + participantColumnNames[3] + " BLOB, FOREIGN KEY(" + participantColumnNames[1] + ") REFERENCES " + meetingsTable + "(" + meetingColumnNames[0] + ") ON DELETE CASCADE);");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + meetingsTable + " (" + meetingColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + meetingColumnNames[1] + " TEXT NOT NULL, " + meetingColumnNames[2] + " TEXT NOT NULL, " + meetingColumnNames[3] + " TEXT NOT NULL, " + meetingColumnNames[4] + " TEXT NOT NULL);");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + participantsTable + " (" + participantColumnNames[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " + participantColumnNames[1] + " INTEGER, " + participantColumnNames[2] + " TEXT NOT NULL, " + participantColumnNames[3] + " BLOB, FOREIGN KEY(" + participantColumnNames[1] + ") REFERENCES " + meetingsTable + "(" + meetingColumnNames[0] + ") ON DELETE CASCADE);");
         }
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -101,11 +96,8 @@ public class DBAdapter {
             ContentValues pValues = new ContentValues();
             pValues.put(participantColumnNames[1], meetingId);
             pValues.put(participantColumnNames[2], participant.getName());
-            if (participant.getImage() != null) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                participant.getImage().compress(CompressFormat.PNG, 50, outputStream);
-                pValues.put(participantColumnNames[3], outputStream.toByteArray());
-            }
+            byte[] imgData = bitmapToByteArray(participant.getImage());
+            if (imgData != null) pValues.put(participantColumnNames[3], imgData);
             sqlLiteDb.insert(participantsTable, null, pValues);
         }
         closeDBConnection();
@@ -126,11 +118,8 @@ public class DBAdapter {
             ContentValues pValues = new ContentValues();
             pValues.put(participantColumnNames[1], meetingId);
             pValues.put(participantColumnNames[2], participant.getName());
-            if (participant.getImage() != null) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                participant.getImage().compress(CompressFormat.PNG, 50, outputStream);
-                pValues.put(participantColumnNames[3], outputStream.toByteArray());
-            }
+            byte[] imgData = bitmapToByteArray(participant.getImage());
+            if (imgData != null) pValues.put(participantColumnNames[3], imgData);
             sqlLiteDb.insert(participantsTable, null, pValues);
         }
         closeDBConnection();
@@ -168,14 +157,78 @@ public class DBAdapter {
         Cursor cursor = sqlLiteDb.query(participantsTable, participantColumnNames, participantColumnNames[1] + "=" + meetingId, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
+                long id = cursor.getLong(0);
                 String name = cursor.getString(2);
                 byte[] imgByte = cursor.getBlob(3);
-                Bitmap image = null;
-                if (imgByte != null) image = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
-                participants.add(new Participant(name, image));
+                Bitmap image = (imgByte != null) ? BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length) : null;
+                participants.add(new Participant(id, name, image));
             } while (cursor.moveToNext());
         }
-        cursor.close();
+        if (cursor != null) cursor.close();
         return participants;
+    }
+
+    public ArrayList<Participant> getAllParticipants() {
+        ArrayList<Participant> participants = new ArrayList<>();
+        openDBConnection();
+        Cursor cursor = sqlLiteDb.query(participantsTable, participantColumnNames, null, null, null, null, participantColumnNames[2] + " ASC");
+        if (cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(0);
+                String name = cursor.getString(2);
+                byte[] imgByte = cursor.getBlob(3);
+                Bitmap image = (imgByte != null) ? BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length) : null;
+                participants.add(new Participant(id, name, image));
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) cursor.close();
+        closeDBConnection();
+        return participants;
+    }
+
+    public boolean updateParticipant(Participant participant) {
+        openDBConnection();
+        ContentValues values = new ContentValues();
+        values.put(participantColumnNames[2], participant.getName());
+        byte[] imgData = bitmapToByteArray(participant.getImage());
+        if (imgData != null) {
+            values.put(participantColumnNames[3], imgData);
+        } else {
+            values.putNull(participantColumnNames[3]);
+        }
+        int rows = sqlLiteDb.update(participantsTable, values, participantColumnNames[0] + "=" + participant.getId(), null);
+        closeDBConnection();
+        return rows > 0;
+    }
+
+    public boolean deleteParticipant(long id) {
+        openDBConnection();
+        int rows = sqlLiteDb.delete(participantsTable, participantColumnNames[0] + "=" + id, null);
+        closeDBConnection();
+        return rows > 0;
+    }
+
+    private byte[] bitmapToByteArray(Bitmap bitmap) {
+        if (bitmap == null) return null;
+
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int maxSize = 512;
+
+        if (width > maxSize || height > maxSize) {
+            float bitmapRatio = (float) width / (float) height;
+            if (bitmapRatio > 1) {
+                width = maxSize;
+                height = (int) (width / bitmapRatio);
+            } else {
+                height = maxSize;
+                width = (int) (height * bitmapRatio);
+            }
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(CompressFormat.JPEG, 70, outputStream);
+        return outputStream.toByteArray();
     }
 }

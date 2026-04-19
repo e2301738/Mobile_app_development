@@ -62,12 +62,16 @@ public class MainActivity extends AppCompatActivity {
     private void loadFromDatabase() {
         ArrayList<Meeting> meetings = dbAdapter.getAllMeetings();
         MeetingManager.setMeetings(meetings);
+        
+        ArrayList<Participant> allParticipants = dbAdapter.getAllParticipants();
+        MeetingManager.setAllParticipants(allParticipants);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ThemeManager.applyTheme(this, findViewById(R.id.mainLayout));
+        loadFromDatabase();
     }
 
     private void initializeViews() {
@@ -158,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
                 if (itemId == R.id.action_theme) {
                     startThemeActivity();
                     return true;
+                } else if (itemId == R.id.action_manage_participants) {
+                    startAllParticipantsActivity();
+                    return true;
                 } else if (itemId == R.id.action_write_to_file) {
                     startFileActivity();
                     return true;
@@ -175,6 +182,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ParticipantsActivity.class);
         MeetingManager.setTempParticipants(new ArrayList<>(selectedParticipants));
         participantsActivityResultLauncher.launch(intent);
+    }
+
+    private void startAllParticipantsActivity() {
+        Intent intent = new Intent(this, AllParticipantsActivity.class);
+        startActivity(intent);
     }
 
     private void startThemeActivity() {
@@ -224,11 +236,9 @@ public class MainActivity extends AppCompatActivity {
         String time = timeButton.getText().toString();
 
         Meeting meeting = new Meeting(title, place, new ArrayList<>(selectedParticipants), date, time);
-        long id = dbAdapter.addMeeting(meeting);
-        
-        meeting.setId(id);
-        MeetingManager.addMeeting(meeting);
-        Toast.makeText(getApplicationContext(), getString(R.string.returned_value) + " " + id, Toast.LENGTH_LONG).show();
+        dbAdapter.addMeeting(meeting);
+
+        loadFromDatabase();
         
         clearFields();
         startSummaryActivity();

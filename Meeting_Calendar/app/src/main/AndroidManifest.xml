@@ -38,6 +38,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".AllParticipantsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ThemeActivity"
             android:exported="false" />
 

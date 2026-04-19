@@ -209,7 +209,8 @@ public class UpdateActivity extends AppCompatActivity {
         Meeting updatedMeeting = new Meeting(selectedMeeting.getId(), title, place, new ArrayList<>(selectedParticipants), date, time);
         
         if (dbAdapter.updateMeeting(updatedMeeting)) {
-            MeetingManager.updateMeeting(selectedIndexInManager, updatedMeeting);
+            // Ladataan koko lista uudelleen tietokannasta, jotta kaikki näkymät päivittyvät
+            MeetingManager.setMeetings(dbAdapter.getAllMeetings());
             toastMessage(getString(R.string.toast_update_success));
             finish();
         } else {
@@ -219,7 +220,7 @@ public class UpdateActivity extends AppCompatActivity {
 
     private void performDelete() {
         dbAdapter.deleteMeeting(selectedMeeting.getId());
-        MeetingManager.deleteMeeting(selectedIndexInManager);
+        MeetingManager.setMeetings(dbAdapter.getAllMeetings());
         toastMessage(getString(R.string.toast_delete_success));
         finish();
     }
@@ -244,8 +245,8 @@ public class UpdateActivity extends AppCompatActivity {
         dateButton.setText(meeting.getDate());
         timeButton.setText(meeting.getTime());
         
-        titleEditText.setBackground(titleBackground);
-        placeEditText.setBackground(placeBackground);
+        titleBackground = titleEditText.getBackground();
+        placeBackground = placeEditText.getBackground();
     }
 
     private void toastMessage(String message) {

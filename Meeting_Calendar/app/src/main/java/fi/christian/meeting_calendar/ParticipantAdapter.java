@@ -14,10 +14,19 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
 
     private final ArrayList<Participant> participantList;
     private final boolean isEditMode;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(Participant participant);
+    }
 
     public ParticipantAdapter(ArrayList<Participant> participantList, boolean isEditMode) {
         this.participantList = participantList;
         this.isEditMode = isEditMode;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -44,6 +53,11 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> participant.setSelected(isChecked));
         } else {
             holder.checkBox.setVisibility(View.GONE);
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(participant);
+                }
+            });
         }
 
         // Apply theme colors
