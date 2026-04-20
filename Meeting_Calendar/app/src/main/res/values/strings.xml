@@ -117,4 +117,81 @@
 
     <string name="log_error_create_json">Error creating settings JSON</string>
     <string name="log_error_apply_json">Error applying settings from JSON</string>
+    <string name="about_activity_title">About</string>
+
+    <!-- Database and Image related strings -->
+    <string name="btn_select_image_txt">Select Image</string>
+    <string name="et_image_path_hint">Image Path</string>
+    <string name="select_image_title">Select Image</string>
+    <string name="image_view_desc">Selected Image</string>
+    <string name="btn_copy_db_file_txt">Copy DB File</string>
+    <string name="db_dir_name">data/app_db/</string>
+    <string name="db_name">meeting_calendar.db</string>
+    <string name="meetings_table_name">meeting</string>
+    <string name="participants_table_name">participants</string>
+    <string name="warning_copy_db_file">Copy database file first!</string>
+    <string name="returned_value">Returned value:</string>
+    <string name="db_class_tag">DBAdapter</string>
+    <string name="upgrading_db_version">Upgrading DB Version</string>
+    <string name="warning_data_delete">Data will be deleted permanently!</string>
+    <string name="bitmap_is_null">Bitmap is null</string>
+    <string name="query_result">Query Results</string>
+    <string name="btn_ok">OK</string>
+
+    <string name="log_db_create_error">Error creating tables</string>
+    <string name="log_db_open_fallback">Failed to open database, falling back to helper</string>
+    <string name="log_db_fetch_error">Error fetching meetings</string>
+
+    <string name="error_reading_file">Error reading file: </string>
+    <string name="error_reading_raw">Error reading raw resource: </string>
+    <string name="update_failed">Update failed</string>
+    <string name="error_adding_meeting_to_database">Error adding meeting to database</string>
+    <string name="could_not_open_external_db_falling_back_to_helper">"Could not open external DB, falling back to helper: "</string>
+    <string name="error_in_oncreate">"Error in onCreate: "</string>
+    <string name="error_updating_meeting">"Error updating meeting: "</string>
+    <string name="error_deleting_meeting">"Error deleting meeting: "</string>
+    <string name="error_fetching_all_meetings">"Error fetching all meetings: "</string>
+    <string name="manage_all_participants">Manage All Participants</string>
+    <string name="cancel">Cancel</string>
+    <string name="options_for">"Options for "</string>
+    <string name="update_details">Update Details</string>
+    <string name="delete_from_database">Delete From Database</string>
+    <string name="deleted_from_db">Deleted from DB</string>
+    <string name="updated_successfully">Updated successfully</string>
+    <string name="update_participant">Update Participant</string>
+    <string name="change_image">Change Image</string>
+    <string name="save">Save</string>
+    <string name="name_label">Name</string>
+    <string name="update_participants">Update participants</string>
+    <string name="delete_participant">Delete participant</string>
+    <string name="error_in_loading_image">Error in loading image</string>
+
+    <string-array name="meetings_column_names">
+        <item>id</item>
+        <item>title</item>
+        <item>place</item>
+        <item>date</item>
+        <item>time</item>
+    </string-array>
+    <string-array name="meetings_column_types">
+        <item>INTEGER</item>
+        <item>TEXT</item>
+        <item>TEXT</item>
+        <item>TEXT</item>
+        <item>TEXT</item>
+    </string-array>
+
+    <string-array name="participants_column_names">
+        <item>id</item>
+        <item>meeting_id</item>
+        <item>name</item>
+        <item>image</item>
+    </string-array>
+    <string-array name="participants_column_types">
+        <item>INTEGER</item>
+        <item>INTEGER</item>
+        <item>TEXT</item>
+        <item>BLOB</item>
+    </string-array>
+
 </resources>

@@ -5,6 +5,8 @@ import java.util.Comparator;
 
 public class MeetingManager {
     private static ArrayList<Meeting> meetings = new ArrayList<>();
+    private static ArrayList<Participant> allParticipants = new ArrayList<>();
+    private static ArrayList<Participant> tempParticipants = new ArrayList<>();
 
     public static void addMeeting(Meeting meeting) {
         for (Meeting m : meetings) {
@@ -19,6 +21,11 @@ public class MeetingManager {
         sortMeetings();
     }
 
+    public static void setMeetings(ArrayList<Meeting> newMeetings) {
+        meetings = new ArrayList<>(newMeetings);
+        sortMeetings();
+    }
+
     public static void clearMeetings() {
         meetings.clear();
     }
@@ -27,22 +34,42 @@ public class MeetingManager {
         return meetings;
     }
 
+    public static void setAllParticipants(ArrayList<Participant> participants) {
+        allParticipants = new ArrayList<>(participants);
+    }
+
+    public static ArrayList<Participant> getAllParticipants() {
+        return allParticipants;
+    }
+
+    public static void setTempParticipants(ArrayList<Participant> participants) {
+        tempParticipants = participants;
+    }
+
+    public static ArrayList<Participant> getTempParticipants() {
+        return tempParticipants;
+    }
+
+    public static void clearTempParticipants() {
+        tempParticipants.clear();
+    }
+
     public static ArrayList<Meeting> searchMeetings(String searchString) {
         ArrayList<Meeting> results = new ArrayList<>();
         String lowerCaseSearchString = searchString.toLowerCase();
 
         for (Meeting meeting : meetings) {
             boolean matchesParticipant = false;
-            for (String p : meeting.getParticipants()) {
-                if (p.toLowerCase().contains(lowerCaseSearchString)) {
+            for (Participant p : meeting.getParticipants()) {
+                if (p.getName().toLowerCase().contains(lowerCaseSearchString)) {
                     matchesParticipant = true;
                     break;
                 }
             }
 
             if (meeting.getTitle().toLowerCase().contains(lowerCaseSearchString) || 
-                meeting.getPlace().toLowerCase().contains(lowerCaseSearchString) ||
-                meeting.getDate().toLowerCase().contains(lowerCaseSearchString) ||
+                meeting.getPlace().toLowerCase().contains(lowerCaseSearchString) || 
+                meeting.getDate().toLowerCase().contains(lowerCaseSearchString) || 
                 meeting.getTime().toLowerCase().contains(lowerCaseSearchString) ||
                 matchesParticipant) {
                 results.add(meeting);
@@ -83,6 +110,8 @@ public class MeetingManager {
             public int compare(Meeting m1, Meeting m2) {
                 String[] parts1 = m1.getDate().split("\\.");
                 String[] parts2 = m2.getDate().split("\\.");
+                
+                if (parts1.length < 3 || parts2.length < 3) return 0;
 
                 int yearCompare = parts1[2].compareTo(parts2[2]);
                 if (yearCompare != 0) {

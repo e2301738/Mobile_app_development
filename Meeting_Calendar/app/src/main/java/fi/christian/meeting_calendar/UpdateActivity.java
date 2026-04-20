@@ -3,6 +3,7 @@ package fi.christian.meeting_calendar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,10 +33,12 @@ public class UpdateActivity extends AppCompatActivity {
     private MeetingAdapter meetingAdapter;
     private final ArrayList<Meeting> searchResultsList = new ArrayList<>();
     private final ArrayList<Integer> indexList = new ArrayList<>();
-    private int selectedIndex;
+    private int selectedIndexInManager;
+    private Meeting selectedMeeting;
     private Drawable titleBackground, placeBackground;
-    private ArrayList<String> selectedParticipants = new ArrayList<>();
+    private ArrayList<Participant> selectedParticipants = new ArrayList<>();
 
+    private DBAdapter dbAdapter;
     private ActivityResultLauncher<Intent> participantsActivityResultLauncher;
 
     @Override
@@ -43,13 +46,16 @@ public class UpdateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
+        dbAdapter = new DBAdapter(this);
+
         participantsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            selectedParticipants = result.getData().getStringArrayListExtra("participants");
+                        if (result.getResultCode() == RESULT_OK) {
+                            selectedParticipants.clear();
+                            selectedParticipants.addAll(MeetingManager.getTempParticipants());
                             updateParticipantsDisplay();
                             addParticipantsButton.setTextColor(ThemeManager.getFontColor(UpdateActivity.this));
                         }
@@ -94,7 +100,8 @@ public class UpdateActivity extends AppCompatActivity {
         meetingAdapter = new MeetingAdapter(searchResultsList, new MeetingAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, Meeting meeting) {
-                selectedIndex = indexList.get(position);
+                selectedIndexInManager = indexList.get(position);
+                selectedMeeting = meeting;
                 populateFields(meeting);
                 editFieldsContainer.setVisibility(View.VISIBLE);
                 searchResultsRecyclerView.setVisibility(View.GONE);
@@ -113,68 +120,36 @@ public class UpdateActivity extends AppCompatActivity {
             }
         });
 
-        addParticipantsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UpdateActivity.this, ParticipantsActivity.class);
-                intent.putStringArrayListExtra("participants", selectedParticipants);
-                participantsActivityResultLauncher.launch(intent);
-            }
+        addParticipantsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ParticipantsActivity.class);
+            MeetingManager.setTempParticipants(new ArrayList<>(selectedParticipants));
+            participantsActivityResultLauncher.launch(intent);
         });
 
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerFragment newFragment = new DatePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "UpdateDatePicker");
-            }
+        dateButton.setOnClickListener(v -> {
+            DatePickerFragment newFragment = new DatePickerFragment();
+            newFragment.show(getSupportFragmentManager(), "UpdateDatePicker");
         });
 
-        timeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerFragment newFragment = new TimePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "UpdateTimePicker");
-            }
+        timeButton.setOnClickListener(v -> {
+            TimePickerFragment newFragment = new TimePickerFragment();
+            newFragment.show(getSupportFragmentManager(), "UpdateTimePicker");
         });
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performSearch();
-            }
+        searchButton.setOnClickListener(v -> performSearch());
+
+        clearSearchButton.setOnClickListener(v -> {
+            searchTitleEditText.setText("");
+            searchDateButton.setText(R.string.update_date_search_hint);
+            searchResultsRecyclerView.setVisibility(View.GONE);
+            editFieldsContainer.setVisibility(View.GONE);
         });
 
-        clearSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchTitleEditText.setText("");
-                searchDateButton.setText(R.string.update_date_search_hint);
-                searchResultsRecyclerView.setVisibility(View.GONE);
-                editFieldsContainer.setVisibility(View.GONE);
-            }
-        });
+        saveButton.setOnClickListener(v -> performUpdate());
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performUpdate();
-            }
-        });
+        deleteButton.setOnClickListener(v -> performDelete());
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performDelete();
-            }
-        });
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void updateParticipantsDisplay() {
@@ -183,7 +158,9 @@ public class UpdateActivity extends AppCompatActivity {
             participantsDisplayTextView.setText(R.string.no_participants_selected);
             participantsDisplayTextView.setTextColor(fontColor & 0x80FFFFFF);
         } else {
-            participantsDisplayTextView.setText(String.join(", ", selectedParticipants));
+            ArrayList<String> names = new ArrayList<>();
+            for (Participant p : selectedParticipants) names.add(p.getName());
+            participantsDisplayTextView.setText(TextUtils.join(", ", names));
             participantsDisplayTextView.setTextColor(fontColor);
         }
     }
@@ -207,8 +184,9 @@ public class UpdateActivity extends AppCompatActivity {
             searchResultsRecyclerView.setVisibility(View.GONE);
             editFieldsContainer.setVisibility(View.GONE);
         } else if (searchResultsList.size() == 1) {
-            selectedIndex = indexList.get(0);
-            populateFields(searchResultsList.get(0));
+            selectedIndexInManager = indexList.get(0);
+            selectedMeeting = searchResultsList.get(0);
+            populateFields(selectedMeeting);
             editFieldsContainer.setVisibility(View.VISIBLE);
             searchResultsRecyclerView.setVisibility(View.GONE);
             ThemeManager.applyTheme(this, editFieldsContainer);
@@ -221,43 +199,41 @@ public class UpdateActivity extends AppCompatActivity {
     }
 
     private void performUpdate() {
+        if (!isInputValid()) return;
+
         String title = titleEditText.getText().toString();
         String place = placeEditText.getText().toString();
         String date = dateButton.getText().toString();
         String time = timeButton.getText().toString();
 
-        if (!isInputValid()) {
-            return;
+        Meeting updatedMeeting = new Meeting(selectedMeeting.getId(), title, place, new ArrayList<>(selectedParticipants), date, time);
+        
+        if (dbAdapter.updateMeeting(updatedMeeting)) {
+            // Ladataan koko lista uudelleen tietokannasta, jotta kaikki näkymät päivittyvät
+            MeetingManager.setMeetings(dbAdapter.getAllMeetings());
+            toastMessage(getString(R.string.toast_update_success));
+            finish();
+        } else {
+            toastMessage(getString(R.string.update_failed));
         }
+    }
 
-        Meeting meeting = new Meeting(title, place, new ArrayList<>(selectedParticipants), date, time);
-        MeetingManager.updateMeeting(selectedIndex, meeting);
-
-        toastMessage(getString(R.string.toast_update_success));
+    private void performDelete() {
+        dbAdapter.deleteMeeting(selectedMeeting.getId());
+        MeetingManager.setMeetings(dbAdapter.getAllMeetings());
+        toastMessage(getString(R.string.toast_delete_success));
         finish();
     }
 
     private boolean isInputValid() {
         boolean isValid = true;
-
-        if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) {
-            isValid = false;
-        }
-
+        if (!InputHandler.validatePickedDateAndTime(timeButton, getString(R.string.meeting_time_hint))) isValid = false;
+        if (!InputHandler.validatePickedDateAndTime(dateButton, getString(R.string.meeting_date_hint))) isValid = false;
+        if (!InputHandler.validateParticipants(participantsDisplayTextView, addParticipantsButton)) isValid = false;
         if (!InputHandler.validateInputIsEmpty(placeEditText)) isValid = false;
         if (!InputHandler.validateInputIsEmpty(titleEditText)) isValid = false;
-
-        if (!isValid) {
-            toastMessage(getString(R.string.fill_fields));
-        }
-
+        if (!isValid) toastMessage(getString(R.string.fill_fields));
         return isValid;
-    }
-
-    private void performDelete() {
-        MeetingManager.deleteMeeting(selectedIndex);
-        toastMessage(getString(R.string.toast_delete_success));
-        finish();
     }
 
     private void populateFields(Meeting meeting) {
@@ -269,8 +245,8 @@ public class UpdateActivity extends AppCompatActivity {
         dateButton.setText(meeting.getDate());
         timeButton.setText(meeting.getTime());
         
-        titleEditText.setBackground(titleBackground);
-        placeEditText.setBackground(placeBackground);
+        titleBackground = titleEditText.getBackground();
+        placeBackground = placeEditText.getBackground();
     }
 
     private void toastMessage(String message) {

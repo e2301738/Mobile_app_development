@@ -1,17 +1,56 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class FileManager {
     private static final int BLOCK_SIZE = 128;
+
+    public static String readFromAssets(Context context, String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(fileName)));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            reader.close();
+        } catch (Exception e) {
+            return context.getString(R.string.error_reading_file) + e.getMessage();
+        }
+        return stringBuilder.toString();
+    }
+
+    public static String readFromRaw(Context context, int resourceId) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            InputStream is = context.getResources().openRawResource(resourceId);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            reader.close();
+        } catch (Exception e) {
+            return context.getString(R.string.error_reading_raw) + e.getMessage();
+        }
+        return stringBuilder.toString();
+    }
 
     public static boolean writeMeetingsAndSettingsToFile(Context context, File directory, String fileName, ArrayList<Meeting> meetings, JSONObject settings) {
         try {
@@ -24,7 +63,24 @@ public class FileManager {
                 jsonObject.put(context.getString(R.string.json_key_place), meeting.getPlace());
                 jsonObject.put(context.getString(R.string.json_key_date), meeting.getDate());
                 jsonObject.put(context.getString(R.string.json_key_time), meeting.getTime());
-                jsonObject.put(context.getString(R.string.json_key_participants), new JSONArray(meeting.getParticipants()));
+                
+                JSONArray participantsArray = new JSONArray();
+                for (Participant p : meeting.getParticipants()) {
+                    JSONObject pJson = new JSONObject();
+                    pJson.put("name", p.getName());
+                    
+                    if (p.getImage() != null) {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        p.getImage().compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        pJson.put("image", encodedImage);
+                    }
+                    
+                    participantsArray.put(pJson);
+                }
+                jsonObject.put(context.getString(R.string.json_key_participants), participantsArray);
+                
                 jsonArray.put(jsonObject);
             }
             rootJSON.put(context.getString(R.string.json_key_meetings), jsonArray);
@@ -60,10 +116,20 @@ public class FileManager {
             JSONArray array = rootJSON.getJSONArray(context.getString(R.string.json_key_meetings));
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
-                JSONArray pArray = jsonObject.getJSONArray(context.getString(R.string.json_key_participants));
-                ArrayList<String> participants = new ArrayList<>();
-                for (int j = 0; j < pArray.length(); j++) {
-                    participants.add(pArray.getString(j));
+                JSONArray participantsArray = jsonObject.getJSONArray(context.getString(R.string.json_key_participants));
+                ArrayList<Participant> participants = new ArrayList<>();
+                for (int j = 0; j < participantsArray.length(); j++) {
+                    JSONObject participantsJsonObject = participantsArray.getJSONObject(j);
+                    String name = participantsJsonObject.getString("name");
+                    
+                    Bitmap image = null;
+                    if (participantsJsonObject.has("image")) {
+                        String encodedImage = participantsJsonObject.getString("image");
+                        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                        image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    }
+                    
+                    participants.add(new Participant(name, image));
                 }
 
                 MeetingManager.addMeeting(new Meeting(

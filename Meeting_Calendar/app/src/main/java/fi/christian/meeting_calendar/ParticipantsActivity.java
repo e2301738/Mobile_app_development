@@ -1,45 +1,44 @@
 package fi.christian.meeting_calendar;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.ImageView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ParticipantsActivity extends AppCompatActivity {
 
     private EditText participantNameEditText;
-    private Button addParticipantButton, doneButton;
+    private Button addParticipantButton, doneButton, selectImageButton;
     private ImageButton backButton;
-    private ListView participantsListView;
-    private ArrayList<String> participantsList;
-    private ArrayAdapter<String> adapter;
-    private Drawable originalBackground;
+    private ImageView selectedParticipantImageView;
+    private RecyclerView participantsRecyclerView;
+    private ArrayList<Participant> participantsList = new ArrayList<>();
+    private ParticipantAdapter adapter;
+    private Bitmap currentBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_participants);
 
-        participantsList = getIntent().getStringArrayListExtra("participants");
-        if (participantsList == null) {
-            participantsList = new ArrayList<>();
-        }
-
         initializeViews();
+        setupImagePicker();
         setupListeners();
+        loadAllParticipants();
     }
 
     @Override
@@ -48,81 +47,86 @@ public class ParticipantsActivity extends AppCompatActivity {
         ThemeManager.applyTheme(this, findViewById(R.id.participantsLayout));
     }
 
+    private void loadAllParticipants() {
+        participantsList.clear();
+        participantsList.addAll(MeetingManager.getAllParticipants());
+        
+        ArrayList<Participant> temps = MeetingManager.getTempParticipants();
+        for (Participant p : participantsList) {
+            p.setSelected(false);
+            for (Participant t : temps) {
+                if (p.getName().equals(t.getName())) {
+                    p.setSelected(true);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     private void initializeViews() {
         participantNameEditText = findViewById(R.id.participantNameEditText);
         addParticipantButton = findViewById(R.id.addParticipantButton);
+        selectImageButton = findViewById(R.id.selectImageButton);
+        selectedParticipantImageView = findViewById(R.id.selectedParticipantImageView);
         doneButton = findViewById(R.id.doneButton);
         backButton = findViewById(R.id.backButton);
-        participantsListView = findViewById(R.id.participantsListView);
+        participantsRecyclerView = findViewById(R.id.participantsRecyclerView);
 
-        originalBackground = participantNameEditText.getBackground();
-        InputHandler.setupTextWatcher(participantNameEditText, originalBackground);
+        InputHandler.setupTextWatcher(participantNameEditText, participantNameEditText.getBackground());
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, participantsList) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                ThemeManager.applyTheme(getContext(), view);
-                return view;
-            }
-        };
+        adapter = new ParticipantAdapter(participantsList, true);
+        participantsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        participantsRecyclerView.setAdapter(adapter);
+    }
 
-        participantsListView.setAdapter(adapter);
-        participantsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+    private void setupImagePicker() {
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Uri uri = (result.getResultCode() == RESULT_OK && result.getData() != null) ? result.getData().getData() : null;
+                    if (uri != null) {
+                        try (InputStream is = getContentResolver().openInputStream(uri)) {
+                            currentBitmap = BitmapFactory.decodeStream(is);
+                            selectedParticipantImageView.setImageBitmap(currentBitmap);
+                            selectedParticipantImageView.setVisibility(View.VISIBLE);
+                        } catch (Exception ignored) {}
+                    }
+                });
 
-        for (int i = 0; i < participantsList.size(); i++) {
-            participantsListView.setItemChecked(i, true);
-        }
+        selectImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.setType("image/*");
+            launcher.launch(intent);
+        });
     }
 
     private void setupListeners() {
-        addParticipantButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addParticipant();
-            }
-        });
-
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                returnResult();
-            }
-        });
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        addParticipantButton.setOnClickListener(v -> addParticipant());
+        doneButton.setOnClickListener(v -> returnResult());
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void addParticipant() {
-        if (!InputHandler.validateInputIsEmpty(participantNameEditText)) {
-            Toast.makeText(this, getString(R.string.toast_enter_name), Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (!InputHandler.validateInputIsEmpty(participantNameEditText)) return;
 
-        String name = participantNameEditText.getText().toString().trim();
-        participantsList.add(name);
-        adapter.notifyDataSetChanged();
-        participantsListView.setItemChecked(participantsList.size() - 1, true);
+        Participant p = new Participant(participantNameEditText.getText().toString().trim(), currentBitmap);
+        p.setSelected(true);
+        participantsList.add(0, p);
+        adapter.notifyItemInserted(0);
+        participantsRecyclerView.scrollToPosition(0);
+
         participantNameEditText.setText("");
+        selectedParticipantImageView.setVisibility(View.GONE);
+        currentBitmap = null;
     }
 
     private void returnResult() {
-        ArrayList<String> selectedParticipants = new ArrayList<>();
-        for (int i = 0; i < participantsList.size(); i++) {
-            if (participantsListView.isItemChecked(i)) {
-                selectedParticipants.add(participantsList.get(i));
-            }
-        }
-
-        Intent resultIntent = new Intent();
-        resultIntent.putStringArrayListExtra("participants", selectedParticipants);
-        setResult(RESULT_OK, resultIntent);
+        ArrayList<Participant> selected = new ArrayList<>();
+        for (Participant p : participantsList) if (p.isSelected()) selected.add(p);
+        MeetingManager.setTempParticipants(selected);
+        setResult(RESULT_OK);
         finish();
     }
+    
+
 }

@@ -38,11 +38,19 @@
             android:exported="false" />
 
         <activity
+            android:name=".AllParticipantsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ThemeActivity"
             android:exported="false" />
 
         <activity
             android:name=".FileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AboutActivity"
             android:exported="false" />
 
     </application>
